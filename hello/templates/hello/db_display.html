@@ -1,0 +1,79 @@
+{% extends "hello/layout.html" %} {% block title %} Database Display
+{%endblock%} {% block content %}
+<h2>Database Display</h2>
+
+<div class="pagination">
+  {% if page_obj.has_previous %}
+  <a
+    class="page-link"
+    href="{% url 'db_display' page_obj.previous_page_number|stringformat:'s' %}"
+    >Previous</a
+  >
+  {% endif %}
+
+  <link rel="stylesheet" type="text/css" href="hello\static\hello\site.css" />
+
+  <span class="current-page">{{ page_obj.number }}</span>
+
+  {% if page_obj.has_next %}
+  <a
+    class="page-link"
+    href="{% url 'db_display' page_obj.next_page_number|stringformat:'s' %}"
+    >Next</a
+  >
+  {% endif %}
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Company Name</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>Alumni</th>
+      <th>Can We Release Your Info</th>
+      <th>ID Number</th>
+      <th>Checked In</th>
+      <th>Check In Time</th>
+      <th>Table Number</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in page_obj %}
+    <tr>
+      <td class="box">{{ row.0 }}</td>
+      <td class="box">{{ row.1 }}</td>
+      <td class="box">{{ row.2 }}</td>
+      <td class="box">{{ row.3 }}</td>
+      <td class="box">{{ row.4 }}</td>
+      <td class="box">{{ row.5 }}</td>
+      <td class="box">{{ row.6 }}</td>
+      <td class="box">{{ row.7 }}</td>
+      <td class="box">{{ row.8 }}</td>
+      <td class="box">{{ row.9 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="pagination">
+  {% if page_obj.has_previous %}
+  <a
+    class="page-link"
+    href="{% url 'db_display' page_obj.previous_page_number|stringformat:'s' %}"
+    >Previous</a
+  >
+  {% endif %}
+
+  <span class="current-page">{{ page_obj.number }}</span>
+
+  {% if page_obj.has_next %}
+  <a
+    class="page-link"
+    href="{% url 'db_display' page_obj.next_page_number|stringformat:'s' %}"
+    >Next</a
+  >
+  {% endif %}
+</div>
+{% endblock %}

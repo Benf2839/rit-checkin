@@ -15,4 +15,8 @@ urlpatterns = [
     path("about/", views.about, name="about"),
     path("contact/", views.contact, name="contact"),
     path("log/", views.log_message, name="log"),
-]
+    path("search/", views.search_results, name="search_results"),
+    path('dbdisplay/<int:page>/', views.db_display, name='db_display'),
+    path("dbsearch/", views.id_search_page, name="id_search_page"),
+    path('search_by_id/', views.search_by_id, name='search_by_id'),
+    ]

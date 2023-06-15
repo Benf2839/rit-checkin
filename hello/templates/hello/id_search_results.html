@@ -1,0 +1,31 @@
+{% extends "hello/layout.html" %} {% block title %} Search Results {% endblock%}
+<!---->
+{% block content %}
+<h1>Search Results</h1>
+{% if checkin %}
+<ul>
+  <li>Company Name: {{ checkin.Company_name }}</li>
+  <li>First Name: {{ checkin.First_name }}</li>
+  <li>email: {{ checkin.Email }}</li>
+  <li>Alumni: {{ checkin.Alumni }}</li>
+  <li>Can We Release your info: {{ checkin.Release_info }}</li>
+  <li>ID Number: {{ checkin.Id_number }}</li>
+  <li>Checked in: {{ checkin.Checked_in }}</li>
+  <li>Time Checked in:{{ checkin.Checked_in_time}}</li>
+  <li>Table Number: {{checkin.Table_number}}</li>
+</ul>
+{% else %}
+<p>No results found for the given ID number.</p>
+{% endif %}
+<form method="get">
+  {% csrf_token %}
+  <label for="id_number">ID Number:</label>
+  <input
+    type="text"
+    id="id_number"
+    name="id_number"
+    value="{{ request.GET.id_number }}"
+  />
+  <button type="submit">Search</button>
+</form>
+{% endblock %}

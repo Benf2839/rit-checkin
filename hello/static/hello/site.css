@@ -39,3 +39,14 @@ input[name=message] {
     text-align: left;
     padding-right: 15px;
 }
+
+.employer_list th,td {
+    text-align: left;
+    padding-right: 15px;
+}
+
+.box {
+    border: 1px solid black;
+    padding: 5px;
+  }
+  

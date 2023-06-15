@@ -20,3 +20,4 @@ urlpatterns = [
     path("dbsearch/", views.id_search_page, name="id_search_page"),
     path('search_by_id/', views.search_by_id, name='search_by_id'),
     ]
+#test

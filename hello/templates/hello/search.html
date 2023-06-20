@@ -1,0 +1,104 @@
+{% extends 'hello/layout.html' %} {% block content %}
+<h1>Search by ID Number</h1>
+<form method="get" action="{% url 'search_by_id' %}">
+  <label for="id_number">ID Number:</label>
+  <input type="text" name="id_number" id="id_number" />
+  <button type="submit">Search</button>
+</form>
+
+{% if not entry %}
+<div class="alert alert-danger" style="color: red">
+  There is no corresponding entry for that number.
+</div>
+{% endif %}
+
+<h2>Result:</h2>
+<form method="POST" action="{% url 'submit_form' %}" class="entry-form">
+  {% csrf_token %}
+  <table>
+    <tr>
+      <th>Company Name:</th>
+      <td>
+        {% if entry %}
+        <input
+          type="text"
+          name="company_name"
+          value="{{ entry.company_name }}"
+        />
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>First Name:</th>
+      <td>
+        {% if entry %}<input
+          type="text"
+          name="first_name"
+          value="{{ entry.first_name }}"
+        />
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Email:</th>
+      <td>
+        {% if entry %}<input
+          type="email"
+          name="email"
+          value="{{ entry.email }}"
+        />
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Alumni:</th>
+      <td>
+        {% if entry %}<input
+          type="checkbox"
+          name="alumni"
+          {%
+          if
+          entry.alumni
+          %}
+          checked
+          {%
+          endif
+          %}
+        />{% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Can We Release Your Info:</th>
+      <td>
+        {% if entry %}<input
+          type="checkbox"
+          name="release_info"
+          {%
+          if
+          entry.release_info
+          %}checked{%
+          endif
+          %}
+        />{% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>ID Number:</th>
+      <td>
+        {% if entry %}<input
+          type="text"
+          name="id_number"
+          value="{{ entry.id_number }}"
+        />{% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        {% if entry %}
+        <button type="submit" class="btn btn-primary">Check-in</button>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+</form>
+{% endblock %}

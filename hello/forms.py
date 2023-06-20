@@ -1,8 +1,10 @@
 from django import forms
 
 from hello.models import LogMessage
+from hello.models import db_model
 
-class LogMessageForm(forms.ModelForm):
+class EntryForm(forms.ModelForm):
     class Meta:
-        model = LogMessage
-        fields = ("message",)  # NOTE: the trailing comma is required
+        model = db_model
+        fields = '__all__'
+

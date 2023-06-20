@@ -49,4 +49,22 @@ input[name=message] {
     border: 1px solid black;
     padding: 5px;
   }
+
+.red-text {
+    color: red;
+ }
   
+table {
+    border-collapse: collapse;
+  }
+  
+ th,
+ td {
+   border: 1px solid black;
+   padding: 8px;
+ }
+  
+.populated-cell {
+    background-color: #f5f5f5;
+  }
+    

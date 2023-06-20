@@ -1,0 +1,25 @@
+{% extends "hello/layout.html" %} {% block title %} Success! {% endblock %}
+ {% block content %}
+<h2>
+  Thanks for registering for the Career Fair! Your information is now in our
+  system and check-in next time will be a breeze.
+</h2>
+<h3>Your table number is {{ table_number }}.</h3>
+<div style="text-align: center">
+  <div style="margin-bottom: 20px">
+    <p>click the button below to add another entry</p>
+  </div>
+  <a
+    href="{% url 'add_entry' %}"
+    class="btn btn-outline-primary"
+    style="margin-right: 10px"
+    >Add Entry</a
+  >
+  <div style="margin-bottom: 20px">
+    <p>click the button below to search by ID</p>
+  </div>
+  <a href="{% url 'search_by_id' %}" class="btn btn-outline-primary"
+    >ID Search</a
+  >
+</div>
+{% endblock %}

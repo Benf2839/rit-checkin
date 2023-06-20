@@ -14,9 +14,10 @@ urlpatterns = [
     path("hello/<name>", views.hello_there, name="hello_there"),
     path("about/", views.about, name="about"),
     path("contact/", views.contact, name="contact"),
-    path("log/", views.log_message, name="log"),
-    path("search/", views.search_results, name="search_results"),
+    path("add_entry/", views.add_entry, name="add_entry"),
     path('dbdisplay/<int:page>/', views.db_display, name='db_display'),
-    path("dbsearch/", views.id_search_page, name="id_search_page"),
+    path("dbsearch/", views.search_by_id, name="id_search"),
     path('search_by_id/', views.search_by_id, name='search_by_id'),
+    path('success/', views.success, name='success'),
+    path('submit-form/', views.update_entry, name='submit_form'),
     ]

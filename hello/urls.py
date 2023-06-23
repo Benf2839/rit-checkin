@@ -2,6 +2,8 @@ from django.urls import path
 
 from hello import views
 from hello.models import LogMessage
+from django.contrib.auth import views as auth_views
+from django.urls import include
 
 home_list_view = views.HomeListView.as_view(
     queryset=LogMessage.objects.order_by("-log_date")[:5],  # :5 limits the results to the five most recent
@@ -20,4 +22,5 @@ urlpatterns = [
     path('search_by_id/', views.search_by_id, name='search_by_id'),
     path('success/', views.success, name='success'),
     path('submit-form/', views.update_entry, name='submit_form'),
+    path('accounts/', include('django.contrib.auth.urls')),
     ]

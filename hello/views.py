@@ -26,6 +26,7 @@ def about(request):
     return render(request, "hello/about.html")
 
 
+
 def contact(request):
     """Renders the contact page."""
     return render(request, "hello/contact.html")

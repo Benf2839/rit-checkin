@@ -1,0 +1,49 @@
+{% extends "hello/layout.html" %} {% block content %}
+<h2>Enter the id number to send the QR code to</h2>
+<form id="qrCodeForm" action="{% url 'send_qr_code' %}" method="post">
+  {% csrf_token %}
+  <p>{{ form.email }}</p>
+  {% if form.email.errors %} {{ form.email.errors }} {% endif %}
+  <p><input type="text" name="id_number" required id="id_number" /></p>
+  <input type="submit" class="btn btn-default" value="Send QR Code" />
+</form>
+
+<script>
+  document
+    .getElementById("qrCodeForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent form submission
+      sendQrCodeEmail(); // Call the custom function to handle form submission
+    });
+
+  function sendQrCodeEmail() {
+    const idNumber = document.getElementById("id_number").value;
+
+    fetch("{% url 'send_qr_code' %}", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        id_number: idNumber,
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+      }).toString(),
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.href = "{% url 'qr_email_success' %}";
+        } else {
+          console.error(
+            "Error sending QR code email:",
+            response.status,
+            response.statusText
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error sending QR code email:", error);
+      });
+  }
+</script>
+{% endblock %}

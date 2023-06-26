@@ -12,14 +12,13 @@ class LogMessage(models.Model):
 
 
 class db_model(models.Model): #creates a model for the checkin database
-    entry_number = models.AutoField(primary_key=True)
+    id_number = models.AutoField(primary_key=True)
     company_name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField()
     alumni = models.BooleanField(default=False)
     release_info = models.BooleanField(default=False)
-    id_number = models.IntegerField()
     checked_in = models.BooleanField(default=False)
     checked_in_time = models.DateTimeField(auto_now=True)
     table_number = models.IntegerField(null=True, blank=True)

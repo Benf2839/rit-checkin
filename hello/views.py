@@ -9,6 +9,74 @@ from django.utils import timezone
 from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage, get_connection
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404
+
+
+
+
+def send_reset_email(request):  
+   if request.method == "POST": 
+       with get_connection(  
+           host=settings.EMAIL_HOST, 
+     port=settings.EMAIL_PORT,  
+     username=settings.EMAIL_HOST_USER, 
+     password=settings.EMAIL_HOST_PASSWORD, 
+     use_tls=settings.EMAIL_USE_TLS  
+       ) as connection:  
+           subject = request.POST.get("Password Reset")  
+           email_from = settings.EMAIL_HOST_USER  
+           recipient_list = [request.POST.get("email"), ]  
+           message = request.POST.get("message")  
+           EmailMessage(subject, message, email_from, recipient_list, connection=connection).send()  
+ 
+   return render(request, 'password_reset_email.html')
+
+
+def send_qr_email(request):
+    if request.method == "POST":
+        # Get the ID number from the POST data
+        id_number = request.POST.get("id_number")
+        # Retrieve the corresponding record from the database based on the ID number
+        record = get_object_or_404(db_model, id_number=id_number)
+        
+        with get_connection(
+            host=settings.EMAIL_HOST,
+            port=settings.EMAIL_PORT,
+            username=settings.EMAIL_HOST_USER,
+            password=settings.EMAIL_HOST_PASSWORD,
+            use_tls=settings.EMAIL_USE_TLS
+        ) as connection:
+            subject = request.POST.get("Here is your QR code for check-in")
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [record.email]
+            template = "hello/qr_code/qr_code_email.html"  # Path to the email template
+            context = {
+                'first_name': record.first_name,
+                'last_name': record.last_name,
+                'id_number': record.id_number,
+                'email': record.email,
+                'table_number': record.table_number,
+            }  # Add any additional context variables if needed
+
+            # Render the email content using the template and context
+            email_content = render_to_string(template, context)
+
+            # Send the email
+            EmailMessage(subject, email_content, email_from, recipient_list, connection=connection).send()
+
+    return render(request, 'hello/qr_code/qr_code_email.html')
+
+
+
+def qr_email_page(request):
+    return render(request, 'hello/qr_code/send_qr_code.html')
+
+def qr_email_success(request):
+    return render(request, 'hello/qr_code/qr_code_email_sent.html')
 
 
 
@@ -49,7 +117,7 @@ def hello_there(request, name):
         request, "hello/hello_there.html", {"name": name, "date": datetime.now()}
     )
 
-
+@login_required
 @transaction.atomic
 def search_by_id(request):  #searches the database for a specific id number
     id_number = request.GET.get('Id_number') #gets the id number from the search bar
@@ -60,6 +128,7 @@ def search_by_id(request):  #searches the database for a specific id number
     context = {'Checkin': checkin} #context is a dictionary that maps variable names to objects
     return render(request, 'hello/id_search_results.html', context) #renders the id search results page
 
+@login_required
 @transaction.atomic
 def add_entry(request):
     if request.method == 'POST':
@@ -121,6 +190,7 @@ def add_entry(request):
     return render(request, 'hello/add_entry.html')
 
 
+@login_required
 @transaction.atomic
 def update_entry(request):
     if request.method == 'POST':
@@ -152,7 +222,7 @@ def update_entry(request):
 
 
 
-
+@login_required
 def db_display(request, page=1): #this function displays all of the entries in the database
     with connections['default'].cursor() as cursor:
         cursor.execute("SELECT * FROM Master_list") #displaying all entries in the Master_list table
@@ -165,6 +235,7 @@ def db_display(request, page=1): #this function displays all of the entries in t
     return render(request, "hello/db_display.html", {'page_obj': page_obj, 'url': url})
 
 
+@login_required
 @transaction.atomic
 def search_by_id(request):
     context = {}

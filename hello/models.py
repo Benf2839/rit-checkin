@@ -10,6 +10,19 @@ class LogMessage(models.Model):
         date = timezone.localtime(self.log_date)
         return f"'{self.message}' logged on {date.strftime('%A, %d %B, %Y at %X')}"
 
+class import_csv(models.Model): #creates a model for the import .csv file format
+    id_number = models.AutoField(primary_key=True)
+    company_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    alumni = models.BooleanField(default=False)
+    release_info = models.BooleanField(default=False)
+    table_number = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.table_number}"
+
 
 class db_model(models.Model): #creates a model for the checkin database
     id_number = models.AutoField(primary_key=True)

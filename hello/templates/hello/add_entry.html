@@ -2,11 +2,8 @@
 {%block content %}
 <h2>Add Entry</h2>
 
-{% if errors.company_name %}
-<div class="alert alert-danger" style="color: red">
-  Please enter a valid company name (no special characters)
-</div>
-{% endif %} {% if errors.first_name %}
+<!-- Error messages -->
+{% if errors.first_name %}
 <div class="alert alert-danger" style="color: red">
   Please enter a valid first name (no special characters or numbers)
 </div>

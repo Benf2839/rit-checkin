@@ -1,0 +1,25 @@
+{% extends "hello/layout.html" %} {% block title %} Upload New Database {% endblock %} {% block content %}
+
+<h2>Upload a new database file to the server</h2>
+
+<form
+  method="post"
+  enctype="multipart/form-data"
+  action="{% url 'add_new_data' %}"
+  class="entry-form"
+>
+  {% csrf_token %}
+
+  <div class="form-group">
+    <label for="file">CSV File Path:</label>
+    <input type="file" class="form-control-file" id="file" name="file" />
+  </div>
+
+  <button class="btn btn-primary" name ="import" type="submit">Upload</button>
+
+  <br />
+
+  <button class="btn btn-primary" name="export" type="submit">Export</button>
+</form>
+
+{% endblock %}

@@ -20,12 +20,19 @@ from io import TextIOWrapper
 from .forms import EntryForm
 from django.contrib import messages
 from hello.models import db_model
+import re
+
+# Define the regular expression patterns
+name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashes
+email_pattern = r'^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'  # Valid email pattern
 
 
 
-
+@transaction.atomic
 def add_new_data(request):
+    print(request.POST)
     if request.method == 'POST':
+        print(request.POST)
         if 'export' in request.POST: # Export the current entries in the Master_list table
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="master_list.csv"'
@@ -42,84 +49,95 @@ def add_new_data(request):
         
 
         elif 'import' in request.POST: # Import the user selected CSV file
+            
             form = EntryForm(request.POST, request.FILES) # Create a form instance and populate it with data from the request
             messages.success(request, 'form exists')###############
-            if form.is_valid():
-                # Retrieve the uploaded file from the form
-                file = request.FILES['file']
-                messages.success(request, 'form is valid')###############
+           # if form.is_valid():
+            # Retrieve the uploaded file from the form
+            file = request.FILES['file']
+            messages.success(request, 'form is valid')###############
 
-                # Save a local copy of the current entries in the Master_list table
-                export_data(request) #backup current data in case of error
+            # Save a local copy of the current entries in the Master_list table
+            export_data(request) #backup current data in case of error
 
-                # Wipe the Master_list table
-                db_model.objects.all().delete()
+            # Wipe the Master_list table
+            db_model.objects.all().delete()
 
-                # Process the uploaded CSV file
-                try:
-                    # Decode the uploaded file
-                    csv_file = TextIOWrapper(file, encoding='utf-8')
+            # Process the uploaded CSV file
+            try:
+                # Decode the uploaded file
+                csv_file = TextIOWrapper(file, encoding='utf-8')
 
-                    # Read the CSV data
-                    reader = csv.reader(csv_file)
-                    for row in reader:
-                        # Extract the data from each row
-                        ext_company_name = row[0] if len(row) >= 6 else ''  # Handle missing company_name field 
-                        ext_first_name = row[1]
-                        ext_last_name = row[2]
-                        ext_email = row[3]
-                        ext_alumni = row[4]
-                        ext_release_info = row[5]
-                        ext_table_number = row[6]
+                # Read the CSV data
+                reader = csv.reader(csv_file)
+                reader.__next__()  # Skip the header row
+                for row in reader:
+                    # Extract the data from each row
+                    ext_company_name = row[0]  
+                    ext_first_name = row[1]
+                    ext_last_name = row[2]
+                    ext_email = row[3]
+                    ext_alumni = row[4]
+                    ext_release_info = row[5]
+                    ext_table_number = row[6]
 
-                        # Check if all required fields are empty (excluding company_name)
-                        if not any([ext_first_name, ext_last_name, ext_email, ext_alumni, ext_release_info]):
-                            break  # Stop iterating over rows
-                        
-                        # Perform validations on the data
-                        # Check if the company_name is not None before calling isalpha()
-                        if ext_company_name and not ext_company_name.isalnum():
-                            messages.error(request, 'Company name should only contain alphabetic characters.')
-                            return redirect('database_upload_page')
-                        if ext_first_name and not ext_first_name.isalpha():
-                            messages.error(request, 'First name should only contain alphabetic characters.')
-                            return redirect('database_upload_page')
-                        if ext_last_name and not ext_last_name.isalpha():
-                            messages.error(request, 'Last name should only contain alphabetic characters.')
-                            return redirect('database_upload_page')
-                        if not ext_email:
-                            messages.error(request, 'Please provide an email address.')
-                            return redirect('database_upload_page')
-                        if not ext_alumni:
-                            messages.error(request, 'Please indicate if you are an alumnus.')
-                            return redirect('database_upload_page')
-                        if not ext_release_info:
-                            messages.error(request, 'Please agree to the release of information.')
-                            return redirect('database_upload_page')
+                    # Check if all required fields are empty (excluding company_name)
+                    if not any([ext_first_name, ext_last_name, ext_email, ext_alumni, ext_release_info]):
+                        break  # Stop iterating over rows
 
-                        # Create a new entry in the Master_list table
-                        entry = db_model(
-                            company_name=ext_company_name,
-                            first_name=ext_first_name,
-                            last_name=ext_last_name,
-                            email=ext_email,
-                            alumni=ext_alumni,
-                            release_info=ext_release_info,
-                            table_number=ext_table_number
-                        )
-                        entry.save(Force_insert=True)
+                    # Perform validations on the data
+                    if ext_company_name and not re.match(name_pattern, ext_company_name):
+                        messages.error(request, 'Company name should only contain alphabetic characters, spaces, and dashes.')
+                        return redirect('home')
+                    if ext_first_name and not re.match(name_pattern, ext_first_name):
+                        messages.error(request, 'First name should only contain alphabetic characters, spaces, and dashes.')
+                        return redirect('home')
+                    if ext_last_name and not re.match(name_pattern, ext_last_name):
+                        messages.error(request, 'Last name should only contain alphabetic characters, spaces, and dashes.')
+                        return redirect('home')
+                    if not ext_email or not re.match(email_pattern, ext_email):
+                        messages.error(request, 'Incorrect format for email field')
+                        return redirect('home')
+                    if not ext_alumni:
+                        messages.error(request, 'Incorrect format for alumni field')
+                        return redirect('home')
+                    if not ext_release_info:
+                        messages.error(request, 'Incorrect format for release info')
+                        return redirect('home')
+
+                    # Map "yes" and "no" values to boolean values
+                    boolean_map = {
+                        "yes": True,
+                        "no": False
+                    }
+
+                    # Convert "yes" and "no" values to boolean values
+                    ext_alumni = boolean_map.get(ext_alumni.lower(), False)
+                    ext_release_info = boolean_map.get(ext_release_info.lower(), False)
+
+                    # Create a new entry in the Master_list table
+                    entry = db_model(
+                        company_name=ext_company_name,
+                        first_name=ext_first_name,
+                        last_name=ext_last_name,
+                        email=ext_email,
+                        alumni=ext_alumni,
+                        release_info=ext_release_info,
+                        table_number=ext_table_number
+                    )
+                    entry.save()
 
                     messages.success(request, 'Data imported successfully.')
-                    return redirect('home')
-                
-                except Exception as e: # Handle any other exceptions
-                    messages.error(request, f'Error processing the CSV file: {str(e)}') # Display the exception as an error message
-                    return redirect('database_upload_page') # Redirect to the database upload page
-        
+                return redirect('home')
+            
+            except Exception as e: # Handle any other exceptions
+                messages.error(request, f'Error processing the CSV file: {str(e)}') # Display the exception as an error message
+            return redirect('home') # Redirect to the database upload page
+    
     else:
-        messages.Error(request, 'Skipped the POST if')###############
-
-        return render(request, 'hello/database_upload_page.html') 
+        messages.success(request, 'page loaded')###############
+        print(request.POST)
+    return render(request, 'hello/database_upload_page.html') # Render the database upload page
 
  
 
@@ -199,9 +217,6 @@ def qr_email_page(request):
 
 def qr_email_success(request):
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
-
-def database_upload_page(request):
-    return render(request, 'hello/database_upload_page.html')
 
 
 class HomeListView(ListView):

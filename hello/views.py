@@ -22,6 +22,9 @@ from django.contrib import messages
 from hello.models import db_model
 import re
 
+
+
+
 # Define the regular expression patterns
 name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashes
 email_pattern = r'^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'  # Valid email pattern
@@ -51,15 +54,33 @@ def add_new_data(request):
         elif 'import' in request.POST: # Import the user selected CSV file
             
             form = EntryForm(request.POST, request.FILES) # Create a form instance and populate it with data from the request
-            messages.success(request, 'form exists')###############
+            messages.success(request, 'form exists')
            # if form.is_valid():
             # Retrieve the uploaded file from the form
             file = request.FILES['file']
-            messages.success(request, 'form is valid')###############
+            messages.success(request, 'form is valid')
+            
+            master_list = db_model.objects.all()
+            # Prepare CSV data
+            csv_data = []
+            csv_data.append(['Company_name', 'First_name', 'Last_name', 'Email', 'Alumni', 'Release_info', 'Checked_in', 'Checked_in_time', 'Table_number', 'id_number'])
 
-            # Save a local copy of the current entries in the Master_list table
-            export_data(request) #backup current data in case of error
+            for entry in master_list:
+                csv_data.append([
+                    entry.company_name, entry.first_name, entry.last_name, entry.email, entry.alumni, entry.release_info, entry.checked_in,
+                    entry.checked_in_time, entry.table_number, entry.id_number
+                ])
 
+            # Create a CSV response
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="Master_list_backup.csv"'
+
+            # Write CSV data to the response
+            writer = csv.writer(response)
+            writer.writerows(csv_data)
+
+            messages.success(request, 'Data exported successfully.')
+            
             # Wipe the Master_list table
             db_model.objects.all().delete()
 
@@ -68,42 +89,68 @@ def add_new_data(request):
                 # Decode the uploaded file
                 csv_file = TextIOWrapper(file, encoding='utf-8')
 
+
+                textbox0_value = request.POST.get('Company_Name_box')
+                textbox1_value = request.POST.get('First_Name_box')
+                textbox2_value = request.POST.get('Last_Name_box')
+                textbox3_value = request.POST.get('Email_box')
+                textbox4_value = request.POST.get('Alumni_box')
+                textbox5_value = request.POST.get('Release_info_box')
+                textbox6_value = request.POST.get('Table_number_box')
+
+                if textbox0_value or textbox1_value or textbox2_value or textbox3_value or textbox4_value or textbox5_value or textbox6_value:
+                    # Convert box numbers from letters to numbers
+                    box_mapping = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7, 'i': 8, 'j': 9, 'k': 10, 'l': 11, 'm': 12, 'n': 13, 'o': 14, 'p': 15}
+                    textbox0_value = box_mapping.get(textbox0_value.lower()) if textbox0_value  else None
+                    textbox1_value = box_mapping.get(textbox1_value.lower()) if textbox1_value  else None
+                    textbox2_value = box_mapping.get(textbox2_value.lower()) if textbox2_value  else None
+                    textbox3_value = box_mapping.get(textbox3_value.lower()) if textbox3_value  else None
+                    textbox4_value = box_mapping.get(textbox4_value.lower()) if textbox4_value  else None
+                    textbox5_value = box_mapping.get(textbox5_value.lower()) if textbox5_value  else None
+                    textbox6_value = box_mapping.get(textbox6_value.lower()) if textbox6_value  else None
+                    messages.success(request, 'textbox values converted to numbers')
+                
+                else:
+                    messages.error(request, 'please enter a valid letter in all textboxes')
+
+
+
+
                 # Read the CSV data
                 reader = csv.reader(csv_file)
                 reader.__next__()  # Skip the header row
                 for row in reader:
                     # Extract the data from each row
-                    ext_company_name = row[0]  
-                    ext_first_name = row[1]
-                    ext_last_name = row[2]
-                    ext_email = row[3]
-                    ext_alumni = row[4]
-                    ext_release_info = row[5]
-                    ext_table_number = row[6]
+                    ext_company_name = row[textbox0_value]  
+                    ext_first_name = row[textbox1_value]
+                    ext_last_name = row[textbox2_value]
+                    ext_email = row[textbox3_value]
+                    ext_alumni = row[textbox4_value]
+                    ext_release_info = row[textbox5_value]
+                    ext_table_number = row[textbox6_value]
 
                     # Check if all required fields are empty (excluding company_name)
-                    if not any([ext_first_name, ext_last_name, ext_email, ext_alumni, ext_release_info]):
+                    if not ext_first_name or ext_last_name or ext_email or ext_alumni or ext_release_info:
                         break  # Stop iterating over rows
 
                     # Perform validations on the data
+                    errors = []
                     if ext_company_name and not re.match(name_pattern, ext_company_name):
-                        messages.error(request, 'Company name should only contain alphabetic characters, spaces, and dashes.')
-                        return redirect('home')
+                        errors.append('Company name should only contain alphabetic characters, spaces, and dashes.')
                     if ext_first_name and not re.match(name_pattern, ext_first_name):
-                        messages.error(request, 'First name should only contain alphabetic characters, spaces, and dashes.')
-                        return redirect('home')
+                        errors.append('First name should only contain alphabetic characters, spaces, and dashes.')
                     if ext_last_name and not re.match(name_pattern, ext_last_name):
-                        messages.error(request, 'Last name should only contain alphabetic characters, spaces, and dashes.')
-                        return redirect('home')
+                        errors.append('Last name should only contain alphabetic characters, spaces, and dashes.')
                     if not ext_email or not re.match(email_pattern, ext_email):
-                        messages.error(request, 'Incorrect format for email field')
-                        return redirect('home')
+                        errors.append('Incorrect format for email field')
                     if not ext_alumni:
-                        messages.error(request, 'Incorrect format for alumni field')
-                        return redirect('home')
+                        errors.append('Incorrect format for alumni field')
                     if not ext_release_info:
-                        messages.error(request, 'Incorrect format for release info')
-                        return redirect('home')
+                        errors.append('Incorrect format for release info')
+
+                    # If there are any errors, render the current page with the error messages
+                    if errors:
+                        return render(request, 'database_upload_page.html', {'errors': errors})
 
                     # Map "yes" and "no" values to boolean values
                     boolean_map = {
@@ -127,17 +174,16 @@ def add_new_data(request):
                     )
                     entry.save()
 
-                    messages.success(request, 'Data imported successfully.')
-                return redirect('home')
+                messages.success(request, 'Data imported successfully.')
+                return redirect(add_new_data, response)
             
             except Exception as e: # Handle any other exceptions
                 messages.error(request, f'Error processing the CSV file: {str(e)}') # Display the exception as an error message
-            return redirect('home') # Redirect to the database upload page
+            return redirect('add_new_data') # Redirect to the database upload page
     
     else:
-        messages.success(request, 'page loaded')###############
-        print(request.POST)
-    return render(request, 'hello/database_upload_page.html') # Render the database upload page
+        ## If the request is not a POST request, render the database upload page
+        return render(request, 'hello/database_upload_page.html') # Render the database upload page
 
  
 
@@ -146,7 +192,7 @@ def export_data(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="master_list.csv"'
     writer = csv.writer(response)
-    # Retrieve data from the database (assuming you're using Django ORM)
+    # Retrieve data from the database 
     master_list = db_model.objects.all()
     # Write the header row
     writer.writerow(['Company_name', 'First_name', 'Last_name', 'Email', 'Alumni', 'Release_info', 'Checked_in', 'Checked_in_time', 'Table_number', 'id_number'])  

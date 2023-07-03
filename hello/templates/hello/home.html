@@ -1,9 +1,12 @@
-{% extends "hello/layout.html" %} {% block title %} Home {% endblock %} 
+{% extends "hello/layout.html" %}
+{% load static %}
+{% block title %} Home {% endblock %}
 {% block content %}
-<form method="GET" action="{% url 'search_by_id' %}">
-  {% csrf_token %}
-  <input type="text" name="search_query" placeholder="Search..." />
-  <button type="submit">Search</button>
-</form>
+
+<h1>Welcome to the check-in system v2</h1>
+{% if user.is_authenticated %}
+<img src="{% static 'hello/Dance_cat.gif' %}" alt="GIF Image">
+<p>Hi {{ user.username }}!</p>
+{% endif %}
 
 {% endblock %}

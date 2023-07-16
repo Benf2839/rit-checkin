@@ -19,22 +19,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'PLACEHOLDER'
+# Make sure to set environment variable for the secret key before deploying!
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # When deploying to Azure App Service, add you <name>.azurewebsites.net 
 # domain to ALLOWED_HOSTS; you get an error message if you forget. When you add
 # a specific host, you must also add 'localhost' and/or '127.0.0.1' for local
 # debugging (which are enabled by default when ALLOWED_HOSTS is empty.)
 ALLOWED_HOSTS = [
-    #'localhost',
-    #'127.0.0.1'
-    "http://guardianforge.net/",
-    "www.guardianforge.net",
-    "guardiansforge.met"
+    'https://guardianforge.net/destiny-project',
+    'https://www.guardianforge.net/destiny-project',
+    'https://guardianforge.net/',
+    'https://www.guardianforge.net/'
 ]
 
 # Application definition
@@ -60,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'web_project.urls'
+ROOT_URLCONF = 'hello.urls'
 
 TEMPLATES = [
     {
@@ -78,19 +77,24 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'web_project.wsgi.application'
+WSGI_APPLICATION = 'hello.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+SECRET_NAME = os.environ['SECRET_NAME']
+SECRET_USER = os.environ['SECRET_USER']
+SECRET_PASSWORD = os.environ['SECRET_PASSWORD']
+SECRET_HOST = os.environ['SECRET_HOST']
+
 DATABASES = {
     'default': {
 'ENGINE': 'django.db.backends.mysql',
-'NAME': 'guardia2_destiny',
-'USER': 'guardia2_ben',
-'PASSWORD': 'S)[],mtE0!8V',
-'HOST': 'localhost', # Or an IP Address that your DB is hosted on
+'NAME': 'SECRET_NAME',
+'USER': 'SECRET_USER',
+'PASSWORD': 'SECRET_PASSWORD',
+'HOST': 'SECRET_HOST', # Or an IP Address that your DB is hosted on
 'PORT': '3306',
 }
 }
@@ -139,7 +143,7 @@ STATIC_URL = '/static/'
 # A dedicated static file server is typically used in production to serve files
 # from this location, rather than relying on the app server to serve those files
 # from various locations in the app. Doing so results in better overall performance.
-STATIC_ROOT = '/home/guardia2/Web_app/static_collected'
+STATIC_ROOT = BASE_DIR / 'static_collected'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

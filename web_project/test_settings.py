@@ -32,8 +32,9 @@ DEBUG = True
 ALLOWED_HOSTS = [
     #'localhost',
     #'127.0.0.1'
-    #https://guardianforge.net,
-    #https://www.guardianforge.net,
+    "http://guardianforge.net/",
+    "www.guardianforge.net",
+    "guardiansforge.met"
 ]
 
 # Application definition
@@ -85,9 +86,13 @@ WSGI_APPLICATION = 'web_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+'ENGINE': 'django.db.backends.mysql',
+'NAME': 'guardia2_destiny',
+'USER': 'guardia2_ben',
+'PASSWORD': 'S)[],mtE0!8V',
+'HOST': 'localhost', # Or an IP Address that your DB is hosted on
+'PORT': '3306',
+}
 }
 
 
@@ -134,7 +139,7 @@ STATIC_URL = '/static/'
 # A dedicated static file server is typically used in production to serve files
 # from this location, rather than relying on the app server to serve those files
 # from various locations in the app. Doing so results in better overall performance.
-STATIC_ROOT = BASE_DIR / 'static_collected'
+STATIC_ROOT = '/home/guardia2/Web_app/static_collected'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

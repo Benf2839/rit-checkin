@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     #'127.0.0.1'
     "http://guardianforge.net/",
     "www.guardianforge.net",
-    "guardiansforge.met"
+    "guardiansforge.net"
 ]
 
 # Application definition

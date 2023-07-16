@@ -506,3 +506,5 @@ def search_by_id(request):
     return render(request, 'hello/search.html', context)
 
 
+def homepage(request):
+    return render(request, 'hello/home.html')

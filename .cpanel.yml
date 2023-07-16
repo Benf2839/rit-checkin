@@ -1,26 +1,12 @@
+##### THIS ALLOWS US TO DEPLOY THE SITE FROM A GIT REPO ######
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/guardia2/public_html # Set the deployment path as per your server configuration
-
-    - /bin/cp -R * $DEPLOYPATH/ # Copy all files and directories to the deployment path
-
-    - /bin/cp -R .[!.]* $DEPLOYPATH/ # Copy hidden files and directories to the deployment path
-
-    - /usr/bin/find $DEPLOYPATH -type f -exec /bin/chmod 0644 {} \; # Set file permissions to 0644
-
-    - /usr/bin/find $DEPLOYPATH -type d -exec /bin/chmod 0755 {} \; # Set directory permissions to 0755
-
-    - /usr/local/bin/python3.11.2 -m venv $DEPLOYPATH/venv # Create a virtual environment (adjust the Python version if needed)
-
-    - source $DEPLOYPATH/venv/bin/activate && /bin/cp $DEPLOYPATH/deploy/requirements.txt $DEPLOYPATH/ && pip install -r $DEPLOYPATH/requirements.txt # Install Python dependencies
-
-    - /bin/rm -rf $DEPLOYPATH/deploy # Remove the deploy directory
-
-    - /bin/rm $DEPLOYPATH/.cpanel.yml # Remove the .cpanel.yml file
-
-    - /bin/rm $DEPLOYPATH/.git* # Remove the .git-related files and directories
-
-    - /bin/rm $DEPLOYPATH/.env* # Remove any .env-related files
-
-    - /bin/rm $DEPLOYPATH/README.md # Remove the README.md file (if desired)
+    - export DEPLOYPATH=/home/guardia2/public_html/
+    - /bin/cp -R .vscode $DEPLOYPATH
+    - /bin/cp -R assets $DEPLOYPATH
+    - /bin/cp -R css $DEPLOYPATH
+    - /bin/cp -R fonts $DEPLOYPATH
+    - /bin/cp -R img $DEPLOYPATH
+    - /bin/cp -R js $DEPLOYPATH
+    /bin/cp index.html $DEPLOYPATH

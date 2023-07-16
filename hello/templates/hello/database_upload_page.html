@@ -1,28 +1,46 @@
-{% extends "hello/layout.html" %}
-{% block title %} Upload New Database {% endblock %}
-{% block content %}
+{% extends "hello/layout.html" %} {% block title %} Upload New Database {% endblock %} {% block content %}
 
 <h2>Upload a new database file to the server</h2>
 
-<form method="post" enctype="multipart/form-data" action="{% url 'add_new_data' %}" class="entry-form">
+<form
+  method="post"
+  enctype="multipart/form-data"
+  action="{% url 'add_new_data' %}"
+  class="entry-form"
+>
   {% csrf_token %}
 
   <div class="form-group">
     <label for="file">CSV File Path:</label>
     <input type="file" class="form-control-file" id="file" name="file" />
   </div>
-<h2>Enter the letters of the columns which match the following fields</h2>
+  <h2>Enter the letters of the columns which match the following fields</h2>
   <div class="form-group">
     <label for="Company_Name_box">Company Name:</label>
-    <input type="text" class="form-control" id="Company_Name_box" name="Company_Name_box" />
+    <input
+      type="text"
+      class="form-control"
+      id="Company_Name_box"
+      name="Company_Name_box"
+    />
   </div>
   <div class="form-group">
     <label for="First_Name_box">First Name:</label>
-    <input type="text" class="form-control" id="First_Name_box" name="First_Name_box" />
+    <input
+      type="text"
+      class="form-control"
+      id="First_Name_box"
+      name="First_Name_box"
+    />
   </div>
   <div class="form-group">
     <label for="Last_Name_box">Last Name:</label>
-    <input type="text" class="form-control" id="Last_Name_box" name="Last_Name_box" />
+    <input
+      type="text"
+      class="form-control"
+      id="Last_Name_box"
+      name="Last_Name_box"
+    />
   </div>
   <div class="form-group">
     <label for="Email_box">Email:</label>
@@ -34,19 +52,39 @@
   </div>
   <div class="form-group">
     <label for="Info_Release_box">Can we release your info:</label>
-    <input type="text" class="form-control" id="Info_Release_box" name="Info_Release_box" />
+    <input
+      type="text"
+      class="form-control"
+      id="Info_Release_box"
+      name="Info_Release_box"
+    />
   </div>
   <div class="form-group">
     <label for="Table_Number_box">Table Number:</label>
-    <input type="text" class="form-control" id="Table_Number_box" name="Table_Number_box" />
+    <input
+      type="text"
+      class="form-control"
+      id="Table_Number_box"
+      name="Table_Number_box"
+    />
   </div>
-
 
   <button class="btn btn-primary" name="import" type="submit">Upload</button>
 
   <br />
 
   <button class="btn btn-primary" name="export" type="submit">Export</button>
-</form>
+  <br />
+  <div style="color: white">
+    <p>
+      After importing a new set of data, the old data will be backed up to the
+      server. You can download the backup here.
+    </p>
+    <form action="{% url 'download_backup' %}" method="post">
+      {% csrf_token %}
+      <button href="{% url 'download_backup' %}" class="btn btn-primary">Download backup</button>
+    </form>
+  </div>
 
-{% endblock %}
+  {% endblock %}
+</form>

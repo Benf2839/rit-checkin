@@ -16,12 +16,16 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 import csv
-from io import TextIOWrapper
-from .forms import EntryForm
 from django.contrib import messages
 from hello.models import db_model
 import re
-
+from django.http import FileResponse
+import os
+import shutil
+from io import StringIO
+import traceback
+import sys
+from django.http import HttpResponseServerError
 
 
 
@@ -30,9 +34,83 @@ name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashe
 email_pattern = r'^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'  # Valid email pattern
 
 
+def handle_errors_and_redirect(request, errors, redirect_page):
+    if errors:
+        error_message = ', '.join(errors)
+        traceback_str = traceback.format_exc()  # Get the traceback as a string
+        line_number = traceback.extract_tb(sys.exc_info()[2])[-1][1]  # Get the line number of the error
+        error_info = f"Error occurred at line {line_number}"
+        error_info += f"\nTraceback:\n{traceback_str}"
+        messages.error(request, f"{error_message}\n\n{error_info}")
+        return render(request, redirect_page, {'errors': errors})
 
+
+
+def load_add_new_data_page(request):
+    return render(request, 'hello/database_upload_page.html')
+
+def redirect_w_backup(request):
+    backup_file_path = 'Exports/server_backup.csv' 
+    try:
+        if os.path.exists(backup_file_path):
+            return FileResponse(open(backup_file_path, 'rb'), as_attachment=True, filename='server_backup.csv')
+        else:
+            return render(request, 'hello/success.html')
+    except Exception as e:
+        error_message = f'Error occurred while processing the backup: {str(e)}'
+        return HttpResponseServerError(error_message)
+    
+
+def export_master_list(request):
+    master_list = db_model.objects.all()
+    # Prepare CSV data
+    csv_data = []
+    csv_data.append(['Company_name', 'First_name', 'Last_name', 'Email', 'Alumni', 'Release_info', 'Checked_in', 'Checked_in_time', 'Table_number', 'id_number'])
+
+    for entry in master_list:
+        csv_data.append([
+            entry.company_name, entry.first_name, entry.last_name, entry.email, entry.alumni, entry.release_info, entry.checked_in,
+            entry.checked_in_time, entry.table_number, entry.id_number
+        ])
+
+    # Create a temporary file to store the CSV data
+    temp_csv_file = 'Exports/temp.csv'
+
+    with open(temp_csv_file, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(csv_data)
+
+    # Define the server backup file name
+    server_backup_file = 'Exports/server_backup.csv'
+
+    # Check if the server backup file already exists
+    if os.path.exists(server_backup_file):
+        # Remove the existing server backup file
+        os.remove(server_backup_file) #############IMPORTANT: WILL NOT WORK IF THE FILE IS OPEN IN A VIEWER WINDOW
+
+    # Move the temporary file to the server backup file
+    shutil.move(temp_csv_file, server_backup_file)
+
+    # Create a FileResponse to return the file to the browser
+    response = FileResponse(open(server_backup_file, 'rb'), content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="server_backup.csv"'
+
+    # Set the appropriate headers to prompt the file download
+    response['Content-Length'] = os.path.getsize(server_backup_file)
+    response['Content-Encoding'] = 'utf-8'
+
+    # Wipe the Master_list table
+    db_model.objects.all().delete()
+    messages.success(request, 'Master_list table wiped successfully.')
+
+    # Return the CSV file to the browser as download
+    response = FileResponse(server_backup_file, as_attachment=True, filename='db_backup.csv')
+    return (response)
+
+
+@login_required
 @transaction.atomic
-def add_new_data(request):
+def add_new_data(request, response=None):
     print(request.POST)
     if request.method == 'POST':
         print(request.POST)
@@ -52,135 +130,121 @@ def add_new_data(request):
         
 
         elif 'import' in request.POST: # Import the user selected CSV file
+            # Get the uploaded file
+                try: 
+                    import_from_file = request.FILES['file']
+                    messages.success(request, 'file is valid')
+                except:
+                    messages.error(request, 'Please select a .csv file for upload.')
             
-            form = EntryForm(request.POST, request.FILES) # Create a form instance and populate it with data from the request
-            messages.success(request, 'form exists')
-           # if form.is_valid():
-            # Retrieve the uploaded file from the form
-            file = request.FILES['file']
-            messages.success(request, 'form is valid')
-            
-            master_list = db_model.objects.all()
-            # Prepare CSV data
-            csv_data = []
-            csv_data.append(['Company_name', 'First_name', 'Last_name', 'Email', 'Alumni', 'Release_info', 'Checked_in', 'Checked_in_time', 'Table_number', 'id_number'])
+                response = export_master_list(request) # Export the current entries in the Master_list table
 
-            for entry in master_list:
-                csv_data.append([
-                    entry.company_name, entry.first_name, entry.last_name, entry.email, entry.alumni, entry.release_info, entry.checked_in,
-                    entry.checked_in_time, entry.table_number, entry.id_number
-                ])
-
-            # Create a CSV response
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="Master_list_backup.csv"'
-
-            # Write CSV data to the response
-            writer = csv.writer(response)
-            writer.writerows(csv_data)
-
-            messages.success(request, 'Data exported successfully.')
-            
-            # Wipe the Master_list table
-            db_model.objects.all().delete()
-
-            # Process the uploaded CSV file
-            try:
-                # Decode the uploaded file
-                csv_file = TextIOWrapper(file, encoding='utf-8')
-
-
-                textbox0_value = request.POST.get('Company_Name_box')
-                textbox1_value = request.POST.get('First_Name_box')
-                textbox2_value = request.POST.get('Last_Name_box')
-                textbox3_value = request.POST.get('Email_box')
-                textbox4_value = request.POST.get('Alumni_box')
-                textbox5_value = request.POST.get('Release_info_box')
-                textbox6_value = request.POST.get('Table_number_box')
-
-                if textbox0_value or textbox1_value or textbox2_value or textbox3_value or textbox4_value or textbox5_value or textbox6_value:
+                # Process the uploaded CSV file
+                try:
+                    textbox_values = [
+                        request.POST.get('Company_Name_box'),
+                        request.POST.get('First_Name_box'),
+                        request.POST.get('Last_Name_box'),
+                        request.POST.get('Email_box'),
+                        request.POST.get('Alumni_box'),
+                        request.POST.get('Info_Release_box'),
+                        request.POST.get('Table_Number_box'),
+                    ]
+                    messages.success(request, 'Variables are: ' + str(textbox_values))
                     # Convert box numbers from letters to numbers
                     box_mapping = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7, 'i': 8, 'j': 9, 'k': 10, 'l': 11, 'm': 12, 'n': 13, 'o': 14, 'p': 15}
-                    textbox0_value = box_mapping.get(textbox0_value.lower()) if textbox0_value  else None
-                    textbox1_value = box_mapping.get(textbox1_value.lower()) if textbox1_value  else None
-                    textbox2_value = box_mapping.get(textbox2_value.lower()) if textbox2_value  else None
-                    textbox3_value = box_mapping.get(textbox3_value.lower()) if textbox3_value  else None
-                    textbox4_value = box_mapping.get(textbox4_value.lower()) if textbox4_value  else None
-                    textbox5_value = box_mapping.get(textbox5_value.lower()) if textbox5_value  else None
-                    textbox6_value = box_mapping.get(textbox6_value.lower()) if textbox6_value  else None
-                    messages.success(request, 'textbox values converted to numbers')
-                
-                else:
-                    messages.error(request, 'please enter a valid letter in all textboxes')
 
+                    # Map textbox values to column indices
+                    column_indices = [box_mapping[value.lower()] if value else None for value in textbox_values]
 
+                    # Process the uploaded file
+                    csv_data = import_from_file.read().decode('utf-8')  # Read the file as text
 
+                    # Create a StringIO object to simulate a file-like object
+                    csv_file = StringIO(csv_data)
 
-                # Read the CSV data
-                reader = csv.reader(csv_file)
-                reader.__next__()  # Skip the header row
-                for row in reader:
+                    # Read the CSV data
+                    reader = csv.reader(csv_file)
+
+                    next(reader)  # Skip the header row
+
                     # Extract the data from each row
-                    ext_company_name = row[textbox0_value]  
-                    ext_first_name = row[textbox1_value]
-                    ext_last_name = row[textbox2_value]
-                    ext_email = row[textbox3_value]
-                    ext_alumni = row[textbox4_value]
-                    ext_release_info = row[textbox5_value]
-                    ext_table_number = row[textbox6_value]
+                    for row in reader:
+                        ext_company_name = row[column_indices[0]]
+                        ext_first_name = row[column_indices[1]]
+                        ext_last_name = row[column_indices[2]]
+                        ext_email = row[column_indices[3]]
+                        ext_alumni = row[column_indices[4]]
+                        ext_release_info = row[column_indices[5]]
+                        ext_table_number = row[column_indices[6]]
 
-                    # Check if all required fields are empty (excluding company_name)
-                    if not ext_first_name or ext_last_name or ext_email or ext_alumni or ext_release_info:
-                        break  # Stop iterating over rows
+                        # Check if all required fields are empty
+                        if ext_company_name or ext_first_name or ext_last_name or ext_email or ext_alumni or ext_release_info:
+                            
+                            # Perform validations on the data
+                            errors = []
+                            '''if ext_company_name and not re.match(name_pattern, ext_company_name):
+                                errors.append('Company name should only contain alphabetic characters, spaces, and dashes.')
+                            if ext_first_name and not re.match(name_pattern, ext_first_name):
+                                errors.append('First name should only contain alphabetic characters, spaces, and dashes.')
+                            if ext_last_name and not re.match(name_pattern, ext_last_name):
+                                errors.append('Last name should only contain alphabetic characters, spaces, and dashes.')
+                            if not ext_email or not re.match(email_pattern, ext_email):
+                                errors.append('Incorrect format for email field')
+                            if not ext_alumni:
+                                errors.append('Incorrect format for alumni field')
+                            if not ext_release_info:
+                                errors.append('Incorrect format for release info')'''
 
-                    # Perform validations on the data
-                    errors = []
-                    if ext_company_name and not re.match(name_pattern, ext_company_name):
-                        errors.append('Company name should only contain alphabetic characters, spaces, and dashes.')
-                    if ext_first_name and not re.match(name_pattern, ext_first_name):
-                        errors.append('First name should only contain alphabetic characters, spaces, and dashes.')
-                    if ext_last_name and not re.match(name_pattern, ext_last_name):
-                        errors.append('Last name should only contain alphabetic characters, spaces, and dashes.')
-                    if not ext_email or not re.match(email_pattern, ext_email):
-                        errors.append('Incorrect format for email field')
-                    if not ext_alumni:
-                        errors.append('Incorrect format for alumni field')
-                    if not ext_release_info:
-                        errors.append('Incorrect format for release info')
+                            # If there are any errors, render the current page with the error messages
+                            if errors:
+                                error_message = ', '.join(errors)
+                                traceback_str = traceback.format_exc()  # Get the traceback as a string
+                                line_number = None
+                                
+                                tb = traceback.extract_tb(sys.exc_info()[2])
+                                if tb:
+                                    line_number = tb[-1][1]  # Get the line number of the error
+                                
+                                error_info = f"Error occurred at line {line_number}" if line_number else "Error information not available"
+                                error_info += f"\nTraceback:\n{traceback_str}"
+                                messages.error(request, f"{error_message}\n\n{error_info}")
+                                return render(request, 'hello/database_upload_page.html', {'errors': errors})
+                            else:
+                                # Map "yes" and "no" values to boolean values
+                                boolean_map = {
+                                    "yes": True,
+                                    "no": False
+                                }
 
-                    # If there are any errors, render the current page with the error messages
-                    if errors:
-                        return render(request, 'database_upload_page.html', {'errors': errors})
+                                # Convert "yes" and "no" values to boolean values
+                                ext_alumni = boolean_map.get(ext_alumni.lower(), False)
+                                ext_release_info = boolean_map.get(ext_release_info.lower(), False)
 
-                    # Map "yes" and "no" values to boolean values
-                    boolean_map = {
-                        "yes": True,
-                        "no": False
-                    }
+                                # Create a new entry in the Master_list table
+                                entry = db_model(
+                                    company_name=ext_company_name,
+                                    first_name=ext_first_name,
+                                    last_name=ext_last_name,
+                                    email=ext_email,
+                                    alumni=ext_alumni,
+                                    release_info=ext_release_info,
+                                    table_number=ext_table_number,
+                                    email_sent=False,
+                                )
+                                entry.save() # Save the entry to the database  
+                        else:
+                            messages.success(request, 'all columns imported successfully')
+                            break  # Stop iterating over rows if all required fields are empty
 
-                    # Convert "yes" and "no" values to boolean values
-                    ext_alumni = boolean_map.get(ext_alumni.lower(), False)
-                    ext_release_info = boolean_map.get(ext_release_info.lower(), False)
-
-                    # Create a new entry in the Master_list table
-                    entry = db_model(
-                        company_name=ext_company_name,
-                        first_name=ext_first_name,
-                        last_name=ext_last_name,
-                        email=ext_email,
-                        alumni=ext_alumni,
-                        release_info=ext_release_info,
-                        table_number=ext_table_number
-                    )
-                    entry.save()
-
-                messages.success(request, 'Data imported successfully.')
-                return redirect(add_new_data, response)
-            
-            except Exception as e: # Handle any other exceptions
-                messages.error(request, f'Error processing the CSV file: {str(e)}') # Display the exception as an error message
-            return redirect('add_new_data') # Redirect to the database upload page
-    
+                    messages.success(request, 'Data imported successfully.')
+                    return render(request, 'hello/database_upload_page.html') # Render the database upload page
+                
+                except Exception as e: # Handle any other exceptions
+                    error_message = f'Error processing the CSV file: {str(e)}'
+                    traceback_str = traceback.format_exc()  # Get the traceback as a string
+                    messages.error(request, f'{error_message}\n\nTraceback:\n{traceback_str}') # Display the exception and traceback as an error message
+                    return redirect(add_new_data) # Redirect to the database upload page
     else:
         ## If the request is not a POST request, render the database upload page
         return render(request, 'hello/database_upload_page.html') # Render the database upload page
@@ -228,31 +292,37 @@ def send_qr_email(request):
         id_number = request.POST.get("id_number")
         # Retrieve the corresponding record from the database based on the ID number
         record = get_object_or_404(db_model, id_number=id_number)
+        #check if email has already been sent to the user
+        if record.email_sent:
+            return render(request, 'hello/qr_code/qr_code_email.html', {'message': 'Email has already been sent to this user'}) 
         
-        with get_connection(
-            host=settings.EMAIL_HOST,
-            port=settings.EMAIL_PORT,
-            username=settings.EMAIL_HOST_USER,
-            password=settings.EMAIL_HOST_PASSWORD,
-            use_tls=settings.EMAIL_USE_TLS
-        ) as connection:
-            subject = request.POST.get("Here is your QR code for check-in")
-            email_from = settings.EMAIL_HOST_USER
-            recipient_list = [record.email]
-            template = "hello/qr_code/qr_code_email.html"  # Path to the email template
-            context = {
-                'first_name': record.first_name,
-                'last_name': record.last_name,
-                'id_number': record.id_number,
-                'email': record.email,
-                'table_number': record.table_number,
-            }  # Add any additional context variables if needed
+        else:
+            with get_connection(
+                host=settings.EMAIL_HOST,
+                port=settings.EMAIL_PORT,
+                username=settings.EMAIL_HOST_USER,
+                password=settings.EMAIL_HOST_PASSWORD,
+                use_tls=settings.EMAIL_USE_TLS
+            ) as connection:
+                subject = request.POST.get("Here is your QR code for check-in")
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = [record.email]
+                template = "hello/qr_code/qr_code_email.html"  # Path to the email template
+                context = {
+                    'first_name': record.first_name,
+                    'last_name': record.last_name,
+                    'id_number': record.id_number,
+                    'email': record.email,
+                    'table_number': record.table_number,
+                }  # Add any additional context variables if needed
 
-            # Render the email content using the template and context
-            email_content = render_to_string(template, context)
+                # Render the email content using the template and context
+                email_content = render_to_string(template, context)
 
-            # Send the email
-            EmailMessage(subject, email_content, email_from, recipient_list, connection=connection).send()
+                # Send the email
+                EmailMessage(subject, email_content, email_from, recipient_list, connection=connection).send()
+                #change email_sent to True for matching record
+                record.email_sent = True
 
     return render(request, 'hello/qr_code/qr_code_email.html')
 

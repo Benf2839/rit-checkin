@@ -495,10 +495,12 @@ def db_display(request, page=1): #this function displays all of the entries in t
 def search_by_id(request):
     context = {}
     if 'id_number' in request.GET:
+        messages.info(request, 'You searched for: {}'.format(request.GET['id_number']))
         id_number = request.GET['id_number']
         try:
             entry = db_model.objects.get(id_number=id_number)
             context['entry'] = entry
+            messages.success(request, 'Entry found.')
         except db_model.DoesNotExist:
             messages.error(request, 'There is no corresponding entry for that number.')
             return render(request, 'hello/search.html', context)

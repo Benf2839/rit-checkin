@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
     'localhost',
     "http://guardianforge.net/",
     "www.guardianforge.net",
+    "www.guardiansforge.net",
     "guardiansforge.net"
 ]
 

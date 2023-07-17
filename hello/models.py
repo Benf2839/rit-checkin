@@ -19,9 +19,10 @@ class import_csv(models.Model): #creates a model for the import .csv file format
     alumni = models.BooleanField(default=False)
     release_info = models.BooleanField(default=False)
     table_number = models.IntegerField(null=True, blank=True)
+    email_sent = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.table_number}"
+        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
 
 
 class db_model(models.Model): #creates a model for the checkin database
@@ -35,8 +36,9 @@ class db_model(models.Model): #creates a model for the checkin database
     checked_in = models.BooleanField(default=False)
     checked_in_time = models.DateTimeField(auto_now=True)
     table_number = models.IntegerField(null=True, blank=True)
+    email_sent = models.BooleanField(default=False)
     class Meta:
         db_table = 'Master_list'
 
     def __str__(self):
-        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number}"
+        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"

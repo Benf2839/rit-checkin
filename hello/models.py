@@ -22,7 +22,7 @@ class import_csv(models.Model): #creates a model for the import .csv file format
     email_sent = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
+        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.table_number} - {self.email_sent}"
 
 
 class db_model(models.Model): #creates a model for the checkin database

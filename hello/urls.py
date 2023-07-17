@@ -24,5 +24,6 @@ urlpatterns = [
   path('add_new_data/', views.add_new_data, name='add_new_data'),
   path('export/', views.export_data, name='export_data'),
   path('admin/', admin.site.urls),
+  path('dbbackup/', views.redirect_w_backup, name='dbbackup'),
 
 ]

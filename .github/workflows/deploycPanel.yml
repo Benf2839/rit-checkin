@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install SSH key
-        run: echo "${{ secrets.SSH_SECRET_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+        run: echo "${{ secrets.SSH_SECRET_KEY }}" > ~/.ssh/remote_deploy && chmod 600 ~/.ssh/remote_deploy
 
       - name: Deploy to cPanel
         run: |

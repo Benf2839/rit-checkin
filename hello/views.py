@@ -493,7 +493,7 @@ def db_display(request, page=1): #this function displays all of the entries in t
         # Convert 'checked_in' field
         converted_row[7] = 'yes' if converted_row[7] == '1' else 'no'
         # Convert 'email_sent' field
-        converted_row[8] = 'yes' if converted_row[8] == '1' else 'no'
+        converted_row[10] = 'yes' if converted_row[8] == '1' else 'no'
         converted_rows.append(converted_row)
 
     paginator = Paginator(rows, 100) #the number determines how many entries are displayed per page

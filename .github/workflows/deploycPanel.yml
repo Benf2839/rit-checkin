@@ -1,20 +1,21 @@
-name: Publish Website to cPanel
+name: Deploy to cPanel
 on:
   push:
     branches:
       - main
+
 jobs:
-  FTP-Deploy-Action:
-    name: FTP-Deploy-Action
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2.1.0
-        with:
-          fetch-depth: 2
-      - name: FTP-Deploy-Action
-        uses: SamKirkland/FTP-Deploy-Action@4.0.0
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: public_html
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install SSH key
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy to cPanel
+        run: |
+          ssh guardia2@mocha3039 "cd Web_app && git pull origin main"

@@ -140,8 +140,13 @@ STATIC_URL = '/static/'
 # A dedicated static file server is typically used in production to serve files
 # from this location, rather than relying on the app server to serve those files
 # from various locations in the app. Doing so results in better overall performance.
-STATIC_ROOT = '/home/guardia2/Web_app/static_collected'
 
+ # Static asset configuration
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = '/home/guardia2/Web_app/static_collected'
+STATICFILES_DIRS = (
+os.path.join(BASE_DIR, 'static'),
+)
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

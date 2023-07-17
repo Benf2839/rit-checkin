@@ -148,6 +148,19 @@ STATICFILES_DIRS = (
 os.path.join(BASE_DIR, 'static'),
 )
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.guardiansforge.net'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = '_mainaccount@guardiansforge.net'  # Replace with your email address
+EMAIL_HOST_PASSWORD = '5G6KtskR5(Fi4['  # Replace with your email password
+EMAIL_USE_TLS = True
+EMAIL_USE_STARTTLS = True
+DEFAULT_FROM_EMAIL = 'admin@guardiansforge.net'
+SERVER_EMAIL = EMAIL_HOST_USER
+
+
+'''   BELOW IS THE LOCALHOST GMAIL TEST SETTINGS
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -157,3 +170,4 @@ EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'benfauteux2839@gmail.com'
 SERVER_EMAIL = EMAIL_HOST_USER
+'''

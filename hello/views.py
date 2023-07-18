@@ -502,6 +502,7 @@ def db_display(request, page=1): #this function displays all of the entries in t
         # Convert 'email_sent' field
         converted_row[10] = 'yes' if converted_row[10] == 1 else 'no'
         # Convert 'checked_in_time' field from utc to et
+         # Assuming converted_row[8] is a string representing the timestamp in UTC
         utc_timestamp = datetime.strptime(converted_row[8], '%Y-%m-%d %H:%M:%S')
         utc_timezone = pytz.timezone('UTC')
         utc_aware_datetime = utc_timezone.localize(utc_timestamp)

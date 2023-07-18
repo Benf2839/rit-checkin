@@ -26,6 +26,8 @@ from io import StringIO
 import traceback
 import sys
 from django.http import HttpResponseServerError
+import pytz
+from datetime import datetime
 
 
 
@@ -499,6 +501,8 @@ def db_display(request, page=1): #this function displays all of the entries in t
         converted_row[7] = 'yes' if converted_row[7] == 1 else 'no'
         # Convert 'email_sent' field
         converted_row[10] = 'yes' if converted_row[10] == 1 else 'no'
+        # Convert 'checked_in_time' field from utc to et
+        converted_row[8] = converted_row[8].astimezone(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %H:%M:%S')
         converted_rows.append(converted_row)
 
     paginator = Paginator(converted_rows, 100) #the number determines how many entries are displayed per page

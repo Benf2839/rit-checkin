@@ -488,7 +488,7 @@ def db_display(request, page=1): #this function displays all of the entries in t
     with connections['default'].cursor() as cursor:
         cursor.execute("SELECT * FROM Master_list") #displaying all entries in the Master_list table
         rows = cursor.fetchall()
-    
+    messages.success(request, 'rows are {}'.format(rows)) #this is a test message
     converted_rows = []
     for row in rows:
         messages.success(request, 'email sent is {}'.format(row[10])) #this is a test message}')
@@ -497,11 +497,11 @@ def db_display(request, page=1): #this function displays all of the entries in t
         messages.success(request, 'alumni is {}'.format(row[5])) #this is a test message}')
         converted_row = list(row)
         # Convert 'alumni' field
-        converted_row[5] = 'yes' if converted_row[5] == '1' else 'no'
+        converted_row[4] = 'yes' if converted_row[4] == '1' else 'no'
         # Convert 'release_info' field
-        converted_row[6] = 'yes' if converted_row[6] == '1' else 'no'
+        converted_row[5] = 'yes' if converted_row[5] == '1' else 'no'
         # Convert 'checked_in' field
-        converted_row[7] = 'yes' if converted_row[7] == '1' else 'no'
+        converted_row[6] = 'yes' if converted_row[6] == '1' else 'no'
         # Convert 'email_sent' field
         converted_row[10] = 'yes' if converted_row[10] == '1' else 'no'
         converted_rows.append(converted_row)

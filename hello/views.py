@@ -504,13 +504,17 @@ def db_display(request, page=1): #this function displays all of the entries in t
     for row in rows:
         converted_row = list(row)
         # Convert 'alumni' field
-        converted_row(row)[4] = 'yes' if converted_row(row)[4] == '1' else 'no'
+        converted_row[4] = 'yes' if converted_row[4] == '1' else 'no'
+        messages.success(request, 'converted_row[4] is: {}'.format(converted_row[4])) #this is a test message
         # Convert 'release_info' field
-        converted_row[row][5] = 'yes' if converted_row[row][5] == '1' else 'no'
+        converted_row[5] = 'yes' if converted_row[5] == '1' else 'no'
+        messages.success(request, 'converted_row[5] is: {}'.format(converted_row[5])) #this is a test message
         # Convert 'checked_in' field
-        converted_row[row][7] = 'yes' if converted_row[row][7] == '1' else 'no'
+        converted_row[7] = 'yes' if converted_row[7] == '1' else 'no'
+        messages.success(request, 'converted_row[7] is: {}'.format(converted_row[7])) #this is a test message
         # Convert 'email_sent' field
-        converted_row[row][10] = 'yes' if converted_row[row][10] == '1' else 'no'
+        converted_row[10] = 'yes' if converted_row[10] == '1' else 'no'
+        messages.success(request, 'converted_row[10] is: {}'.format(converted_row[10])) #this is a test message
         converted_rows.append(converted_row)
 
     paginator = Paginator(rows, 100) #the number determines how many entries are displayed per page

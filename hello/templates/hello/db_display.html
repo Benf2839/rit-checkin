@@ -33,27 +33,27 @@
       <th>Email</th>
       <th>Alumni</th>
       <th>Can We Release Your Info</th>
-      <th>ID Number</th>
       <th>Checked In</th>
       <th>Check In Time</th>
       <th>Table Number</th>
       <th>Email Sent</th>
+      <th>ID Number</th>
     </tr>
   </thead>
   <tbody>
     {% for row in page_obj %}
     <tr>
-      <td class="box">{{ row.0 }}</td>
-      <td class="box">{{ row.1 }}</td>
-      <td class="box">{{ row.2 }}</td>
-      <td class="box">{{ row.3 }}</td>
-      <td class="box">{{ row.4 }}</td>
-      <td class="box">{{ row.5 }}</td>
-      <td class="box">{{ row.6 }}</td>
-      <td class="box">{{ row.7 }}</td>
-      <td class="box">{{ row.8 }}</td>
-      <td class="box">{{ row.9 }}</td>
-      <td class="box">{{ row.10 }}</td>
+      <td class="box">{{ row.0 }}</td> <!-- company name -->
+      <td class="box">{{ row.1 }}</td> <!-- first name -->
+      <td class="box">{{ row.2 }}</td> <!-- last name -->
+      <td class="box">{{ row.3 }}</td> <!-- email -->
+      <td class="box">{{ row.4 }}</td> <!-- alumni -->
+      <td class="box">{{ row.5 }}</td> <!-- can we release your info -->
+      <td class="box">{{ row.7 }}</td> <!-- id number -->
+      <td class="box">{{ row.8 }}</td> <!-- checked in -->
+      <td class="box">{{ row.9 }}</td> <!-- check in time -->
+      <td class="box">{{ row.10 }}</td> <!-- table number -->
+      <td class="box">{{ row.6 }}</td> <!-- email sent -->
     </tr>
     {% endfor %}
   </tbody>

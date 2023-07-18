@@ -489,12 +489,23 @@ def db_display(request, page=1): #this function displays all of the entries in t
         cursor.execute("SELECT * FROM Master_list") #displaying all entries in the Master_list table
         rows = cursor.fetchall()
     messages.success(request, 'rows are {}'.format(rows)) #this is a test message
+    messages.success(request, 'column 0 is: {}'.format(rows[0])) #this is a test message
+    messages.success(request, 'column 1 is: {}'.format(rows[1])) #this is a test message
+    messages.success(request, 'column 2 is: {}'.format(rows[2])) #this is a test message
+    messages.success(request, 'column 3 is: {}'.format(rows[3])) #this is a test message
+    messages.success(request, 'column 4 is: {}'.format(rows[4])) #this is a test message
+    messages.success(request, 'column 5 is: {}'.format(rows[5])) #this is a test message
+    messages.success(request, 'column 6 is: {}'.format(rows[6])) #this is a test message
+    messages.success(request, 'column 7 is: {}'.format(rows[7])) #this is a test message
+    messages.success(request, 'column 8 is: {}'.format(rows[8])) #this is a test message
+    messages.success(request, 'column 9 is: {}'.format(rows[9])) #this is a test message
+    messages.success(request, 'column 10 is: {}'.format(rows[10])) #this is a test message    
     converted_rows = []
     for row in rows:
-        messages.success(request, 'email sent is {}'.format(row[10])) #this is a test message}')
-        messages.success(request, 'checked in is {}'.format(row[7])) #this is a test message}')
-        messages.success(request, 'release info is {}'.format(row[6])) #this is a test message}')
-        messages.success(request, 'alumni is {}'.format(row[5])) #this is a test message}')
+        #messages.success(request, 'email sent is {}'.format(row[10])) #this is a test message}')
+        #messages.success(request, 'checked in is {}'.format(row[7])) #this is a test message}')
+        #messages.success(request, 'release info is {}'.format(row[6])) #this is a test message}')
+        #messages.success(request, 'alumni is {}'.format(row[5])) #this is a test message}')
         converted_row = list(row)
         # Convert 'alumni' field
         converted_row[4] = 'yes' if converted_row[4] == '1' else 'no'

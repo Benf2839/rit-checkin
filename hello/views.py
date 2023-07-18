@@ -504,7 +504,7 @@ def db_display(request, page=1): #this function displays all of the entries in t
     for row in rows:
         converted_row = list(row)
         # Convert 'alumni' field
-        converted_row[row][4] = 'yes' if converted_row[row][4] == '1' else 'no'
+        converted_row(row)[4] = 'yes' if converted_row(row)[4] == '1' else 'no'
         # Convert 'release_info' field
         converted_row[row][5] = 'yes' if converted_row[row][5] == '1' else 'no'
         # Convert 'checked_in' field

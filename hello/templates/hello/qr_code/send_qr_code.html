@@ -17,23 +17,23 @@
     });
 
   function sendQrCodeEmail() {
-    const idNumber = document.getElementById("id_number").value;
+    const idNumber = document.getElementById("id_number").value; // Get the id number from the form
 
-    fetch("{% url 'send_qr_code' %}", {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": "{{ csrf_token }}",
-        "Content-Type": "application/x-www-form-urlencoded",
+    fetch("{% url 'send_qr_code' %}", { // Send a POST request to the view
+      method: "POST", // Set the request method
+      headers: { // Set the request headers
+        "X-CSRFToken": "{{ csrf_token }}", // Set the CSRF token
+        "Content-Type": "application/x-www-form-urlencoded", // Set the content type header
       },
-      body: new URLSearchParams({
-        id_number: idNumber,
-        csrfmiddlewaretoken: "{{ csrf_token }}",
-      }).toString(),
+      body: new URLSearchParams({ // Set the request body
+        id_number: idNumber, // Add the id number to the request body
+        csrfmiddlewaretoken: "{{ csrf_token }}", // Add the CSRF token to the request body
+      }).toString(), // Convert the request body to a string
     })
-      .then((response) => {
-        if (response.ok) {
-          window.location.href = "{% url 'qr_email_success' %}";
-        } else {
+      .then((response) => {// Handle the response
+        if (response.ok) { // If the response is ok
+          window.location.href = "{% url 'qr_email_success' %}"; // Redirect to the success page
+        } else { // If the response is not ok
           console.error(
             "Error sending QR code email:",
             response.status,

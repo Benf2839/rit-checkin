@@ -153,7 +153,7 @@ os.path.join(BASE_DIR, 'static'),
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.guardiansforge.net'
 EMAIL_PORT = 2525
-EMAIL_HOST_USER = 'admin@guardiansforge.net'#'guardia2@mocha3039.mochahost.com'  # Replace with your email address
+EMAIL_HOST_USER = 'guardia2@mocha3039.mochahost.com'  # Replace with your email address
 EMAIL_HOST_PASSWORD = '5G6KtskR5(Fi4['  # Replace with your email password
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True

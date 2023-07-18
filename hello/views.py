@@ -491,6 +491,7 @@ def db_display(request, page=1): #this function displays all of the entries in t
     
     converted_rows = []
     for row in rows:
+        messages.success(request, 'column 1 row 1 is {}'.format(row[0])) #this is a test message}')
         converted_row = list(row)
         # Convert 'alumni' field
         converted_row[5] = 'yes' if converted_row[5] == '1' else 'no'

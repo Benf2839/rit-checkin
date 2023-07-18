@@ -517,7 +517,7 @@ def db_display(request, page=1): #this function displays all of the entries in t
         messages.success(request, 'converted_row[10] is: {}'.format(converted_row[10])) #this is a test message
         converted_rows.append(converted_row)
 
-    paginator = Paginator(rows, 100) #the number determines how many entries are displayed per page
+    paginator = Paginator(converted_rows, 100) #the number determines how many entries are displayed per page
     page_obj = paginator.get_page(page)
 
     url = reverse('db_display', args=[page],)  # Get the URL for the current page

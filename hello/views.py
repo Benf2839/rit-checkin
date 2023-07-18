@@ -502,7 +502,16 @@ def db_display(request, page=1): #this function displays all of the entries in t
         # Convert 'email_sent' field
         converted_row[10] = 'yes' if converted_row[10] == 1 else 'no'
         # Convert 'checked_in_time' field from utc to et
-        converted_row[8] = converted_row[8].astimezone(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %H:%M:%S')
+        utc_timestamp = datetime.strptime(converted_row[8], '%Y-%m-%d %H:%M:%S')
+        utc_timezone = pytz.timezone('UTC')
+        utc_aware_datetime = utc_timezone.localize(utc_timestamp)
+
+        # Convert to Eastern Time
+        eastern_timezone = pytz.timezone('US/Eastern')
+        eastern_aware_datetime = utc_aware_datetime.astimezone(eastern_timezone)
+
+        # Convert back to the desired string format
+        converted_row[8] = eastern_aware_datetime.strftime('%Y-%m-%d %H:%M:%S')
         converted_rows.append(converted_row)
 
     paginator = Paginator(converted_rows, 100) #the number determines how many entries are displayed per page

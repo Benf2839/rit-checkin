@@ -280,7 +280,7 @@ def send_reset_email(request):
      use_tls=settings.EMAIL_USE_TLS  
        ) as connection:  
            subject = request.POST.get("Password Reset")  
-           email_from = settings.EMAIL_HOST_USER  
+           email_from = settings.DEFAULT_FROM_EMAIL  
            recipient_list = [request.POST.get("email"), ]  
            message = request.POST.get("message")  
            EmailMessage(subject, message, email_from, recipient_list, connection=connection).send()  

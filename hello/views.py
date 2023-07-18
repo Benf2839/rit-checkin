@@ -489,17 +489,17 @@ def db_display(request, page=1): #this function displays all of the entries in t
         cursor.execute("SELECT * FROM Master_list") #displaying all entries in the Master_list table
         rows = cursor.fetchall()
     messages.success(request, 'rows are {}'.format(rows)) #this is a test message
-    messages.success(request, 'column 0 is: {}'.format(rows[0])) #this is a test message
-    messages.success(request, 'column 1 is: {}'.format(rows[1])) #this is a test message
-    messages.success(request, 'column 2 is: {}'.format(rows[2])) #this is a test message
-    messages.success(request, 'column 3 is: {}'.format(rows[3])) #this is a test message
-    messages.success(request, 'column 4 is: {}'.format(rows[4])) #this is a test message
-    messages.success(request, 'column 5 is: {}'.format(rows[5])) #this is a test message
-    messages.success(request, 'column 6 is: {}'.format(rows[6])) #this is a test message
-    messages.success(request, 'column 7 is: {}'.format(rows[7])) #this is a test message
-    messages.success(request, 'column 8 is: {}'.format(rows[8])) #this is a test message
-    messages.success(request, 'column 9 is: {}'.format(rows[9])) #this is a test message
-    messages.success(request, 'column 10 is: {}'.format(rows[10])) #this is a test message    
+    messages.success(request, 'column 0 is: {}'.format(rows[0][0])) #this is a test message
+    messages.success(request, 'column 1 is: {}'.format(rows[0][1])) #this is a test message
+    messages.success(request, 'column 2 is: {}'.format(rows[0][2])) #this is a test message
+    messages.success(request, 'column 3 is: {}'.format(rows[0][3])) #this is a test message
+    messages.success(request, 'column 4 is: {}'.format(rows[0][4])) #this is a test message
+    messages.success(request, 'column 5 is: {}'.format(rows[0][5])) #this is a test message
+    messages.success(request, 'column 6 is: {}'.format(rows[0][6])) #this is a test message
+    messages.success(request, 'column 7 is: {}'.format(rows[0][7])) #this is a test message
+    messages.success(request, 'column 8 is: {}'.format(rows[0][8])) #this is a test message
+    messages.success(request, 'column 9 is: {}'.format(rows[0][9])) #this is a test message
+    messages.success(request, 'column 10 is: {}'.format(rows[0][10])) #this is a test message    
     converted_rows = []
     for row in rows:
         #messages.success(request, 'email sent is {}'.format(row[10])) #this is a test message}')

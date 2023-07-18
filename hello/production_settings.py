@@ -25,6 +25,16 @@ SECRET_KEY = os.environ.get('WEB_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+
+SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
+SECURE_SSL_REDIRECT = True
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 # When deploying to Azure App Service, add you <name>.azurewebsites.net 
 # domain to ALLOWED_HOSTS; you get an error message if you forget. When you add
 # a specific host, you must also add 'localhost' and/or '127.0.0.1' for local

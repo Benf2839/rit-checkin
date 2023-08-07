@@ -25,5 +25,6 @@ urlpatterns = [
   path('export/', views.export_data, name='export_data'),
   path('admin/', admin.site.urls),
   path('dbbackup/', views.redirect_w_backup, name='dbbackup'),
+  path('generate_pass/<int:pass_instance_id>/', views.generate_pass, name='generate_pass'),
 
 ]

@@ -18,7 +18,6 @@ from django.http import HttpResponse
 import csv
 from django.contrib import messages
 from hello.models import db_model
-import re
 from django.http import FileResponse
 import os
 import shutil
@@ -26,10 +25,15 @@ from io import StringIO
 import traceback
 import sys
 from django.http import HttpResponseServerError
-import pytz
 from datetime import datetime
-
-
+from django.http import HttpResponse
+from django.shortcuts import render
+from passlib import PKPass
+import qrcode
+from django.http import HttpResponse
+from passlib.pkpass import PKPass
+from io import BytesIO
+from .models import db_model
 
 # Define the regular expression patterns
 name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashes
@@ -530,3 +534,66 @@ def search_by_id(request):
 
 def homepage(request):
     return render(request, 'hello/home.html')
+
+
+
+#below is the code for the apple wallet pass
+
+
+
+def generate_pass(request, pass_instance_id):
+    master_list_instance = get_object_or_404(db_model, id=pass_instance_id)
+
+    # Replace these values with your pass details
+    pass_data = {
+        "passTypeIdentifier": "pass.com.example.mypasstype",
+        "organizationName": "Your Organization",
+        "description": "Your Pass Description",
+        "serialNumber": str(master_list_instance.id_number),  # Assuming id_number is an integer, convert it to a string
+        # Add more pass details as needed (e.g., barcode, locations, etc.)
+    }
+
+    # Replace 'path/to/icon.png' and 'path/to/background.png' with your image paths
+    images = {
+        "icon": "hello/static/hello/rit-spirit-monogram.png",
+        "background": "path/to/background.png",
+        # Add more images as needed (e.g., logo, thumbnail, etc.)
+    }
+
+    def generate_qr_code(data):
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(data)
+        qr.make(fit=True)
+        qr_code_img = qr.make_image(fill_color="black", back_color="white")
+        return qr_code_img
+
+    pkpass = PKPass()
+
+    # Add pass data
+    pkpass.pass_data.update(pass_data)
+
+    # Add images
+    for image_name, image_path in images.items():
+        with open(image_path, 'rb') as f:
+            image_data = f.read()
+        pkpass.add_file(f'pass/{image_name}.png', image_data)
+
+    # Generate QR code and add it to the pass
+    qr_code_data = master_list_instance.id_number  # Assuming you want to use 'id_number' as the QR code data
+    qr_code_img = generate_qr_code(qr_code_data)
+    qr_code_bytes_io = BytesIO()
+    qr_code_img.save(qr_code_bytes_io, format='PNG')
+    pkpass.add_file('pass/qr_code.png', qr_code_bytes_io.getvalue())
+
+    response = HttpResponse(content_type='application/vnd.apple.pkpass')
+    response['Content-Disposition'] = 'attachment; filename="event_pass.pkpass"'
+    pkpass.write(response)
+
+    return response
+
+

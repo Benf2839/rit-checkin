@@ -542,9 +542,9 @@ def homepage(request):
 
 def generate_pass(request, serial_number):
     try:
-        pass_instance = Pass.objects.get(serial_number=serial_number)
+        pass_instance = db_model.objects.get(id_number=serial_number)
         pass_data = {
-            "serialNumber": pass_instance.serial_number,
+            "serialNumber": pass_instance.id_number,
             # Add more pass data fields as needed
         }
         response = HttpResponse(content_type="application/vnd.apple.pkpass")

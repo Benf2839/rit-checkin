@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
 
+class Pass(models.Model):
+    serial_number = models.CharField(max_length=100)
+
 class LogMessage(models.Model):
     message = models.CharField(max_length=300)
     log_date = models.DateTimeField("date logged")

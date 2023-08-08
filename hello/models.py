@@ -1,5 +1,9 @@
 from django.db import models
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
 
 
 
@@ -49,3 +53,17 @@ class db_model(models.Model): #creates a model for the checkin database
 class Pass(models.Model):
     serial_number = models.CharField(max_length=100)
     pass_instance = models.ForeignKey(db_model, on_delete=models.CASCADE) #creates a foreign key to the db_model
+    
+
+@receiver(post_save, sender=db_model)
+def create_or_update_pass(sender, instance, created, **kwargs): #creates a pass for each entry in the db_model
+    if created:
+        pass_instance, _ = Pass.objects.get_or_create(pass_instance=instance)
+        # Copy id_number to serial_number in Pass instance
+        pass_instance.serial_number = instance.id_number
+        pass_instance.save()
+    else:
+        pass_instance, _ = Pass.objects.get_or_create(pass_instance=instance)
+        # Update pass_instance with any additional information if needed
+
+post_save.connect(create_or_update_pass, sender=db_model) #connects the create_or_update_pass function to the db_model

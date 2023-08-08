@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-class Pass(models.Model):
-    serial_number = models.CharField(max_length=100)
+
 
 class LogMessage(models.Model):
     message = models.CharField(max_length=300)
@@ -45,3 +44,8 @@ class db_model(models.Model): #creates a model for the checkin database
 
     def __str__(self):
         return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
+
+
+class Pass(models.Model):
+    serial_number = models.CharField(max_length=100)
+    pass_instance = models.ForeignKey(db_model, on_delete=models.CASCADE)

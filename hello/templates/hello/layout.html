@@ -33,9 +33,13 @@
     {% endif %}
 
   </div>
-  <a href="{% url 'generate_pass' pass_instance.serial_number %}">
-    Add to Apple Wallet
-</a>
+  {% if pass_instance.serial_number %}
+    <a href="{% url 'hello:generate_pass' pass_instance.serial_number %}">
+        Add to Apple Wallet
+    </a>
+{% else %}
+    Serial number is not available.
+{% endif %}
 
 
   <div class="body-content">

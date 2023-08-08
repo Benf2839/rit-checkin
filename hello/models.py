@@ -48,4 +48,4 @@ class db_model(models.Model): #creates a model for the checkin database
 
 class Pass(models.Model):
     serial_number = models.CharField(max_length=100)
-    pass_instance = models.ForeignKey(db_model, on_delete=models.CASCADE)
+    pass_instance = models.ForeignKey(db_model, on_delete=models.CASCADE) #creates a foreign key to the db_model

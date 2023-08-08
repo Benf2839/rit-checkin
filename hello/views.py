@@ -444,6 +444,7 @@ def add_entry(request):
             checked_in=True,
             checked_in_time=timezone.now(),  # Autopopulate with current time and date,
             table_number=table_number
+            email_sent=False
         )
 
 

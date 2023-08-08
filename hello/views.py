@@ -540,27 +540,20 @@ def homepage(request):
 
 
 
-def generate_pass(request, serial_number):
+def generate_pass(request, id_number):
     try:
-        # Retrieve the Pass instance
-        pass_instance = Pass.objects.get(serial_number=serial_number)
-
-        # Retrieve the related db_model instance
-        related_info_instance = db_model.objects.get(pass_instance=pass_instance)
-        # Update related_info_instance with related information if needed
+        primary_entry = db_model.objects.get(id_number=id_number)
+        pass_instance, created = Pass.objects.get_or_create(primary_entry=primary_entry)
 
         pass_data = {
             "serialNumber": pass_instance.serial_number,
             # Add more pass data fields as needed
         }
         response = HttpResponse(content_type="application/vnd.apple.pkpass")
-        response["Content-Disposition"] = f'attachment; filename="{serial_number}.pkpass"'
-        pass_path = pass_instance.generate_pass(pass_data, related_info_instance)
-        
+        response["Content-Disposition"] = f'attachment; filename="{id_number}.pkpass"'
+        pass_path = pass_instance.generate_pass(pass_data)
         with open(pass_path, "rb") as f:
             response.write(f.read())
         return response
-    except Pass.DoesNotExist:
-        return HttpResponse("Pass not found", status=404)
     except db_model.DoesNotExist:
-        return HttpResponse("Related info not found", status=404)
+        return HttpResponse("Pass not found", status=404)

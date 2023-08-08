@@ -543,17 +543,22 @@ def homepage(request):
 def generate_pass(request, id_number):
     try:
         primary_entry = db_model.objects.get(id_number=id_number)
-        pass_instance, created = Pass.objects.get_or_create(pass_instance=primary_entry)
-
+        
+        pass_instance, created = Pass.objects.get_or_create(serial_number=id_number)  # Use id_number as serial_number
+        
         pass_data = {
-            "serialNumber": primary_entry.id_number,  # Use the id_number as the serial number
+            "serialNumber": pass_instance.serial_number,
             # Add more pass data fields as needed
         }
+        
         response = HttpResponse(content_type="application/vnd.apple.pkpass")
         response["Content-Disposition"] = f'attachment; filename="{id_number}.pkpass"'
+        
         pass_path = pass_instance.generate_pass(pass_data)
+        
         with open(pass_path, "rb") as f:
             response.write(f.read())
+        
         return response
     except db_model.DoesNotExist:
         return HttpResponse("Pass not found", status=404)

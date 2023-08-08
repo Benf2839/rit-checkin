@@ -3,6 +3,7 @@ from django.contrib import admin
 from hello import views
 from django.contrib.auth import views as auth_views
 from django.urls import include
+from .views import generate_pass
 
 
 urlpatterns = [
@@ -25,6 +26,5 @@ urlpatterns = [
   path('export/', views.export_data, name='export_data'),
   path('admin/', admin.site.urls),
   path('dbbackup/', views.redirect_w_backup, name='dbbackup'),
-  path('pass/<str:serial_number>/', views.generate_pass, name='generate_pass'),
-
+  path('pass/<str:serial_number>/', generate_pass, name='generate_pass'),
 ]

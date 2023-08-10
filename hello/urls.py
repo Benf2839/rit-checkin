@@ -27,4 +27,5 @@ urlpatterns = [
   path('admin/', admin.site.urls),
   path('dbbackup/', views.redirect_w_backup, name='dbbackup'),
   path('pass/<str:id_number>/', generate_pass, name='generate_pass'),
+  path(r'^api/passes/',include('django_walletpass.urls')),
 ]

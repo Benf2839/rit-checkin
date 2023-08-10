@@ -2,8 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
-
+from django_walletpass.models import Pass
+from django_walletpass.classviews import PASS_REGISTERED, PASS_UNREGISTERED
 
 
 
@@ -50,8 +50,10 @@ class db_model(models.Model): #creates a model for the checkin database
         return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
 
 
-class Pass(models.Model):
-    serial_number = models.CharField(max_length=100)
+class eventTicket(Pass):
+    pass  # You can add additional attributes specific to your pass here
+
+    ticket_serial_number = models.CharField(max_length=100)
     pass_instance = models.ForeignKey(db_model, on_delete=models.CASCADE) #creates a foreign key to the db_model
     
 
@@ -67,3 +69,18 @@ def create_or_update_pass(sender, instance, created, **kwargs): #creates a pass 
         # Update pass_instance with any additional information if needed
 
 post_save.connect(create_or_update_pass, sender=db_model) #connects the create_or_update_pass function to the db_model
+
+
+@receiver(PASS_REGISTERED)
+def pass_registered(sender, **kwargs):
+    print('Pass registered')
+    print(sender)
+    print(kwargs)
+    Pass
+
+@receiver(PASS_UNREGISTERED)
+def pass_unregistered(sender, **kwargs):
+    print('Pass unregistered')
+    print(sender)
+    print(kwargs)
+    Pass

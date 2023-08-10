@@ -32,6 +32,10 @@ import qrcode
 from django.http import HttpResponse
 from .models import Pass
 from .models import db_model
+from django_walletpass.models import Pass
+from hello.models import *
+from django_walletpass.models import PassBuilder
+
 
 # Define the regular expression patterns
 name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashes
@@ -543,22 +547,22 @@ def homepage(request):
 
 def generate_pass(request, id_number):
     try:
-        primary_entry = db_model.objects.get(id_number=id_number)
+        primary_entry = db_model.objects.get(id_number=id_number)#
         
-        pass_instance, created = Pass.objects.get_or_create(serial_number=id_number)  # Use id_number as serial_number
+        pass_instance, created = eventTicket.objects.get_or_create(serial_number=id_number)
         
-        pass_data = {
-            "serialNumber": pass_instance.serial_number,
-            # Add more pass data fields as needed
-        }
+        # Set pass data fields
+        pass_instance.pass_type_identifier = "YOUR_PASS_TYPE_IDENTIFIER"
+        pass_instance.team_identifier = "YOUR_TEAM_IDENTIFIER"
+        # Add more pass data fields as needed
+        
+        # Generate the pass file using PassBuilder
+        generator = PassBuilder(directory='passes\Event.pass\pass.json')
+        pass_data = generator.generate_pass(pass_instance)
         
         response = HttpResponse(content_type="application/vnd.apple.pkpass")
         response["Content-Disposition"] = f'attachment; filename="{id_number}.pkpass"'
-        
-        pass_path = pass_instance.generate_pass(pass_data)
-        
-        with open(pass_path, "rb") as f:
-            response.write(f.read())
+        response.write(pass_data)
         
         return response
     except db_model.DoesNotExist:

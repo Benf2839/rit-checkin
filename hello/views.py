@@ -227,6 +227,8 @@ def add_new_data(request, response=None):
 
                                 # Create a new entry in the Master_list table
                                 entry = db_model(
+                                    #assign the id_number column with the django autoincremented value
+                                    id_number = None,
                                     company_name=ext_company_name,
                                     first_name=ext_first_name,
                                     last_name=ext_last_name,

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+from django.utils import timezone
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -103,6 +105,9 @@ DATABASES = {
 'PASSWORD': 'S)[],mtE0!8V',
 'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
 'PORT': '3306',
+'OPTIONS': {
+            'init_command': "SET time_zone='America/New_York';",
+        },
 }
 }
 
@@ -134,6 +139,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'America/New_York'
 
+USE_TZ = True # use this to make the time zone work
 
 
 

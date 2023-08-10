@@ -235,6 +235,8 @@ def add_new_data(request, response=None):
                                     email=ext_email,
                                     alumni=ext_alumni,
                                     release_info=ext_release_info,
+                                    checked_in=False,
+                                    checked_in_time=None,
                                     table_number=ext_table_number,
                                     email_sent=False,
                                 )

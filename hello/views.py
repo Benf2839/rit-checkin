@@ -31,7 +31,7 @@ from django.shortcuts import render
 import qrcode
 from django.http import HttpResponse
 from .models import Pass
-from .models import db_model
+import datetime
 
 # Define the regular expression patterns
 name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashes
@@ -236,7 +236,7 @@ def add_new_data(request, response=None):
                                     alumni=ext_alumni,
                                     release_info=ext_release_info,
                                     checked_in=False,
-                                    checked_in_time=None,
+                                    checked_in_time=datetime.datetime.now(),
                                     table_number=ext_table_number,
                                     email_sent=False,
                                 )

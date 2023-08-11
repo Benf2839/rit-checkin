@@ -63,8 +63,8 @@ def redirect_w_backup(request):
             error_message = f'Error occurred while processing the backup: {str(e)}'
             return HttpResponseServerError(error_message)
     else:
-        messages.error(request, 'No Backup found.') # Display an error message
-        return render(request, '/database_upload_page.html')
+        messages.error(request, 'No Backup found.')  # Display an error message
+        return render(request, 'hello/database_upload_page.html')
     
 
 def export_master_list(request):

@@ -402,7 +402,7 @@ def search_by_id(request):  #searches the database for a specific id number
 def add_entry(request):
     if request.method == 'POST':
         # Retrieve form data
-        company_name = request.POST.get('company_name')
+        company_name = request.POST.get('company_name') 
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
@@ -543,27 +543,18 @@ def homepage(request):
 #below is the code for the apple wallet pass
 
 
-
-
-def generate_pass(request, id_number):
-    try:
-        primary_entry = db_model.objects.get(id_number=id_number)
-        
-        pass_instance, created = Pass.objects.get_or_create(serial_number=id_number)  # Use id_number as serial_number
-        
-        pass_data = {
-            "serialNumber": pass_instance.serial_number,
-            # Add more pass data fields as needed
-        }
-        
-        response = HttpResponse(content_type="application/vnd.apple.pkpass")
-        response["Content-Disposition"] = f'attachment; filename="{id_number}.pkpass"'
-        
-        pass_path = pass_instance.generate_pass(pass_data)
-        
-        with open(pass_path, "rb") as f:
-            response.write(f.read())
-        
-        return response
-    except db_model.DoesNotExist:
-        return HttpResponse("Pass not found", status=404)
+def generate_pass_view(request, serial_number):
+    pass_instance = get_object_or_404(Pass, serial_number=serial_number)
+    
+    pass_data = {
+        "serialNumber": pass_instance.serial_number,
+        # Add more pass data fields as needed
+    }
+    
+    pass_path = pass_instance.generate_pass(pass_data)
+    
+    with open(pass_path, "rb") as f:
+        response = HttpResponse(f.read(), content_type="application/vnd.apple.pkpass")
+        response["Content-Disposition"] = f'attachment; filename="{pass_data["serialNumber"]}.pkpass"'
+    
+    return response

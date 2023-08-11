@@ -54,7 +54,7 @@ def load_add_new_data_page(request):
     return render(request, 'hello/database_upload_page.html')
 
 def redirect_w_backup(request):
-    backup_file_path = 'https://guardiansforge.net/Web_app/Exports/db_backup.csv' 
+    backup_file_path = '/home/guardia2/Web_app/Exports/db_backup.csv' 
     try:
         if os.path.exists(backup_file_path):
             return FileResponse(open(backup_file_path, 'rb'), as_attachment=True, filename='server_backup.csv')

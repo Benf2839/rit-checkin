@@ -543,18 +543,18 @@ def homepage(request):
 #below is the code for the apple wallet pass
 
 
-def generate_pass_view(request, serial_number):
-    pass_instance = get_object_or_404(Pass, serial_number=serial_number)
-    
-    pass_data = {
-        "serialNumber": pass_instance.serial_number,
-        # Add more pass data fields as needed
-    }
-    
-    pass_path = pass_instance.generate_pass(pass_data)
-    
-    with open(pass_path, "rb") as f:
-        response = HttpResponse(f.read(), content_type="application/vnd.apple.pkpass")
-        response["Content-Disposition"] = f'attachment; filename="{pass_data["serialNumber"]}.pkpass"'
-    
-    return response
+#def generate_pass_view(request, serial_number):
+#    pass_instance = get_object_or_404(Pass, serial_number=serial_number)
+#    
+#    pass_data = {
+#        "serialNumber": pass_instance.serial_number,
+#        # Add more pass data fields as needed
+#    }
+#    
+#    pass_path = pass_instance.generate_pass(pass_data)
+#    
+#    with open(pass_path, "rb") as f:
+#        response = HttpResponse(f.read(), content_type="application/vnd.apple.pkpass")
+#        response["Content-Disposition"] = f'attachment; filename="{pass_data["serialNumber"]}.pkpass"'
+#    
+#    return response

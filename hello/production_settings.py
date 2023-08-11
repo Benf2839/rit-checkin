@@ -183,3 +183,10 @@ EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'benfauteux2839@gmail.com'
 SERVER_EMAIL = EMAIL_HOST_USER
 '''
+
+#WALLETPASS = {
+#    'CERT_PATH': '',
+#    'KEY_PATH': '',
+    # (None if isn't protected)
+    # MUST be in bytes-like
+#}

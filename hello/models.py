@@ -3,8 +3,8 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import HttpResponse
-from django_walletpass.models import Pass, PassFile, PassBuilder
-from django_walletpass import settings as pass_settings
+#from django_walletpass.models import Pass, PassFile, PassBuilder
+#from django_walletpass import settings as pass_settings
 
 
 
@@ -70,31 +70,33 @@ class Pass(models.Model):
     post_save.connect(create_or_update_pass, sender=db_model) #connects the create_or_update_pass function to the db_model
 
 
-    def generate_pass(self, pass_data):
-        # Get the pass generator
-        pass_generator = PassBuilder()
-
-        # Create a Pass object
-        pass_instance, created = Pass.objects.get_or_create(serial_number=self.id_number)  # Set serial_number to id_number
-        
-        # Set pass data fields
-        pass_instance.pass_type_identifier = ""
-        # Set other pass data fields as needed
-        id_number = pass_data['id_number'] #gets the id_number from the db_model
-        pass_generator.pass_data.update({
-            "barcode": {
-                "message": id_number,
-                "format": "PKBarcodeFormatPDF417",
-                "messageEncoding": "iso-8859-1"
-            },
-            "organizationName": "Organic Produce",
-            "description": "Organic Produce Loyalty Card",
-            })
-        # Generate the pass file
-        pass_file = pass_generator.create_pass(pass_instance)
-        
-        # Save the pass file
-        pass_instance.save()
-
-        # Return the path to the generated pass file
-        return pass_file.passfile.path
+#    def generate_pass(self, pass_data):
+#        # Get the pass generator
+#        pass_generator = PassBuilder()
+#
+#        # Create a Pass object
+#        pass_instance, created = Pass.objects.get_or_create(serial_number=self.id_number)  # Set serial_number to id_number
+ #       
+#        # Set pass data fields
+#        pass_instance.pass_type_identifier = ""
+#        # Set other pass data fields as needed
+#        id_number = pass_data['id_number'] #gets the id_number from the db_model
+#        pass_generator.pass_data.update({
+#            "barcode": {
+#                "message": id_number,
+#                "format": "PKBarcodeFormatPDF417",
+#                "messageEncoding": "iso-8859-1"
+#            },
+#            "organizationName": "Organic Produce",
+#            "description": "Organic Produce Loyalty Card",
+#            })
+#        # Generate the pass file
+#        pass_file = pass_generator.create_pass(pass_instance)
+#        
+#        # Save the pass file
+#        pass_instance.save()
+#
+#        # Return the path to the generated pass file
+#        return pass_file.passfile.path
+#    
+#

@@ -56,7 +56,6 @@ def load_add_new_data_page(request):
 
 def redirect_w_backup(request):
     backup_file_path = '/home/guardia2/Web_app/Exports/db_backup.csv'
-    
     if os.path.exists(backup_file_path):
         try:
             return FileResponse(open(backup_file_path, 'rb'), as_attachment=True, filename='server_backup.csv')
@@ -64,8 +63,8 @@ def redirect_w_backup(request):
             error_message = f'Error occurred while processing the backup: {str(e)}'
             return HttpResponseServerError(error_message)
     else:
-        error_message = 'No backup found.'
-        return HttpResponseServerError(error_message)
+        messages.error(request, 'No Backup found.')  # Display an error message
+        return HttpResponse(status=200, content='No Backup found.')  # Display an error message
     
 
 def export_master_list(request):

@@ -53,16 +53,18 @@ def handle_errors_and_redirect(request, errors, redirect_page):
 def load_add_new_data_page(request):
     return render(request, 'hello/database_upload_page.html')
 
+
 def redirect_w_backup(request):
-    backup_file_path = '/home/guardia2/Web_app/Exports/db_backup.csv' 
-    try:
-        if os.path.exists(backup_file_path):
+    backup_file_path = '/home/guardia2/Web_app/Exports/db_backup.csv'
+    if os.path.exists(backup_file_path):
+        try:
             return FileResponse(open(backup_file_path, 'rb'), as_attachment=True, filename='server_backup.csv')
-        else:
-            return render(request, 'hello/success.html')
-    except Exception as e:
-        error_message = f'Error occurred while processing the backup: {str(e)}'
-        return HttpResponseServerError(error_message)
+        except Exception as e:
+            error_message = f'Error occurred while processing the backup: {str(e)}'
+            return HttpResponseServerError(error_message)
+    else:
+        messages.error(request, 'No Backup found.') # Display an error message
+        return render(request, '/database_upload_page.html')
     
 
 def export_master_list(request):

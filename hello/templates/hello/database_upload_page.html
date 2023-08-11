@@ -84,9 +84,10 @@
     </p>
     <form action="{% url 'dbbackup' %}" method="post">
       {% csrf_token %}
-      <button href="{% 'redirect_w_backup' %}" class="btn btn-primary">Download backup</button>
+      <button type="submit" class="btn btn-primary">Download backup</button>
     </form>
-  </div>
+</div>
+
 
   {% endblock %}
 </form>

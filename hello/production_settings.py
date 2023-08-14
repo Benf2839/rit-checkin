@@ -47,7 +47,9 @@ ALLOWED_HOSTS = [
     "http://guardianforge.net/",
     "www.guardianforge.net",
     "www.guardiansforge.net",
-    "guardiansforge.net"
+    "guardiansforge.net",
+    "https://eventcheck-in.com/",
+    "eventcheck-in.com"
 ]
 
 # Application definition

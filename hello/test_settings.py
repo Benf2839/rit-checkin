@@ -30,13 +30,28 @@ DEBUG = True
 # a specific host, you must also add 'localhost' and/or '127.0.0.1' for local
 # debugging (which are enabled by default when ALLOWED_HOSTS is empty.)
 ALLOWED_HOSTS = [
-    #'127.0.0.1',
+    '127.0.0.1',
     'localhost',
-    "http://guardianforge.net/",
-    "www.guardianforge.net",
-    "www.guardiansforge.net",
-    "guardiansforge.net"
+    #"http://guardianforge.net/",
+   # "www.guardianforge.net",
+   # "www.guardiansforge.net",
+    #"guardiansforge.net"
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
 
 # Application definition
 
@@ -85,15 +100,22 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#'ENGINE': 'django.db.backends.mysql',
+#'NAME': 'guardia2_destiny',
+#'USER': 'guardia2_ben',
+#'PASSWORD': 'S)[],mtE0!8V',
+#'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
+#'PORT': '3306',
+#}
+#}
+
 DATABASES = {
     'default': {
-'ENGINE': 'django.db.backends.mysql',
-'NAME': 'guardia2_destiny',
-'USER': 'guardia2_ben',
-'PASSWORD': 'S)[],mtE0!8V',
-'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
-'PORT': '3306',
-}
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 

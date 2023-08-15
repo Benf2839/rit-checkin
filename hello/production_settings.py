@@ -43,7 +43,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # debugging (which are enabled by default when ALLOWED_HOSTS is empty.)
 ALLOWED_HOSTS = [
     #'127.0.0.1',
-    #'localhost',
+    'localhost',
     "http://eventcheck-in.com/",
     "www.eventcheck-in.com",
     "https://eventcheck-in.com/",

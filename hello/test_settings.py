@@ -97,23 +97,26 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#'ENGINE': 'django.db.backends.mysql',
-#'NAME': 'guardia2_destiny',
-#'USER': 'guardia2_ben',
-#'PASSWORD': 'S)[],mtE0!8V',
-#'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
-#'PORT': '3306',
-#}
-#}
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+'ENGINE': 'django.db.backends.mysql',
+'NAME': 'guardia2_destiny',
+'USER': 'guardia2_ben',
+'PASSWORD': 'S)[],mtE0!8V',
+'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
+'PORT': '3306',
+'OPTIONS': {
+            'init_command': "SET time_zone='-04:00';",
+        },
 }
+}
+#
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 
 

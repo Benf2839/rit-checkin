@@ -410,7 +410,7 @@ def add_entry(request):
         email = request.POST.get('email')
         alumni = bool(request.POST.get('alumni'))
         release_info = bool(request.POST.get('release_info'))
-        #id_number = request.POST.get('id_number')
+        id_number = request.POST.get('id_number')
         table_number = request.POST.get('table_number')
 
         # Perform form validation
@@ -446,7 +446,7 @@ def add_entry(request):
             email=email,
             alumni=alumni,
             release_info=release_info,
-            #id_number=int(id_number),
+            id_number=int(id_number),
             checked_in=True,
             checked_in_time=timezone.now(),  # Autopopulate with current time and date,
             table_number=table_number,

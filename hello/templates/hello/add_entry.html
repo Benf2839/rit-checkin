@@ -15,11 +15,7 @@
 <div class="alert alert-danger" style="color: red">
   Please enter a valid email address
 </div>
-{% endif %} {% if errors.id_number %}
-<div class="alert alert-danger" style="color: red">
-  Please enter a valid ID number (no letters or special characters)
-</div>
-{% endif %} {% if errors.table_number %}
+{% endif %}  {% if errors.table_number %}
 <div class="alert alert-danger" style="color: red">
   Please enter a valid table number (no letters or special characters)
 </div>
@@ -49,10 +45,6 @@
 
   <label for="release_info">Can We Release Your Info:</label>
   <input type="checkbox" id="release_info" name="release_info" /><br />
-
-  <label for="id_number">ID Number:</label>
-  <input type="text" id="id_number" name="id_number" required />
-  <br />
 
   <label for="table_number">Table Number:</label>
   <input type="text" id="table_number" name="table_number" />

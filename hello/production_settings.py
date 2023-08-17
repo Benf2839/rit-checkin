@@ -45,9 +45,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'eventcheck-in.com',
-    'www.eventcheck-in.com',
-    "https://www.eventcheck-in.com"
+    'eventcheck-in.com/',
+    'www.eventcheck-in.com/',
+    "https://www.eventcheck-in.com/"
 ]
 
 # Application definition

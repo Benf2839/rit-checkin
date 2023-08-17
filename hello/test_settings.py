@@ -32,10 +32,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    #"http://guardianforge.net/",
-   # "www.guardianforge.net",
-   # "www.guardiansforge.net",
-    #"guardiansforge.net"
+    'eventcheck-in.com',
 ]
 
 LOGGING = {

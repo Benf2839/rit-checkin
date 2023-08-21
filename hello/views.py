@@ -512,6 +512,48 @@ def self_registration(request):
 
         # Save the instance to the database
         checkin_entry.save()
+        messages.success(request, f"Succesfully registered")
+
+        try:
+            # Get the ID number from the POST data
+            input_email = request.POST.get("email")
+            messages.success(request, 'id number is ' + input_email)
+            # Retrieve the corresponding record from the database based on the ID number
+            record = get_object_or_404(db_model, email=input_email)
+            # Check if email has already been sent to the user
+            if record.email_sent:
+                return render(request, 'hello/qr_code/qr_code_email.html', {'message': 'Email has already been sent to this user'}) 
+            else:
+                messages.success(request, 'email has not already been sent')
+                with get_connection(
+                    host=settings.EMAIL_HOST,
+                    port=settings.EMAIL_PORT,
+                    username=settings.EMAIL_HOST_USER,
+                    password=settings.EMAIL_HOST_PASSWORD,
+                    use_tls=settings.EMAIL_USE_TLS
+                ) as connection:
+                    subject = "Here is your QR code for check-in"
+                    email_from = settings.DEFAULT_FROM_EMAIL
+                    recipient_list = [record.email]
+                    template = "hello/qr_code/qr_code_email.html"  # Path to the email template
+                    context = {
+                        'first_name': record.first_name,
+                        'last_name': record.last_name,
+                        'email': record.email,
+                        'table_number': record.table_number,
+                    }  # Add any additional context variables if needed
+
+                    # Render the email content using the template and context
+                    email_content = render_to_string(template, context)
+                    messages.success(request, 'email content has been created')
+                    # Send the email
+                    EmailMessage(subject, email_content, email_from, recipient_list, connection=connection).send()
+                    # Change email_sent to True for matching record
+                    record.email_sent = True
+                    record.save()
+        
+        except Exception as e:
+            messages.error(request, f"An error occurred while sending the email: {str(e)}")
 
         return redirect('/success')  # Redirect to a success page
 

@@ -160,7 +160,7 @@ STATICFILES_DIRS = (
 os.path.join(BASE_DIR, 'static'),
 )
 
-'''
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
@@ -183,7 +183,7 @@ EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'bdf2768@rit.edu'
 SERVER_EMAIL = EMAIL_HOST_USER
-
+'''
 
 #WALLETPASS = {
 #    'CERT_PATH': '',

@@ -462,6 +462,60 @@ def add_entry(request):
     return render(request, 'hello/add_entry.html')
 
 
+
+@login_required
+@transaction.atomic
+def self_registration(request):
+    if request.method == 'POST':
+        # Retrieve form data
+        company_name = request.POST.get('company_name') 
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        alumni = bool(request.POST.get('alumni'))
+        release_info = bool(request.POST.get('release_info'))
+
+        # Perform form validation
+        errors = {}
+
+        if not company_name.isalpha():
+            errors['company_name'] = 'Please enter a valid company name.'
+
+        if not first_name.isalpha():
+            errors['first_name'] = 'Please enter a valid first name.'
+
+        if not last_name.isalpha():
+            errors['last_name'] = 'Please enter a valid last name.'
+
+        if not email:
+            errors['email'] = 'Please enter a valid email address.'
+
+        # If there are errors, render the form with error messages
+        if errors:
+            return render(request, 'hello/self_registration_page.html', {'errors': errors})
+
+        # Create an instance of db_model model and set the field values
+        checkin_entry = db_model(
+            company_name=company_name,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            alumni=alumni,
+            release_info=release_info,
+            checked_in=True,
+            checked_in_time=timezone.now(),  # Autopopulate with current time and date,
+            email_sent=False,
+        )
+
+        # Save the instance to the database
+        checkin_entry.save()
+
+        return redirect('/success')  # Redirect to a success page
+
+    return render(request, 'hello/self_registration_page.html')
+
+
+
 @login_required
 @transaction.atomic
 def update_entry(request):

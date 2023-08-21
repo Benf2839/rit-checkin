@@ -25,6 +25,7 @@
     <a href="{% url 'db_display' 1 %}" class="navbar-item">View Database</a>
     <a href="{% url 'id_search' %}" class="navbar-item">Search by ID</a>
     <a href="{% url 'add_new_data' %}" class="navbar-item">Upload Data</a>
+    <a href="{% url 'self_registration' %}" class="navbar-item">Self Registration</a>
     {% if user.is_authenticated %}
     <li>User: {{ user.get_username }}</li>
     <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>

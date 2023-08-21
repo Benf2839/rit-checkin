@@ -515,9 +515,9 @@ def self_registration(request):
         messages.success(request, f"Succesfully registered")
 
         try:
-            # Get the ID number from the POST data
+            # Get the email from the POST data
             input_email = request.POST.get("email")
-            messages.success(request, 'id number is ' + input_email)
+            messages.success(request, 'email address ' + input_email)
             # Retrieve the corresponding record from the database based on the ID number
             record = get_object_or_404(db_model, email=input_email)
             # Check if email has already been sent to the user

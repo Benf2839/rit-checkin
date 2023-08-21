@@ -15,7 +15,7 @@
 <div class="alert alert-danger" style="color: red">
   Please enter a valid email address
 </div>
-{% endif %} 
+{% endif %}
 
 <form method="POST" action="{% url 'self_registration' %}" class="entry-form">
   {% csrf_token %}
@@ -42,6 +42,6 @@
   <label for="release_info">Can We Release Your Info:</label>
   <input type="checkbox" id="release_info" name="release_info" /><br />
 
-  <button type="submit" class="btn btn-primary">Add Entry</button>
+  <button type="submit" class="button">Add Entry</button>
 </form>
 {% endblock %}

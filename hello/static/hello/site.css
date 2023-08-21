@@ -67,4 +67,21 @@ table {
 .populated-cell {
     background-color: #f5f5f5;
   }
-    
+
+.box {
+    border: 1px solid black;
+    padding: 5px;
+  }
+
+.button {
+    background-color: #F76902;
+    border: 1px solid #F76902;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 2px 2px;
+    cursor: pointer;
+  }

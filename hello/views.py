@@ -549,6 +549,9 @@ def self_registration(request):
                     messages.success(request, 'email content has been created')
                     # Send the email
                     EmailMessage(subject, email_content, email_from, recipient_list, connection=connection).send()
+                    # Change email_sent to True for matching record
+                    record = get_object_or_404(db_model, email=input_email)
+                    record.email_sent = True
                     record.save()
         
         except Exception as e:

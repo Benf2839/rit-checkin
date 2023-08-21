@@ -30,8 +30,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 import qrcode
 from django.http import HttpResponse
-from .models import Pass
 from .models import db_model
+import openpyxl
 
 # Define the regular expression patterns
 name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashes
@@ -163,16 +163,22 @@ def add_new_data(request, response=None):
                     # Map textbox values to column indices
                     column_indices = [box_mapping[value.lower()] if value else None for value in textbox_values]
 
-                    # Process the uploaded file
-                    csv_data = import_from_file.read().decode('utf-8')  # Read the file as text
+                     # Process the uploaded file
+                    uploaded_file = request.FILES.get('file')
+                    file_extension = uploaded_file.name.split('.')[-1]
 
-                    # Create a StringIO object to simulate a file-like object
-                    csv_file = StringIO(csv_data)
-
-                    # Read the CSV data
-                    reader = csv.reader(csv_file)
-
-                    next(reader)  # Skip the header row
+                    if file_extension == 'csv':
+                        csv_data = uploaded_file.read().decode('utf-8')  # Read the file as text
+                        csv_file = StringIO(csv_data)
+                        reader = csv.reader(csv_file)
+                    elif file_extension == 'xlsx':
+                        wb = openpyxl.load_workbook(uploaded_file)
+                        ws = wb.active
+                        reader = ws.iter_rows(values_only=True)
+                        next(reader)  # Skip the header row
+                    else:
+                        messages.error(request, "Unsupported file format.")
+                        return render(request, 'hello/database_upload_page.html')
 
                     # Extract the data from each row
                     for row in reader:
@@ -520,7 +526,7 @@ def self_registration(request):
             messages.success(request, 'email address ' + input_email)
             # Retrieve the corresponding record from the database based on the ID number
             record = get_object_or_404(db_model, email=input_email)
-                        
+
             with get_connection(
                 host=settings.EMAIL_HOST,
                 port=settings.EMAIL_PORT,

@@ -1,4 +1,7 @@
 {% extends 'hello/layout.html' %} {% block content %}
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'hello\static\hello\site.css' %}" />
+  
 <h1>Search by ID Number</h1>
 <form method="get" action="{% url 'search_by_id' %}">
   <label for="id_number">ID Number:</label>

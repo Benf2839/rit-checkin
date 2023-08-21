@@ -522,7 +522,7 @@ def self_registration(request):
             record = get_object_or_404(db_model, email=input_email)
             # Check if email has already been sent to the user
             if record.email_sent:
-                return render(request, 'hello/qr_code/qr_code_email.html', {'message': 'Email has already been sent to this user'}) 
+                return render(request, 'hello/self_registration_page.html', {'message': 'Email has already been sent to this user'}) 
             else:
                 messages.success(request, 'email has not already been sent')
                 with get_connection(

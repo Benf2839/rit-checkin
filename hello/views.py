@@ -505,9 +505,9 @@ def self_registration(request):
             email=email,
             alumni=alumni,
             release_info=release_info,
-            checked_in=True,
+            checked_in=False,
             checked_in_time=timezone.now(),  # Autopopulate with current time and date,
-            email_sent=False,
+            email_sent=True,
         )
 
         # Save the instance to the database
@@ -549,9 +549,6 @@ def self_registration(request):
                     messages.success(request, 'email content has been created')
                     # Send the email
                     EmailMessage(subject, email_content, email_from, recipient_list, connection=connection).send()
-                    # Change email_sent to True for matching record
-                    record = get_object_or_404(db_model, email=input_email)
-                    record.email_sent = True
                     record.save()
         
         except Exception as e:

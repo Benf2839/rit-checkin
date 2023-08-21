@@ -541,6 +541,7 @@ def self_registration(request):
                         'last_name': record.last_name,
                         'email': record.email,
                         'table_number': record.table_number,
+                        'id_number': record.id_number,
                     }  # Add any additional context variables if needed
 
                     # Render the email content using the template and context

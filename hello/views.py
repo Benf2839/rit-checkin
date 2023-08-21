@@ -467,32 +467,35 @@ def add_entry(request):
 @transaction.atomic
 def self_registration(request):
     if request.method == 'POST':
-        # Retrieve form data
-        company_name = request.POST.get('company_name') 
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        alumni = bool(request.POST.get('alumni'))
-        release_info = bool(request.POST.get('release_info'))
+        try:
+            # Retrieve form data
+            company_name = request.POST.get('company_name') 
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            alumni = bool(request.POST.get('alumni'))
+            release_info = bool(request.POST.get('release_info'))
 
-        # Perform form validation
-        errors = {}
+            # Perform form validation
+            errors = {}
 
-        if not company_name.isalpha():
-            errors['company_name'] = 'Please enter a valid company name.'
+            if not company_name.isalpha():
+                messages.error(request, f"please enter a valid company name")
 
-        if not first_name.isalpha():
-            errors['first_name'] = 'Please enter a valid first name.'
+            if not first_name.isalpha():
+                messages.error(request, f"please enter a valid first name")
 
-        if not last_name.isalpha():
-            errors['last_name'] = 'Please enter a valid last name.'
+            if not last_name.isalpha():
+                messages.error(request, f"please enter a valid last name")
 
-        if not email:
-            errors['email'] = 'Please enter a valid email address.'
+            if not email:
+                messages.error(request, f"please enter a valid email address")
 
-        # If there are errors, render the form with error messages
-        if errors:
-            return render(request, 'hello/self_registration_page.html', {'errors': errors})
+            # If there are errors, render the form with error messages
+            #if errors:
+            #    return render(request, 'hello/self_registration_page.html', {'errors': errors}) 
+        except Exception as e:
+            messages.error(request, f"An error occurred while sending the email: {str(e)}")
 
         # Create an instance of db_model model and set the field values
         checkin_entry = db_model(

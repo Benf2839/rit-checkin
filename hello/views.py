@@ -550,6 +550,7 @@ def self_registration(request):
                     # Send the email
                     EmailMessage(subject, email_content, email_from, recipient_list, connection=connection).send()
                     # Change email_sent to True for matching record
+                    record = get_object_or_404(db_model, email=input_email)
                     record.email_sent = True
                     record.save()
         

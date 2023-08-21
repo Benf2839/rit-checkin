@@ -27,5 +27,6 @@ urlpatterns = [
   path('admin/', admin.site.urls),
   path('dbbackup/', views.redirect_w_backup, name='dbbackup'),
   path('self_registration/', views.self_registration, name='self_registration'),
+  path('self_reg_success/', views.self_reg_success, name='self_reg_success'),
   #path('pass/<str:id_number>/', generate_pass, name='generate_pass'),
 ]

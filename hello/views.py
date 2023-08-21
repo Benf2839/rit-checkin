@@ -556,10 +556,13 @@ def self_registration(request):
         except Exception as e:
             messages.error(request, f"An error occurred while sending the email: {str(e)}")
 
-        return redirect('/success')  # Redirect to a success page
+        return redirect('/self_reg_success')  # Redirect to a success page
 
     return render(request, 'hello/self_registration_page.html')
 
+
+def self_reg_success(request):
+    return render(request, 'hello/self_reg_success.html')
 
 
 @login_required

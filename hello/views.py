@@ -1,4 +1,3 @@
-from django.shortcuts import redirect, render
 from django.utils.timezone import datetime
 from django.views.generic import ListView
 from django.db import connections
@@ -13,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render, redirect
 from django.http import HttpResponse
 import csv
 from django.contrib import messages
@@ -25,13 +24,8 @@ from io import StringIO
 import traceback
 import sys
 from django.http import HttpResponseServerError
-from datetime import datetime
-from django.http import HttpResponse
-from django.shortcuts import render
-import qrcode
-from django.http import HttpResponse
-from .models import db_model
 import openpyxl
+
 
 # Define the regular expression patterns
 name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashes
@@ -408,7 +402,6 @@ def search_by_id(request):  #searches the database for a specific id number
     except Exception as e: #if an error occurs
         messages.error(request, f'The following error occurred while searching for the ID number: {str(e)}' ) #display an error message
         return render(request, 'hello/search.html') #renders the search page
-
 
 @login_required
 @transaction.atomic

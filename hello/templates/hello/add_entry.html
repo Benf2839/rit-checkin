@@ -1,5 +1,7 @@
 {% extends "hello/layout.html" %} {% block title %} Add Entry {% endblock %}
 {%block content %}
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'hello\static\hello\site.css' %}" />
 
 <h2>Add Entry</h2>
 
@@ -55,6 +57,6 @@
   <input type="text" id="table_number" name="table_number" />
   <br />
 
-  <button type="submit" class="button">Add Entry</button>
+  <button type="submit" class="btn">Add Entry</button>
 </form>
 {% endblock %}

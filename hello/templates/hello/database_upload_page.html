@@ -1,5 +1,6 @@
 {% extends "hello/layout.html" %} {% block title %} Upload New Database {% endblock %} {% block content %}
-
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'hello\static\hello\site.css' %}" />
 
 
 <h2>Upload a new database file</h2>
@@ -41,11 +42,11 @@
     <input type="text" class="form-control" id="Table_Number_box" name="Table_Number_box" />
   </div>
 
-  <button class="button" name="import" type="submit">Upload</button>
+  <button class="btn" name="import" type="submit">Upload</button>
 
   <br />
 
-  <button class="button" name="export" type="submit">Export</button>
+  <button class="btn" name="export" type="submit">Export</button>
   <br />
   <div style="color: white">
     <p>
@@ -54,7 +55,7 @@
     </p>
     <form action="{% url 'dbbackup' %}" method="post">
       {% csrf_token %}
-      <button type="submit" class="button">Download backup</button>
+      <button type="submit" class="btn">Download backup</button>
     </form>
   </div>
 

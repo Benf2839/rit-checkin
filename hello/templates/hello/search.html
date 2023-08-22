@@ -1,4 +1,6 @@
 {% extends 'hello/layout.html' %} {% block content %}
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'hello\static\hello\site.css' %}" />
 
 <h1>Search by ID Number</h1>
 <form method="get" action="{% url 'search_by_id' %}">
@@ -62,7 +64,7 @@
     <tr>
       <td colspan="2">
         {% if entry %}
-        <button type="submit" class="button">Check-in</button>
+        <button type="submit" class="btn">Check-in</button>
         {% endif %}
       </td>
     </tr>

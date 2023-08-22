@@ -1,5 +1,6 @@
 {% extends "hello/layout.html" %} {% block title %} Home {% endblock %}
-
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'hello\static\hello\site.css' %}" />
 <!---->
 {% block content %}
   <head>

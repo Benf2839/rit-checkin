@@ -1,4 +1,7 @@
 {% extends "hello/layout.html" %} {% block title %} Success! {% endblock %}
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
+  
  {% block content %}
 <h1>
   Thanks for registering for the Career Fair! Your information is now in our

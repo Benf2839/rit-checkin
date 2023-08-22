@@ -1,5 +1,7 @@
 {% extends "hello/layout.html" %}
-
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
+  
 {% block content %}
 <h2>Sent</h2>
 <p>QR code has been sent to your email.</p>

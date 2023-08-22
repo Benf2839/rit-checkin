@@ -397,13 +397,18 @@ def hello_there(request, name):
 @login_required
 @transaction.atomic
 def search_by_id(request):  #searches the database for a specific id number
-    id_number = request.GET.get('Id_number') #gets the id number from the search bar
-    if id_number: #if the id number exists
-        checkin = db_model.objects.filter(id_number=id_number).first() #first() returns the first object matched by the queryset
-    else: #if the id number does not exist
-        checkin = False #set checkin to false
-    context = {'Checkin': checkin} #context is a dictionary that maps variable names to objects
-    return render(request, 'hello/id_search_results.html', context) #renders the id search results page
+    try:
+        id_number = request.GET.get('Id_number') #gets the id number from the search bar
+        if id_number: #if the id number exists
+            checkin = db_model.objects.filter(id_number=id_number).first() #first() returns the first object matched by the queryset
+        else: #if the id number does not exist
+            checkin = False #set checkin to false
+        context = {'Checkin': checkin} #context is a dictionary that maps variable names to objects
+        return render(request, 'hello/id_search_results.html', context) #renders the id search results page
+    except Exception as e: #if an error occurs
+        messages.error(request, f'The following error occurred while searching for the ID number: {str(e)}' ) #display an error message
+        return render(request, 'hello/search.html') #renders the search page
+
 
 @login_required
 @transaction.atomic

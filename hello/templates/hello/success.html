@@ -1,4 +1,7 @@
 {% extends "hello/layout.html" %} {% block title %} Success! {% endblock %}
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
+
  {% block content %}
 <h2>
   Thanks for registering for the Career Fair! Your information is now in our
@@ -11,14 +14,14 @@
   </div>
   <a
     href="{% url 'add_entry' %}"
-    class="btn btn-outline-primary"
+    class="btn"
     style="margin-right: 10px"
     >Add Entry</a
   >
   <div style="margin-bottom: 20px">
     <p>click the button below to search by ID</p>
   </div>
-  <a href="{% url 'search_by_id' %}" class="btn btn-outline-primary"
+  <a href="{% url 'search_by_id' %}" class="btn"
     >ID Search</a
   >
 </div>

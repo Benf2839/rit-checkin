@@ -1,7 +1,7 @@
 {% extends "hello/layout.html" %} {% block content %}
 
 {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'hello\static\hello\site.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'static/hello/site.css' %}" />
 
 <h2>Enter the id number to send the QR code to</h2>
 <form id="qrCodeForm" action="{% url 'send_qr_code' %}" method="post">

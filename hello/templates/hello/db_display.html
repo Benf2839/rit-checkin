@@ -1,9 +1,9 @@
 {% extends "hello/layout.html" %} {% block title %} Database Display
 {%endblock%} {% block content %}
 {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'hello\static\hello\site.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'static/hello/site.css' %}" />
 
-<h2>Database Display</h2>
+<h2>Database Display</h2> 
 
 <div class="pagination">
   {% if page_obj.has_previous %}

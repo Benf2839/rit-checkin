@@ -97,18 +97,45 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+Testing_host = 'localhost' # use localhost for on server testing and 198.38.88.120 for computer testing
+
+
 DATABASES = {
     'default': {
 'ENGINE': 'django.db.backends.mysql',
 'NAME': 'guardia2_destiny',
 'USER': 'guardia2_ben',
 'PASSWORD': 'S)[],mtE0!8V',
-'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
+'HOST': Testing_host, 
 'PORT': '3306',
 'OPTIONS': {
-            'init_command': "SET time_zone='-04:00';",
+    'init_command': "SET time_zone='-04:00';",
         },
-}
+},
+
+    'RIT': {
+'ENGINE': 'django.db.backends.mysql',
+'NAME': 'guardia2_RIT',
+'USER': 'guardia2_ben',
+'PASSWORD': 'S)[],mtE0!8V',
+'HOST': Testing_host, 
+'PORT': '3306',
+'OPTIONS': {
+    'init_command': "SET time_zone='-04:00';",
+        },
+},
+
+    'Company-2': {
+'ENGINE': 'django.db.backends.mysql',
+'NAME': 'guardia2_Company-2',
+'USER': 'guardia2_ben',
+'PASSWORD': 'S)[],mtE0!8V',
+'HOST': Testing_host, 
+'PORT': '3306',
+'OPTIONS': {
+    'init_command': "SET time_zone='-04:00';",
+        },
+},
 }
 #
 #DATABASES = {

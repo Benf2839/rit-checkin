@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import HttpResponse
+from django.contrib.auth.models import AbstractUser,Group,Permission
 #from django_walletpass.models import Pass, PassFile, PassBuilder
 #from django_walletpass import settings as pass_settings
 
@@ -49,6 +50,19 @@ class db_model(models.Model): #creates a model for the checkin database
 
     def __str__(self):
         return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
+
+
+#class CustomUser(AbstractUser):
+#   company = models.CharField(max_length=100)  # Add a field to store the company
+
+#    custom_groups = models.ManyToManyField(Group, related_name='custom_users')
+#    custom_user_permissions = models.ManyToManyField(Permission, related_name='custom_users')
+
+#    def __str__(self):
+#        return self.username
+
+# If you want to use this custom user model throughout your app
+#AUTH_USER_MODEL = 'hello.CustomUser'
 
 
 class Pass(models.Model):

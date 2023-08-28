@@ -33,7 +33,7 @@ class import_csv(models.Model): #creates a model for the import .csv file format
         return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.table_number} - {self.email_sent}"
 
 
-class db_model(models.Model): #creates a model for the checkin database
+class db_model(models.Model): #creates a model for the checkin table
     id_number = models.AutoField(primary_key=True)
     company_name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
@@ -51,6 +51,43 @@ class db_model(models.Model): #creates a model for the checkin database
     def __str__(self):
         return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
 
+class RIT(models.Model): #creates a model for the rit checkin table
+    id_number = models.AutoField(primary_key=True)
+    company_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    alumni = models.BooleanField(default=False)
+    release_info = models.BooleanField(default=False)
+    checked_in = models.BooleanField(default=False)
+    checked_in_time = models.DateTimeField(auto_now=True)
+    table_number = models.IntegerField(null=True, blank=True)
+    email_sent = models.BooleanField(default=False)
+    class Meta:
+        db_table = 'RIT_list'
+
+    def __str__(self):
+        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
+
+
+class Company_2(models.Model): #creates a model for the checkin database
+    id_number = models.AutoField(primary_key=True)
+    company_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    alumni = models.BooleanField(default=False)
+    release_info = models.BooleanField(default=False)
+    checked_in = models.BooleanField(default=False)
+    checked_in_time = models.DateTimeField(auto_now=True)
+    table_number = models.IntegerField(null=True, blank=True)
+    email_sent = models.BooleanField(default=False)
+    class Meta:
+        db_table = 'Company2_list'
+
+    def __str__(self):
+        return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
+    
 
 #class CustomUser(AbstractUser):
 #   company = models.CharField(max_length=100)  # Add a field to store the company

@@ -111,30 +111,6 @@ DATABASES = {
     'init_command': "SET time_zone='-04:00';",
         },
 },
-
-    'RIT': {
-'ENGINE': 'django.db.backends.mysql',
-'NAME': 'guardia2_RIT',
-'USER': 'guardia2_ben',
-'PASSWORD': 'S)[],mtE0!8V',
-'HOST': Testing_host, 
-'PORT': '3306',
-'OPTIONS': {
-    'init_command': "SET time_zone='-04:00';",
-        },
-},
-
-    'Company-2': {
-'ENGINE': 'django.db.backends.mysql',
-'NAME': 'guardia2_Company-2',
-'USER': 'guardia2_ben',
-'PASSWORD': 'S)[],mtE0!8V',
-'HOST': Testing_host, 
-'PORT': '3306',
-'OPTIONS': {
-    'init_command': "SET time_zone='-04:00';",
-        },
-},
 }
 
 

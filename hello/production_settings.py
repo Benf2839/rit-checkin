@@ -97,7 +97,8 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-Testing_host = 'localhost' # use localhost for on server testing and 198.38.88.120 for computer testing
+#Testing_host = 'localhost' # use localhost for on server testing and 198.38.88.120 for computer testing
+Testing_host = '198.38.88.120'
 
 DATABASES = {
     'default': {

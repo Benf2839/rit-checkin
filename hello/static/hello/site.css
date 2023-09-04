@@ -86,6 +86,26 @@ table {
     cursor: pointer;
   }
 
+  /* Define styles for the container */
+.container {
+    display: flex;
+}
+
+/* Style the left column */
+.left-column {
+    flex: 1; /* This makes the left column take up 50% of the container width */
+    background-color: #f0f0f0; /* Add a background color for visual separation */
+    padding: 20px; /* Add some padding for spacing */
+}
+
+/* Style the right column */
+.right-column {
+    flex: 1; /* This makes the right column take up 50% of the container width */
+    padding: 20px; /* Add some padding for spacing */
+}
+
+
+
 /* .btn {
     background-color: #F76902;
     border: 1px solid #000000;

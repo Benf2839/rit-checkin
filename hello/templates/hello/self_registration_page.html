@@ -4,8 +4,8 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
-<div class="container">
-    <div class="left-column">
+<div class="container" style="display: flex;">
+    <div class="left-column" style="flex: 1;">
         <h2>Welcome to the RIT Career Fair Self Registration</h2>
 
         <!-- Error messages -->
@@ -55,7 +55,7 @@
             <button type="submit" class="btn">Register</button>
         </form>
     </div>
-    <div class="right-column">
+    <div class="right-column"  style="flex: 1;">
         <!-- Text to be displayed on the right side -->
         <h3>What Happens Next?</h3>
         <p>Once you submit your information, you will receive an email from admin@eventcheck-in.com containing your QR code. This QR code will grant you access to the event. Please ensure the accuracy of your information before submitting.</p>

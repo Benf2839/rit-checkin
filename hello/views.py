@@ -420,9 +420,9 @@ def add_entry(request):
         # Perform form validation
         errors = 0
 
-        if not company_name.isalpha():
-            messages.error(request, f'Please enter a valid company name') 
-            errors = 1
+        #if not company_name.isalpha():
+        #   messages.error(request, f'Please enter a valid company name') 
+        #    errors = 1
 
         if not first_name.isalpha():
             messages.error(request, f'Please enter a valid first name')

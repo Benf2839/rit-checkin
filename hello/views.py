@@ -414,33 +414,31 @@ def add_entry(request):
         email = request.POST.get('email')
         alumni = bool(request.POST.get('alumni'))
         release_info = bool(request.POST.get('release_info'))
-        id_number = request.POST.get('id_number')
-        table_number = request.POST.get('table_number')
+        #id_number = request.POST.get('id_number')
+        #table_number = request.POST.get('table_number')
 
         # Perform form validation
-        errors = {}
+        errors = 0
 
         if not company_name.isalpha():
-            errors['company_name'] = 'Please enter a valid company name.'
+            messages.error(request, f'Please enter a valid company name') 
+            errors = 1
 
         if not first_name.isalpha():
-            errors['first_name'] = 'Please enter a valid first name.'
+            messages.error(request, f'Please enter a valid first name')
+            errors = 1
 
         if not last_name.isalpha():
-            errors['last_name'] = 'Please enter a valid last name.'
+            messages.error(request, f'Please enter a valid last name')
+            errors = 1
 
         if not email:
-            errors['email'] = 'Please enter a valid email address.'
-
-        if not id_number.isdigit():
-            errors['id_number'] = 'Please enter a valid ID number.'
-        
-        #if not table_number.isdigit():
-        #   errors['table_number'] = 'Please enter a valid table number.'
+            messages.error(request, f'Please enter a valid email address')
+            errors = 1
 
         # If there are errors, render the form with error messages
-        if errors:
-            return render(request, 'hello/add_entry.html', {'errors': errors})
+        if errors>0:
+            return render(request, 'hello/add_entry.html')
 
         # Create an instance of db_model model and set the field values
         checkin_entry = db_model(
@@ -450,10 +448,10 @@ def add_entry(request):
             email=email,
             alumni=alumni,
             release_info=release_info,
-            id_number=int(id_number),
+            #id_number=int(id_number),
             checked_in=True,
             checked_in_time=timezone.now(),  # Autopopulate with current time and date,
-            table_number=table_number,
+            #table_number=table_number,
             email_sent=False,
         )
 

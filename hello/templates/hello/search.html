@@ -37,6 +37,13 @@
       </td>
     </tr>
     <tr>
+      <th>Last Name:</th>
+      <td>
+        {% if entry %}<input type="text" name="last_name" value="{{ entry.last_name }}" />
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
       <th>Email:</th>
       <td>
         {% if entry %}<input type="email" name="email" value="{{ entry.email }}" />

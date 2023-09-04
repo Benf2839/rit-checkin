@@ -73,6 +73,19 @@ table {
     padding: 5px;
   }
 
+  .btn {
+    background-color: lightslategray;
+    border: 1px solid #000000;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 2px 2px;
+    cursor: pointer;
+  }
+
 /* .btn {
     background-color: #F76902;
     border: 1px solid #000000;

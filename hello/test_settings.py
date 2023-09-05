@@ -103,7 +103,7 @@ DATABASES = {
 'NAME': 'guardia2_destiny',
 'USER': 'guardia2_ben',
 'PASSWORD': 'S)[],mtE0!8V',
-'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
+'HOST': '198.38.88.120', # use localhost for on server testing and 198.38.88.120 for computer testing
 'PORT': '3306',
 'OPTIONS': {
             'init_command': "SET time_zone='-04:00';",

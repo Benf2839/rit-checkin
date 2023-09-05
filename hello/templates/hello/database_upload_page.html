@@ -2,63 +2,90 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
+<div class="container" style="display: flex;">
+  <div class="left-column" style="flex: 1;">
+    <h2>Upload a new database file</h2>
 
-<h2>Upload a new database file</h2>
-
-<form method="post" enctype="multipart/form-data" action="{% url 'add_new_data' %}" class="entry-form">
-  {% csrf_token %}
-
-  <div class="form-group">
-    <label for="file">.xlsx File Path:</label>
-    <input type="file" class="form-control-file" id="file" name="file" />
-  </div>
-  <h2>Enter the letters of the columns which match the following fields</h2>
-  <div class="form-group">
-    <label for="Company_Name_box">Company Name:</label>
-    <input type="text" class="form-control" id="Company_Name_box" name="Company_Name_box" />
-  </div>
-  <div class="form-group">
-    <label for="First_Name_box">First Name:</label>
-    <input type="text" class="form-control" id="First_Name_box" name="First_Name_box" />
-  </div>
-  <div class="form-group">
-    <label for="Last_Name_box">Last Name:</label>
-    <input type="text" class="form-control" id="Last_Name_box" name="Last_Name_box" />
-  </div>
-  <div class="form-group">
-    <label for="Email_box">Email:</label>
-    <input type="text" class="form-control" id="Email_box" name="Email_box" />
-  </div>
-  <div class="form-group">
-    <label for="Alumni_box">Alumni:</label>
-    <input type="text" class="form-control" id="Alumni_box" name="Alumni_box" />
-  </div>
-  <div class="form-group">
-    <label for="Info_Release_box">Can we release your info:</label>
-    <input type="text" class="form-control" id="Info_Release_box" name="Info_Release_box" />
-  </div>
-  <div class="form-group">
-    <label for="Table_Number_box">Table Number:</label>
-    <input type="text" class="form-control" id="Table_Number_box" name="Table_Number_box" />
-  </div>
-
-  <button class="btn" name="import" type="submit">Upload</button>
-
-  <br />
-
-  <button class="btn" name="export" type="submit">Export</button>
-  <br />
-  <div style="color: white">
-    <p>
-      After importing a new set of data, the old data will be backed up to the
-      server. You can download the backup here.
-    </p>
-    <form action="{% url 'dbbackup' %}" method="post">
+    <form method="post" enctype="multipart/form-data" action="{% url 'add_new_data' %}" class="entry-form">
       {% csrf_token %}
-      <button type="submit" class="btn">Download backup</button>
+
+      <div class="form-group">
+        <label for="file">.xlsx File Path:</label>
+        <input type="file" class="form-control-file" id="file" name="file" />
+      </div>
+      <h2>Enter the letters of the columns which match the following fields</h2>
+      <div class="form-group">
+        <label for="Company_Name_box">Company Name:</label>
+        <input type="text" class="form-control" id="Company_Name_box" name="Company_Name_box" />
+      </div>
+      <div class="form-group">
+        <label for="First_Name_box">First Name:</label>
+        <input type="text" class="form-control" id="First_Name_box" name="First_Name_box" />
+      </div>
+      <div class="form-group">
+        <label for="Last_Name_box">Last Name:</label>
+        <input type="text" class="form-control" id="Last_Name_box" name="Last_Name_box" />
+      </div>
+      <div class="form-group">
+        <label for="Email_box">Email:</label>
+        <input type="text" class="form-control" id="Email_box" name="Email_box" />
+      </div>
+      <div class="form-group">
+        <label for="Alumni_box">Alumni:</label>
+        <input type="text" class="form-control" id="Alumni_box" name="Alumni_box" />
+      </div>
+      <div class="form-group">
+        <label for="Info_Release_box">Can we release your info:</label>
+        <input type="text" class="form-control" id="Info_Release_box" name="Info_Release_box" />
+      </div>
+      <div class="form-group">
+        <label for="Table_Number_box">Table Number:</label>
+        <input type="text" class="form-control" id="Table_Number_box" name="Table_Number_box" />
+      </div>
+
+      <button class="btn" name="import" type="submit">Upload</button>
+
+      <br />
+
+      <button class="btn" name="export" type="submit">Export</button>
+      <br />
+      <div style="color: white">
+        <p>
+          After importing a new set of data, the old data will be backed up to the
+          server. You can download the backup here.
+        </p>
+        <form action="{% url 'dbbackup' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn">Download backup</button>
+        </form>
+      </div>
     </form>
   </div>
+  <div class="right-column" style="flex: 1;">
+    <!-- Text to be displayed on the right side -->
+    <h3>This page is for importing new data into the system</h3>
+    <h4>Please make sure that the file is an Excel .xlsx file before importing</h4>
+    <div style="font-size: 20px; line-height: 1.6;">
+      <p>
+        - To import an external file, follow these steps:
+        <br/> 
+          <div class="indent1" style="font-size: 17px; margin-left: 20px">
+            1.  Click the "Choose file" button and select the .xlsx file to import
+        </div>
+        <br/> 
+          <div class="indent1" style="font-size: 17px; margin-left: 20px">
+            2. enter the letter of the column that contains each of the following fields
+          </div>
+        <br/>
+          <div class="indent1" style="font-size: 17px; margin-left: 20px">
+            3. Click the "Upload" button to upload the file.
+          </div>
+        <br/>
+        - To Export a copy of the current database, click the "Export" button.
+        <br/>
+        - To download the saved backup of the database before the last upload, click the "Download backup" button.
+        </p>
+      </div>   
 
-
-  {% endblock %}
-</form>
+      {% endblock %}
+    </form>

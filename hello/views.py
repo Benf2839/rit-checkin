@@ -371,22 +371,14 @@ def contact(request):
     return render(request, "hello/contact.html")
 
 
-def success(request):
+def on_site_entry_success(request):
     table_number = request.GET.get('table_number')
     context = {'table_number': table_number}
-    return render(request, 'hello/success.html', context)
+    return render(request, 'hello/on_site_entry_success.html', context)
 
 
 
 
-def hello_there(request, name):
-    """Renders the hello_there page.
-    Args:
-        name: Name to say hello to
-    """
-    return render(
-        request, "hello/hello_there.html", {"name": name, "date": datetime.now()}
-    )
 
 @login_required
 @transaction.atomic
@@ -459,7 +451,7 @@ def add_entry(request):
         # Save the instance to the database
         checkin_entry.save()
 
-        return redirect('/success')  # Redirect to a success page
+        return redirect('/on_site_entry_success')  # Redirect to a success page
 
     return render(request, 'hello/add_entry.html')
 
@@ -563,6 +555,8 @@ def self_registration(request):
 def self_reg_success(request):
     return render(request, 'hello/self_reg_success.html')
 
+def QR_entry_success(request):
+    return render(request, 'hello/QR_entry_success.html')
 
 @login_required
 @transaction.atomic
@@ -591,7 +585,7 @@ def update_entry(request):
         # Save the updated entry to the database
         checkin_entry.save()
         table_number = checkin_entry.table_number
-    return HttpResponseRedirect(reverse('success') + f'?table_number={table_number}')
+    return HttpResponseRedirect(reverse('QR_entry_success') + f'?table_number={table_number}')
     
 
 

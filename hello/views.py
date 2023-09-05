@@ -25,11 +25,33 @@ import traceback
 import sys
 from django.http import HttpResponseServerError
 import openpyxl
+from django.contrib.auth.models import Group
 
 
 # Define the regular expression patterns
 name_pattern = r'^[A-Za-z -]+$'  # Only alphabetic characters, spaces, and dashes
 email_pattern = r'^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'  # Valid email pattern
+
+
+
+
+@login_required
+def group_check(request):
+    # Define the group names you want to check for
+    group_name_1 = 'RIT'
+    group_name_2 = 'Company 2'
+    
+    user_groups = request.user.groups.all()  # Get all groups of the logged-in user
+    
+    if user_groups.filter(name=group_name_1).exists():
+        group = 'RIT'
+    elif user_groups.filter(name=group_name_2).exists():
+        group = 'Company 2'
+    else:
+        group = 'None'
+    
+    return group 
+
 
 
 def handle_errors_and_redirect(request, errors, redirect_page):
@@ -60,7 +82,7 @@ def redirect_w_backup(request):
         messages.error(request, 'No Backup found.')  # Display an error message
         return HttpResponse(status=200, content='No Backup found.')  # Display an error message
     
-
+#DOES NOT WORK AT THE MOMENT
 def export_master_list(request):
     master_list = db_model.objects.all()
     # Prepare CSV data
@@ -111,6 +133,7 @@ def export_master_list(request):
 @login_required
 @transaction.atomic
 def add_new_data(request, response=None):
+    user_group = group_check(request)
     print(request.POST)
     if request.method == 'POST':
         print(request.POST)

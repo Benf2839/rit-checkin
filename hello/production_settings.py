@@ -46,6 +46,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     'eventcheck-in.com/',
+    'eventcheck-in.com',
     'www.eventcheck-in.com/',
     "https://www.eventcheck-in.com/"
 ]

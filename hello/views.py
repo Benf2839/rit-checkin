@@ -25,6 +25,7 @@ import traceback
 import sys
 from django.http import HttpResponseServerError
 import openpyxl
+from django.http import HttpResponseBadRequest
 
 
 # Define the regular expression patterns
@@ -561,7 +562,13 @@ def update_entry(request):
             checkin_entry = db_model.objects.get(id_number=int(id_number))
         except db_model.DoesNotExist:
             # Handle the case when the entry does not exist
-            return render(request, 'hello/error.html')
+            context = {'error1' : True, 'id_number': id_number}
+            return render(request, 'hello/search.html', context)
+        
+        # Check if the user is already checked in
+        if checkin_entry.checked_in:
+            context = {'error2' : True, 'id_number': id_number}
+            return render(request, 'hello/search.html', context)
         
         # Update the field values of the existing entry
         checkin_entry.company_name = request.POST.get('company_name')
@@ -571,12 +578,16 @@ def update_entry(request):
         checkin_entry.alumni = bool(request.POST.get('alumni'))
         checkin_entry.release_info = bool(request.POST.get('release_info'))
         checkin_entry.checked_in = True
-        checkin_entry.checked_in_time=timezone.now().strftime('%Y-%m-%d %H:%M:%S'),  # Autopopulate with current time and date,
+        checkin_entry.checked_in_time = timezone.now().strftime('%Y-%m-%d %H:%M:%S')  # Autopopulate with current time and date
         
         # Save the updated entry to the database
         checkin_entry.save()
-        table_number = checkin_entry.table_number
-    return HttpResponseRedirect(reverse('QR_entry_success') + f'?table_number={table_number}')
+        context = {
+            'company_name': checkin_entry.company_name,
+            'table_number': checkin_entry.table_number,
+        }
+        # Redirect to the 'QR_entry_success' view with the context data
+        return render(request, 'hello/QR_entry_success.html', context)
     
 
 

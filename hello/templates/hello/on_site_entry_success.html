@@ -1,28 +1,22 @@
 {% extends "hello/layout.html" %} {% block title %} Success! {% endblock %}
+{% block content %}
 {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
- {% block content %}
-<h2>
-  Thanks for registering for the Career Fair! Your information is now in our
-  system and check-in next time will be a breeze.
-</h2>
-<h3>Your table number is {{ table_number }}.</h3>
-<div style="text-align: center">
-  <div style="margin-bottom: 20px">
-    <p>click the button below to add another entry</p>
+
+<div class="container" style="display: flex; text-align:center">
+  <div class="left-column" style="flex: 1;">
+    <h3>
+      Thanks for registering for the Career Fair! Please ask a staff member if you are unsure of your table number.
+    </h3>
   </div>
-  <a
-    href="{% url 'add_entry' %}"
-    class="btn"
-    style="margin-right: 10px"
-    >Add Entry</a
-  >
-  <div style="margin-bottom: 20px">
-    <p>click the button below to search by ID</p>
+
+  <div class="right-column" style="flex: 1;">
+    <div style="margin-bottom: 20px">
+      <p>click the button below to Check in</p>
+    </div>
+    <a href="{% url 'add_entry' %}" class="btn" style="margin-right: 10px">Add Entry</a>
   </div>
-  <a href="{% url 'search_by_id' %}" class="btn"
-    >ID Search</a
-  >
 </div>
+    
 {% endblock %}

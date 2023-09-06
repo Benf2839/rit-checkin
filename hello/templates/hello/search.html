@@ -12,13 +12,19 @@
       <input type="text" name="id_number" id="id_number" />
       <button class="btn" type="submit">Search</button>
     </form>
-
-    {% if not entry %}
-    <div class="alert alert-danger" style="color: red">
-      There is no corresponding entry for that number.
+    <div>
+      {% if error1 %}
+      <div class="alert alert-danger" style="color: red">
+        There is no corresponding entry for the id number {{id_number}}.
+      </div>
+      {% endif %}
+      {% if error2 %}
+      <div class="alert alert-danger" style="color: red">
+        The id number {{id_number}} has already been checked in.
+      </div>
+      {% endif %}
     </div>
-    {% endif %}
-
+  
     <h2>Result:</h2>
     <form method="POST" action="{% url 'submit_form' %}" class="entry-form">
       {% csrf_token %}

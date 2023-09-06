@@ -133,8 +133,21 @@ def add_new_data(request, response=None):
         elif 'import' in request.POST: # Import the user selected file
             # Get the uploaded file
             uploaded_file = request.FILES.get('file')
-                # Process the uploaded file based on its extension
+            
+            # Process the uploaded file based on its extension
             file_extension = uploaded_file.name.split('.')[-1].lower()
+
+            # Mapping of column names from the uploaded file to variable names
+            
+            column_mapping = {
+                'Company_Name_box': 'company_name',
+                'First_Name_box': 'first_name',
+                'Last_Name_box': 'last_name',
+                'Email_box': 'email',
+                'Alumni_box': 'alumni',
+                'Info_Release_box': 'release_info',
+                'Table_Number_box': 'table_number',
+            }
 
             if file_extension in ['csv', 'xlsx', 'json']:
                 if file_extension == 'csv':
@@ -144,16 +157,10 @@ def add_new_data(request, response=None):
                 elif file_extension == 'json':
                     df_new_data = pd.read_json(uploaded_file)
 
-                # Ensure the column names match the database model
-                df_new_data = df_new_data.rename(columns={
-                    'Company_Name': 'company_name',
-                    'First_Name': 'first_name',
-                    'Last_Name': 'last_name',
-                    'Email': 'email',
-                    'Alumni': 'alumni', 
-                    'Release_Info': 'release_info',
-                    'Table_Number': 'table_number',
-                })
+                 # Use a custom function to convert column names to lowercase first letters
+                df_new_data = df_new_data.rename(columns=lambda x: x[0].lower() + x[1:])
+                print(df_new_data.columns)
+
 
                 # Check if all required fields are empty
                 if not df_new_data.empty:
@@ -162,10 +169,27 @@ def add_new_data(request, response=None):
                         "yes": True,
                         "no": False
                     }
+                    print(df_new_data.columns)
 
                     # Convert "yes" and "no" values to boolean values
+                    #df_new_data['alumni'] = df_new_data['alumni'].str.lower().map(boolean_map).fillna(False)
+                    #df_new_data['release_info'] = df_new_data['release_info'].str.lower().map(boolean_map).fillna(False)
+
+                    # Debugging the mapping process
+                    print("Before Mapping:")
+                    print(df_new_data[['alumni', 'release_info', 'checked_in']])
+
+                    # Map "yes" and "no" values to boolean values
                     df_new_data['alumni'] = df_new_data['alumni'].str.lower().map(boolean_map).fillna(False)
                     df_new_data['release_info'] = df_new_data['release_info'].str.lower().map(boolean_map).fillna(False)
+                    # Map "yes" to True, "no" to False, and any other value to False for 'Checked_in'
+                    df_new_data['checked_in'] = df_new_data['checked_in'].str.lower().map(boolean_map).fillna(False)
+
+                    # Debugging after mapping
+                    print("After Mapping:")
+                    print(df_new_data[['alumni', 'release_info', 'checked_in']])
+
+
 
                     # Save the combined data back to the database
                     existing_data = db_model.objects.all().values()
@@ -186,6 +210,7 @@ def add_new_data(request, response=None):
                 return render(request, 'hello/database_upload_page.html')
 
             return render(request, 'hello/database_upload_page.html')  # Render the database upload page
+
     else:
         ## If the request is not a POST request, render the database upload page
         return render(request, 'hello/database_upload_page.html') # Render the database upload page

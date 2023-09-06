@@ -10,7 +10,7 @@
       {% csrf_token %}
 
       <div class="form-group">
-        <label for="file">.xlsx File Path:</label>
+        <label for="file">File Path:</label>
         <input type="file" class="form-control-file" id="file" name="file" />
       </div>
       <h2>Enter the letters of the columns which match the following fields</h2>
@@ -64,13 +64,13 @@
   <div class="right-column" style="flex: 1;">
     <!-- Text to be displayed on the right side -->
     <h3>This page is for importing new data into the system</h3>
-    <h4>Please make sure that the file is an Excel .xlsx file before importing</h4>
+    <h4>Please make sure that the file is a .xlsx, .csv, or a .json</h4>
     <div style="font-size: 20px; line-height: 1.6;">
       <p>
         - To import an external file, follow these steps:
         <br/> 
           <div class="indent1" style="font-size: 17px; margin-left: 20px">
-            1.  Click the "Choose file" button and select the .xlsx file to import
+            1.  Click the "Choose file" button and select the file to import
         </div>
         <br/> 
           <div class="indent1" style="font-size: 17px; margin-left: 20px">
@@ -84,8 +84,8 @@
         - To Export a copy of the current database, click the "Export" button.
         <br/>
         - To download the saved backup of the database before the last upload, click the "Download backup" button.
-        </p>
-      </div>   
-
-      {% endblock %}
-    </form>
+      </p>
+    </div>
+  </div>
+</div>      
+{% endblock %}

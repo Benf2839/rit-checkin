@@ -130,131 +130,122 @@ def add_new_data(request, response=None):
         
 
         elif 'import' in request.POST: # Import the user selected CSV file
+            # Save all current entries in db to the existing_data variable
+            existing_data = db_model.objects.all()
             # Get the uploaded file
-                try: 
-                    import_from_file = request.FILES['file']
-                    messages.success(request, 'file is valid')
-                except:
-                    messages.error(request, 'Please select a .csv file for upload.')
-            
-                response = export_master_list(request) # Export the current entries in the Master_list table
+            try: 
+                import_from_file = request.FILES['file']
+                messages.success(request, 'file is valid')
+            except:
+                messages.error(request, 'Please select a  file for upload.')
 
-                # Process the uploaded CSV file
-                try:
-                    textbox_values = [
-                        request.POST.get('Company_Name_box'),
-                        request.POST.get('First_Name_box'),
-                        request.POST.get('Last_Name_box'),
-                        request.POST.get('Email_box'),
-                        request.POST.get('Alumni_box'),
-                        request.POST.get('Info_Release_box'),
-                        request.POST.get('Table_Number_box'),
-                    ]
-                    messages.success(request, 'Variables are: ' + str(textbox_values))
-                    # Convert box numbers from letters to numbers
-                    box_mapping = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7, 'i': 8, 'j': 9, 'k': 10, 'l': 11, 'm': 12, 'n': 13, 'o': 14, 'p': 15}
+            # Process the uploaded file
+            try:
+                textbox_values = [
+                    request.POST.get('Company_Name_box'),
+                    request.POST.get('First_Name_box'),
+                    request.POST.get('Last_Name_box'),
+                    request.POST.get('Email_box'),
+                    request.POST.get('Alumni_box'),
+                    request.POST.get('Info_Release_box'),
+                    request.POST.get('Table_Number_box'),
+                ]
+                messages.success(request, 'Variables are: ' + str(textbox_values))
+                # Convert box numbers from letters to numbers
+                box_mapping = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7, 'i': 8, 'j': 9, 'k': 10, 'l': 11, 'm': 12, 'n': 13, 'o': 14, 'p': 15}
 
-                    # Map textbox values to column indices
-                    column_indices = [box_mapping[value.lower()] if value else None for value in textbox_values]
+                # Map textbox values to column indices
+                column_indices = [box_mapping[value.lower()] if value else None for value in textbox_values]
 
-                     # Process the uploaded file
-                    uploaded_file = request.FILES.get('file')
-                    file_extension = uploaded_file.name.split('.')[-1]
+                    # Process the uploaded file
+                uploaded_file = request.FILES.get('file')
+                file_extension = uploaded_file.name.split('.')[-1]
 
-                    if file_extension == 'csv':
-                        csv_data = uploaded_file.read().decode('utf-8')  # Read the file as text
-                        csv_file = StringIO(csv_data)
-                        reader = csv.reader(csv_file)
-                    elif file_extension == 'xlsx':
-                        wb = openpyxl.load_workbook(uploaded_file)
-                        ws = wb.active
-                        reader = ws.iter_rows(values_only=True)
-                        next(reader)  # Skip the header row
-                    else:
-                        messages.error(request, "Unsupported file format.")
-                        return render(request, 'hello/database_upload_page.html')
+                if file_extension == 'csv':
+                    csv_data = uploaded_file.read().decode('utf-8')  # Read the file as text
+                    csv_file = StringIO(csv_data)
+                    reader = csv.reader(csv_file)
+                    next(reader)  # Skip the header row
+                elif file_extension == 'xlsx':
+                    wb = openpyxl.load_workbook(uploaded_file)
+                    ws = wb.active
+                    reader = ws.iter_rows(values_only=True)
+                    next(reader)  # Skip the header row
+                else:
+                    messages.error(request, "Unsupported file format.")
+                    return render(request, 'hello/database_upload_page.html')
 
-                    # Extract the data from each row
-                    for row in reader:
-                        ext_company_name = row[column_indices[0]]
-                        ext_first_name = row[column_indices[1]]
-                        ext_last_name = row[column_indices[2]]
-                        ext_email = row[column_indices[3]]
-                        ext_alumni = row[column_indices[4]]
-                        ext_release_info = row[column_indices[5]]
-                        ext_table_number = row[column_indices[6]]
+                # Extract the data from each row
+                for row in reader:
+                    ext_company_name = row[column_indices[0]]
+                    ext_first_name = row[column_indices[1]]
+                    ext_last_name = row[column_indices[2]]
+                    ext_email = row[column_indices[3]]
+                    ext_alumni = row[column_indices[4]]
+                    ext_release_info = row[column_indices[5]]
+                    ext_table_number = row[column_indices[6]]
 
-                        # Check if all required fields are empty
-                        if ext_company_name or ext_first_name or ext_last_name or ext_email or ext_alumni or ext_release_info:
+                    # Check if all required fields are empty
+                    if ext_company_name or ext_first_name or ext_last_name or ext_email or ext_alumni or ext_release_info:
+                        
+                        # Perform validations on the data
+                        errors = []
+                        # If there are any errors, render the current page with the error messages
+                        if errors:
+                            error_message = ', '.join(errors)
+                            traceback_str = traceback.format_exc()  # Get the traceback as a string
+                            line_number = None
                             
-                            # Perform validations on the data
-                            errors = []
-                            '''if ext_company_name and not re.match(name_pattern, ext_company_name):
-                                errors.append('Company name should only contain alphabetic characters, spaces, and dashes.')
-                            if ext_first_name and not re.match(name_pattern, ext_first_name):
-                                errors.append('First name should only contain alphabetic characters, spaces, and dashes.')
-                            if ext_last_name and not re.match(name_pattern, ext_last_name):
-                                errors.append('Last name should only contain alphabetic characters, spaces, and dashes.')
-                            if not ext_email or not re.match(email_pattern, ext_email):
-                                errors.append('Incorrect format for email field')
-                            if not ext_alumni:
-                                errors.append('Incorrect format for alumni field')
-                            if not ext_release_info:
-                                errors.append('Incorrect format for release info')'''
-
-                            # If there are any errors, render the current page with the error messages
-                            if errors:
-                                error_message = ', '.join(errors)
-                                traceback_str = traceback.format_exc()  # Get the traceback as a string
-                                line_number = None
-                                
-                                tb = traceback.extract_tb(sys.exc_info()[2])
-                                if tb:
-                                    line_number = tb[-1][1]  # Get the line number of the error
-                                
-                                error_info = f"Error occurred at line {line_number}" if line_number else "Error information not available"
-                                error_info += f"\nTraceback:\n{traceback_str}"
-                                messages.error(request, f"{error_message}\n\n{error_info}")
-                                return render(request, 'hello/database_upload_page.html', {'errors': errors})
-                            else:
-                                # Map "yes" and "no" values to boolean values
-                                boolean_map = {
-                                    "yes": True,
-                                    "no": False
-                                }
-
-                                # Convert "yes" and "no" values to boolean values
-                                ext_alumni = boolean_map.get(ext_alumni.lower(), False)
-                                ext_release_info = boolean_map.get(ext_release_info.lower(), False)
-
-                                # Create a new entry in the Master_list table
-                                entry = db_model(
-                                    #assign the id_number column with the django autoincremented value
-                                    id_number = None,
-                                    company_name=ext_company_name,
-                                    first_name=ext_first_name,
-                                    last_name=ext_last_name,
-                                    email=ext_email,
-                                    alumni=ext_alumni,
-                                    release_info=ext_release_info,
-                                    checked_in=False,
-                                    checked_in_time=None,
-                                    table_number=ext_table_number,
-                                    email_sent=False,
-                                )
-                                entry.save() # Save the entry to the database  
+                            tb = traceback.extract_tb(sys.exc_info()[2])
+                            if tb:
+                                line_number = tb[-1][1]  # Get the line number of the error
+                            
+                            error_info = f"Error occurred at line {line_number}" if line_number else "Error information not available"
+                            error_info += f"\nTraceback:\n{traceback_str}"
+                            messages.error(request, f"{error_message}\n\n{error_info}")
+                            return render(request, 'hello/database_upload_page.html', {'errors': errors})
                         else:
-                            messages.success(request, 'all columns imported successfully')
-                            break  # Stop iterating over rows if all required fields are empty
+                            # Map "yes" and "no" values to boolean values
+                            boolean_map = {
+                                "yes": True,
+                                "no": False
+                            }
 
-                    messages.success(request, 'Data imported successfully.')
-                    return render(request, 'hello/database_upload_page.html') # Render the database upload page
-                
-                except Exception as e: # Handle any other exceptions
-                    error_message = f'Error processing the CSV file: {str(e)}'
-                    traceback_str = traceback.format_exc()  # Get the traceback as a string
-                    messages.error(request, f'{error_message}\n\nTraceback:\n{traceback_str}') # Display the exception and traceback as an error message
-                    return redirect(add_new_data) # Redirect to the database upload page
+                            # Convert "yes" and "no" values to boolean values
+                            ext_alumni = boolean_map.get(ext_alumni.lower(), False)
+                            ext_release_info = boolean_map.get(ext_release_info.lower(), False)
+
+                            # Create a new entry in the Master_list table
+                            entry = db_model(
+                                #assign the id_number column with the django autoincremented value
+                                id_number = None,
+                                company_name=ext_company_name,
+                                first_name=ext_first_name,
+                                last_name=ext_last_name,
+                                email=ext_email,
+                                alumni=ext_alumni,
+                                release_info=ext_release_info,
+                                checked_in=False,
+                                checked_in_time=None,
+                                table_number=ext_table_number,
+                                email_sent=False,
+                            )
+                            entry.save() # Save the entry to the database  
+                    else:
+                        
+                        messages.success(request, 'all columns imported successfully')
+                        break  # Stop iterating over rows if all required fields are empty
+
+                messages.success(request, 'Data imported successfully.')
+                return render(request, 'hello/database_upload_page.html') # Render the database upload page
+            
+            except Exception as e: # Handle any other exceptions
+                error_message = f'Error processing the CSV file: {str(e)}'
+                traceback_str = traceback.format_exc()  # Get the traceback as a string
+                messages.error(request, f'{error_message}\n\nTraceback:\n{traceback_str}') # Display the exception and traceback as an error message
+                return redirect(add_new_data) # Redirect to the database upload page
+        #else:
+           # return render(request, 'hello/database_upload_page.html') # Render the database upload page
     else:
         ## If the request is not a POST request, render the database upload page
         return render(request, 'hello/database_upload_page.html') # Render the database upload page

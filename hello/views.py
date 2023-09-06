@@ -1,4 +1,3 @@
-from django.utils.timezone import datetime
 from django.views.generic import ListView
 from django.db import connections
 from django.core.paginator import Paginator
@@ -20,12 +19,11 @@ from hello.models import db_model
 from django.http import FileResponse
 import os
 import shutil 
-from io import StringIO
 import traceback
 import sys
 from django.http import HttpResponseServerError
-import openpyxl
 import pandas as pd
+import random
 
 
 # Define the regular expression patterns
@@ -109,6 +107,28 @@ def export_master_list(request):
     return (response)
 
 
+def sort_variables(company_Name_box, First_Name_box, Last_Name_box, Email_box, Alumni_box, Info_Release_box, Table_Number_box):
+    # Create a dictionary to map input variables to their corresponding names
+    variable_mapping = {
+        company_Name_box: 'company_name',
+        First_Name_box: 'first_name',
+        Last_Name_box: 'last_name',
+        Email_box: 'email',
+        Alumni_box: 'alumni',
+        Info_Release_box: 'release_info',
+        Table_Number_box: 'table_number',
+    }
+
+    # Sort the dictionary items based on keys (letters)
+    sorted_mapping = sorted(variable_mapping.items())
+
+    # Extract the sorted names into a list
+    sorted_names = [name for _, name in sorted_mapping]
+
+    return sorted_names
+
+
+
 @login_required
 @transaction.atomic
 def add_new_data(request, response=None):
@@ -135,19 +155,19 @@ def add_new_data(request, response=None):
             uploaded_file = request.FILES.get('file')
             
             # Process the uploaded file based on its extension
+            company_Name_box = request.get('company_Name_box')
+            First_Name_box = request.get('First_Name_box')
+            Last_Name_box = request.get('Last_Name_box')
+            Email_box = request.get('Email_box')
+            Alumni_box = request.get('Alumni_box')
+            Info_Release_box = request.get('Info_Release_box')
+            Table_Number_box = request.get('Table_Number_box')
+            
             file_extension = uploaded_file.name.split('.')[-1].lower()
 
             # Mapping of column names from the uploaded file to variable names
             
-            column_mapping = {
-                'Company_Name_box': 'company_name',
-                'First_Name_box': 'first_name',
-                'Last_Name_box': 'last_name',
-                'Email_box': 'email',
-                'Alumni_box': 'alumni',
-                'Info_Release_box': 'release_info',
-                'Table_Number_box': 'table_number',
-            }
+            sort_variables(company_Name_box, First_Name_box, Last_Name_box, Email_box, Alumni_box, Info_Release_box, Table_Number_box)
 
             if file_extension in ['csv', 'xlsx', 'json']:
                 if file_extension == 'csv':
@@ -160,34 +180,38 @@ def add_new_data(request, response=None):
                  # Use a custom function to convert column names to lowercase first letters
                 df_new_data = df_new_data.rename(columns=lambda x: x[0].lower() + x[1:])
                 print(df_new_data.columns)
-
+                
+                df_new_data['checked_in'] = 'no' # Set 'checked_in' to False for all entries
 
                 # Check if all required fields are empty
-                if not df_new_data.empty:
+                if not df_new_data.empty: 
                     # Map "yes" and "no" values to boolean values
                     boolean_map = {
                         "yes": True,
-                        "no": False
+                        "Yes": True,
+                        "no": False,
+                        "No": False,
                     }
                     print(df_new_data.columns)
 
-                    # Convert "yes" and "no" values to boolean values
-                    #df_new_data['alumni'] = df_new_data['alumni'].str.lower().map(boolean_map).fillna(False)
-                    #df_new_data['release_info'] = df_new_data['release_info'].str.lower().map(boolean_map).fillna(False)
+                    # Generate random 'id_number' values for each row
+                    df_new_data['id_number'] = [random.randint(100000, 999999) for _ in range(len(df_new_data))]
 
                     # Debugging the mapping process
                     print("Before Mapping:")
-                    print(df_new_data[['alumni', 'release_info', 'checked_in']])
+                    print(df_new_data[['alumni', 'release_info', 'checked_in', 'id_number']])
 
                     # Map "yes" and "no" values to boolean values
                     df_new_data['alumni'] = df_new_data['alumni'].str.lower().map(boolean_map).fillna(False)
                     df_new_data['release_info'] = df_new_data['release_info'].str.lower().map(boolean_map).fillna(False)
-                    # Map "yes" to True, "no" to False, and any other value to False for 'Checked_in'
                     df_new_data['checked_in'] = df_new_data['checked_in'].str.lower().map(boolean_map).fillna(False)
+                    
+                    # Fill NaN values in 'checked_in' column with False
+                    #df_new_data['checked_in'] = df_new_data['checked_in'].fillna(False)
 
                     # Debugging after mapping
                     print("After Mapping:")
-                    print(df_new_data[['alumni', 'release_info', 'checked_in']])
+                    print(df_new_data[['alumni', 'release_info', 'checked_in', 'id_number']])
 
 
 

@@ -18,7 +18,7 @@ class LogMessage(models.Model):
         return f"'{self.message}' logged on {date.strftime('%A, %d %B, %Y at %X')}"
 
 class import_csv(models.Model): #creates a model for the import .csv file format
-    id_number = models.AutoField(primary_key=True)
+    id_number = models.IntegerField(primary_key=True)
     company_name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -33,7 +33,7 @@ class import_csv(models.Model): #creates a model for the import .csv file format
 
 
 class db_model(models.Model): #creates a model for the checkin database
-    id_number = models.AutoField(primary_key=True)
+    id_number = models.IntegerField(primary_key=True)
     company_name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)

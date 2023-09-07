@@ -13,7 +13,7 @@
       <button class="btn" type="submit">Search</button>
     </form>
     <div>
-      {% if error1 %}
+      {% if not entry %}
       <div class="alert alert-danger" style="color: red">
         There is no corresponding entry for the id number {{id_number}}.
       </div>

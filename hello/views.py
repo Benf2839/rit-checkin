@@ -449,7 +449,7 @@ def add_entry(request):
 
 
 
-@login_required
+
 @transaction.atomic
 def self_registration(request):
     if request.method == 'POST':

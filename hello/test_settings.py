@@ -171,8 +171,8 @@ os.path.join(BASE_DIR, 'static'),
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
-EMAIL_HOST_USER = 'admin@eventcheck-in.com'#'guardia2@mocha3039.mochahost.com'  # Replace with your email address
-EMAIL_HOST_PASSWORD = 'adminAccess1029'  # Replace with your email password
+EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'#'guardia2@mocha3039.mochahost.com'  # Replace with your email address
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')  # Replace with your email password
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'admin@eventcheck-in.com'

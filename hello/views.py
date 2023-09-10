@@ -295,6 +295,10 @@ def send_reset_email(request):
 def send_qr_email(request):
     if request.method == "POST":
         try:
+            # Initialize lists to store successful and failed email addresses
+            successful_emails = []
+            failed_emails = []
+
             # Retrieve all records where email_sent is False
             records = db_model.objects.filter(email_sent=False)
 
@@ -322,7 +326,6 @@ def send_qr_email(request):
 
                     # Render the email content using the template and context
                     email_content = render_to_string(template, context)
-                    messages.success(request, 'email content has been created')
                     # Send the email
                     email = EmailMessage(subject, email_content, email_from, recipient_list, connection=connection)
                     
@@ -331,15 +334,31 @@ def send_qr_email(request):
                     with open(attachment_path, 'rb') as attachment_file:
                         email.attach(attachment_filename, attachment_file.read(), 'image/png')
                     
-                    email.send()
-                    # Change email_sent to True for the current record
-                    record.email_sent = True
-                    record.save()
+                    try:
+                        email.send()
+                        # Change email_sent to True for the current record
+                        record.email_sent = True
+                        record.save()
+                        successful_emails.append(record.email)
+                    except Exception as e:
+                        failed_emails.append(record.email)
+
+            # Display success message with the number of emails sent
+            messages.success(request, f"{len(successful_emails)} emails sent successfully.")
+            
+            # Display error message with the list of failed email addresses
+            if failed_emails:
+                messages.error(request, f"Failed to send emails to the following addresses: {', '.join(failed_emails)}")
 
         except Exception as e:
-            messages.error(request, f"An error occurred while sending the email: {str(e)}")
+            messages.error(request, f"An error occurred while sending emails: {str(e)}")
 
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
+
+
+
+
+
 
 
 

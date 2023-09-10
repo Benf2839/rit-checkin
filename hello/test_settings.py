@@ -172,21 +172,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
 EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'#'guardia2@mocha3039.mochahost.com'  # Replace with your email address
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')  # Replace with your email password
+EMAIL_HOST_PASSWORD = 'Hireatiger2018'  # Replace with your email password
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
-DEFAULT_FROM_EMAIL = 'admin@eventcheck-in.com'
+DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
 
-'''
-#   BELOW IS THE LOCALHOST GMAIL TEST SETTINGS
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'bdf2768@rit.edu'  # Replace with your email address
-EMAIL_HOST_PASSWORD = 'Mclarenbenv8'  # Replace with your email password
-EMAIL_USE_TLS = True
-EMAIL_USE_STARTTLS = True
-DEFAULT_FROM_EMAIL = 'bdf2768@rit.edu'
-SERVER_EMAIL = EMAIL_HOST_USER
-'''

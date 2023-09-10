@@ -209,7 +209,11 @@ def add_new_data(request, response=None):
                             # Map "yes" and "no" values to boolean values
                             boolean_map = {
                                 "yes": True,
-                                "no": False
+                                "no": False,
+                                "TRUE": True,
+                                "FALSE": False,
+                                "True": True,
+                                "False": False,
                             }
 
                             # Convert "yes" and "no" values to boolean values
@@ -298,7 +302,7 @@ def send_qr_email(request):
             record = get_object_or_404(db_model, id_number=id_number)
             # Check if email has already been sent to the user
             if record.email_sent:
-                return render(request, 'hello/qr_code/qr_code_email.html', {'message': 'Email has already been sent to this user'}) 
+                return render(request, 'hello/qr_code/qr_code_email.html', {'message': 'Email has already been sent'})
             else:
                 messages.success(request, 'email has not already been sent')
                 with get_connection(
@@ -312,6 +316,8 @@ def send_qr_email(request):
                     email_from = settings.DEFAULT_FROM_EMAIL
                     recipient_list = [record.email]
                     template = "hello/qr_code/qr_code_email.html"  # Path to the email template
+                    # Specify the path to your .png file
+                    attachment_path = "hello/static/hello/cat.png"
                     context = {
                         'first_name': record.first_name,
                         'last_name': record.last_name,
@@ -324,15 +330,22 @@ def send_qr_email(request):
                     email_content = render_to_string(template, context)
                     messages.success(request, 'email content has been created')
                     # Send the email
-                    EmailMessage(subject, email_content, email_from, recipient_list, connection=connection).send()
+                    email = EmailMessage(subject, email_content, email_from, recipient_list, connection=connection)
+                    
+                    # Extract the filename from the attachment_path
+                    attachment_filename = os.path.basename(attachment_path)
+                    with open(attachment_path, 'rb') as attachment_file:
+                        email.attach(attachment_filename, attachment_file.read(), 'image/png')
+                    
+                    email.send()
                     # Change email_sent to True for matching record
                     record.email_sent = True
                     record.save()
-        
+
         except Exception as e:
             messages.error(request, f"An error occurred while sending the email: {str(e)}")
 
-    return render(request, 'hello/qr_code/qr_code_email.html')
+    return render(request, 'hello/qr_code/qr_code_email_sent.html')
 
 
 

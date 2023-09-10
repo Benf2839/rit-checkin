@@ -312,7 +312,8 @@ def send_qr_email(request):
                     email_from = settings.DEFAULT_FROM_EMAIL
                     recipient_list = [record.email]
                     template = "hello/qr_code/qr_code_email.html"  # Path to the email template
-                    attachment = "hello/static/hello/Test.pdf" # Path to the attachment
+                    # Specify the path to your .png file
+                    attachment_path = "hello/static/hello/cat.png"
                     context = {
                         'first_name': record.first_name,
                         'last_name': record.last_name,
@@ -326,7 +327,12 @@ def send_qr_email(request):
                     messages.success(request, 'email content has been created')
                     # Send the email
                     email = EmailMessage(subject, email_content, email_from, recipient_list, connection=connection)
-                    email.attach(attachment, 'Test.pdf', 'application/pdf')
+                    
+                    # Extract the filename from the attachment_path
+                    attachment_filename = os.path.basename(attachment_path)
+                    with open(attachment_path, 'rb') as attachment_file:
+                        email.attach(attachment_filename, attachment_file.read(), 'image/png')
+                    
                     email.send()
                     # Change email_sent to True for matching record
                     record.email_sent = True
@@ -336,7 +342,6 @@ def send_qr_email(request):
             messages.error(request, f"An error occurred while sending the email: {str(e)}")
 
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
-
 
 
 

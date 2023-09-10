@@ -209,7 +209,11 @@ def add_new_data(request, response=None):
                             # Map "yes" and "no" values to boolean values
                             boolean_map = {
                                 "yes": True,
-                                "no": False
+                                "no": False,
+                                "TRUE": True,
+                                "FALSE": False,
+                                "True": True,
+                                "False": False,
                             }
 
                             # Convert "yes" and "no" values to boolean values

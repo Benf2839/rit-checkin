@@ -4,11 +4,12 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
-<h2>Enter the id number to send the QR code to</h2>
+<h2>Send QR Code Emails</h2>
+<p>Click the button below to send QR code emails to all eligible recipients.</p>
+
 <form id="qrCodeForm" action="{% url 'send_qr_code' %}" method="post">
   {% csrf_token %}
-  <p><input type="text" name="id_number" required id="id_number" /></p>
-  <input type="submit" class="btn btn-default" value="Send QR Code" />
+  <input type="submit" class="btn btn-default" value="Send QR Code Emails" />
 </form>
 
 {% if message %}

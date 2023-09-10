@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from django.db import connections
 from django.core.paginator import Paginator
 from django.urls import reverse
-from hello.models import db_model
+from hello.models import db_model, table_num
 from django.utils import timezone
 from django.contrib import messages
 from django.db import transaction
@@ -25,7 +25,7 @@ import traceback
 import sys
 from django.http import HttpResponseServerError
 import openpyxl
-from django.http import HttpResponseBadRequest
+
 
 
 # Define the regular expression patterns
@@ -636,7 +636,33 @@ def search_by_id(request):
 
 
 def homepage(request):
-    return render(request, 'hello/home.html')
+    if request.method == 'POST':
+        print(request.POST)
+        if 'table' in request.POST:
+            no_match = []  # Initialize an empty list to store company names with no matching table numbers
+            # Iterate through each row in the MasterList model
+            for master_list_entry in db_model.objects.all():
+                # Check if the "table_number" field is empty
+                if not master_list_entry.table_number:
+                    company_name = master_list_entry.company_name
+
+                    # Search for a match in the TableNumbers model
+                    try:
+                        match_obj = table_num.objects.get(company_name=company_name)
+
+                        # If a match is found, update the "table_number" field in MasterList
+                        master_list_entry.table_number = match_obj.table_number
+                        master_list_entry.save()
+                    except table_num.DoesNotExist:
+                        # If no match is found, save the company_name to no_match list
+                        no_match.append(master_list_entry)
+                        continue
+            # Return the list of company names with no matching table numbers
+            return render(request, 'hello/home.html', no_match)
+        else:
+            return render(request, 'hello/home.html')
+    else:
+        return render(request, 'hello/home.html')
 
 
 

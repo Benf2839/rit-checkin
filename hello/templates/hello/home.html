@@ -6,9 +6,32 @@
 {% block content %}
 
 <h1>Welcome to the check-in system v2</h1>
-{% if user.is_authenticated %}
-<img src="{% static 'hello/Dance_cat.gif' %}" alt="GIF Image">
-<p>Hi {{ user.username }}!</p>
-{% endif %}
+{% comment %} {% if user.is_authenticated %} {% endcomment %}
 
+
+  <button class="btn" name="table" type="submit">Match Table Numbers</button>
+  {% if no_match%}
+    <p> The following entries have company names that do not match the table number key </p>
+    <table>
+      <tr>
+        <th>ID Number</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Company Name</th>
+        <th>Table Number</th>
+      </tr>
+      {% for entry in no_match %}
+      <tr>
+        <td>{{entry.id_number}}</td>
+        <td>{{entry.first_name}}</td>
+        <td>{{entry.last_name}}</td>
+        <td>{{entry.company_name}}</td>
+        <td>{{entry.table_number}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+
+{% comment %} {% endif %}  {% endcomment %}
+    
 {% endblock %}

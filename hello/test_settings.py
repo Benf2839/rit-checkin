@@ -175,7 +175,7 @@ EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'#'guardia2@mocha3039.mochahos
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')  # Replace with your email password
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
-DEFAULT_FROM_EMAIL = 'admin@eventcheck-in.com'
+DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
 
 '''

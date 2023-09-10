@@ -335,7 +335,7 @@ def send_qr_email(request):
         except Exception as e:
             messages.error(request, f"An error occurred while sending the email: {str(e)}")
 
-    return render(request, 'hello/qr_code/qr_code_email.html')
+    return render(request, 'hello/qr_code/qr_code_email_sent.html')
 
 
 

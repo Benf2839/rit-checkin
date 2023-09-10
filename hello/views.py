@@ -295,16 +295,10 @@ def send_reset_email(request):
 def send_qr_email(request):
     if request.method == "POST":
         try:
-            # Get the ID number from the POST data
-            id_number = request.POST.get("id_number")
-            messages.success(request, 'id number is ' + id_number)
-            # Retrieve the corresponding record from the database based on the ID number
-            record = get_object_or_404(db_model, id_number=id_number)
-            # Check if email has already been sent to the user
-            if record.email_sent:
-                return render(request, 'hello/qr_code/qr_code_email.html', {'message': 'Email has already been sent'})
-            else:
-                messages.success(request, 'email has not already been sent')
+            # Retrieve all records where email_sent is False
+            records = db_model.objects.filter(email_sent=False)
+
+            for record in records:
                 with get_connection(
                     host=settings.EMAIL_HOST,
                     port=settings.EMAIL_PORT,
@@ -338,7 +332,7 @@ def send_qr_email(request):
                         email.attach(attachment_filename, attachment_file.read(), 'image/png')
                     
                     email.send()
-                    # Change email_sent to True for matching record
+                    # Change email_sent to True for the current record
                     record.email_sent = True
                     record.save()
 

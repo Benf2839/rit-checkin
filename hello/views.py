@@ -636,7 +636,7 @@ def db_display(request, page=1):
         converted_rows.append(converted_row)
 
 
-    paginator = Paginator(converted_rows, 100)
+    paginator = Paginator(converted_rows, 25) #the number sets number of records per page
     page_obj = paginator.get_page(page)
 
     return render(request, "hello/db_display.html", {'page_obj': page_obj})

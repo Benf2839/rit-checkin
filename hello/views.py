@@ -632,7 +632,7 @@ def db_display(request, page=1):
         # Convert 'checked_in' field
         converted_row[7] = 'yes' if converted_row[7] == 1 else 'no'
         # Convert 'email_sent' field
-        converted_row[9] = 'yes' if converted_row[9] == 1 else 'no'
+        converted_row[10] = 'yes' if converted_row[10] == 1 else 'no'
         converted_rows.append(converted_row)
 
 

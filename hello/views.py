@@ -209,23 +209,14 @@ def add_new_data(request, response=None):
                             # Map "yes" and "no" values to boolean values
                             boolean_map = {
                                 "yes": True,
+                                "Yes": True,
                                 "no": False,
-                                "TRUE": True,
-                                "FALSE": False,
-                                "True": True,
-                                "False": False,
+                                "No": False,
                             }
 
-                            # Function to convert "yes" and "no" values to boolean values or "N/A" for blank rows
-                            def map_to_boolean(value):
-                                if value.strip() == "":
-                                    return "N/A"
-                                return boolean_map.get(value.lower(), False)
-
-                            # Example usage:
-                            ext_alumni = map_to_boolean(ext_alumni)
-                            ext_release_info = map_to_boolean(ext_release_info)
-
+                            # Convert "yes" and "no" values to boolean values
+                            ext_alumni = boolean_map.get(ext_alumni.lower(), False)
+                            ext_release_info = boolean_map.get(ext_release_info.lower(), False)
 
                             # Create a new entry in the Master_list table
                             entry = db_model(
@@ -626,28 +617,32 @@ def update_entry(request):
 
 
 @login_required
-def db_display(request, page=1): #this function displays all of the entries in the database
+def db_display(request, page=1):
     with connections['default'].cursor() as cursor:
-        cursor.execute("SELECT * FROM Master_list") #displaying all entries in the Master_list table
-        rows = cursor.fetchall() 
+        cursor.execute("SELECT * FROM Master_list")
+        rows = cursor.fetchall()
+
     converted_rows = []
     for row in rows:
         converted_row = list(row)
         # Convert 'alumni' field
-        converted_row[5] = 'yes' if converted_row[4] == 1 else 'no'
+        converted_row[5] = 'yes' if converted_row[5] == 1 else 'no'
         # Convert 'release_info' field
-        converted_row[6] = 'yes' if converted_row[5] == 1 else 'no'
+        converted_row[6] = 'yes' if converted_row[6] == 1 else 'no'
         # Convert 'checked_in' field
         converted_row[7] = 'yes' if converted_row[7] == 1 else 'no'
         # Convert 'email_sent' field
         converted_row[10] = 'yes' if converted_row[10] == 1 else 'no'
+        # Convert 'table_number' field
+        converted_row[9] = 'yes' if converted_row[9] == 1 else 'no'
         converted_rows.append(converted_row)
 
-    paginator = Paginator(converted_rows, 100) #the number determines how many entries are displayed per page
+
+    paginator = Paginator(converted_rows, 100)
     page_obj = paginator.get_page(page)
 
-    url = reverse('db_display', args=[page],)  # Get the URL for the current page
-    return render(request, "hello/db_display.html", {'page_obj': page_obj, 'url': url})
+    return render(request, "hello/db_display.html", {'page_obj': page_obj})
+
 
 
 @login_required

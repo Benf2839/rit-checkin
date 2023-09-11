@@ -216,9 +216,16 @@ def add_new_data(request, response=None):
                                 "False": False,
                             }
 
-                            # Convert "yes" and "no" values to boolean values
-                            ext_alumni = boolean_map.get(ext_alumni.lower(), False)
-                            ext_release_info = boolean_map.get(ext_release_info.lower(), False)
+                            # Function to convert "yes" and "no" values to boolean values or "N/A" for blank rows
+                            def map_to_boolean(value):
+                                if value.strip() == "":
+                                    return "N/A"
+                                return boolean_map.get(value.lower(), False)
+
+                            # Example usage:
+                            ext_alumni = map_to_boolean(ext_alumni)
+                            ext_release_info = map_to_boolean(ext_release_info)
+
 
                             # Create a new entry in the Master_list table
                             entry = db_model(

@@ -315,7 +315,7 @@ def send_qr_email(request):
                     recipient_list = [record.email]
                     template = "hello/qr_code/qr_code_email.html"  # Path to the email template
                     # Specify the path to your .png file
-                    attachment_path = "hello/static/hello/cat.png"
+        #            attachment_path = "hello/static/hello/cat.png"
                     context = {
                         'first_name': record.first_name,
                         'last_name': record.last_name,
@@ -330,9 +330,9 @@ def send_qr_email(request):
                     email = EmailMessage(subject, email_content, email_from, recipient_list, connection=connection)
                     
                     # Extract the filename from the attachment_path
-                    attachment_filename = os.path.basename(attachment_path)
-                    with open(attachment_path, 'rb') as attachment_file:
-                        email.attach(attachment_filename, attachment_file.read(), 'image/png')
+        #            attachment_filename = os.path.basename(attachment_path)
+        #            with open(attachment_path, 'rb') as attachment_file:
+        #                email.attach(attachment_filename, attachment_file.read(), 'image/png')
                     
                     try:
                         email.send()

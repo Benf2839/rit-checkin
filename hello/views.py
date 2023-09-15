@@ -436,7 +436,7 @@ def search_by_id(request):  # searches the database for a specific id number
         return render(request, 'hello/search.html')  # renders the search page
 
 
-@login_required
+# @login_required
 @transaction.atomic
 def add_entry(request):
     if request.method == 'POST':

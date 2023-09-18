@@ -26,6 +26,7 @@ import sys
 from django.http import HttpResponseServerError
 import openpyxl
 from django.http import HttpResponseBadRequest
+from tasks import send_qr_code_email
 
 
 # Define the regular expression patterns
@@ -229,14 +230,15 @@ def add_new_data(request, response=None):
                             }
 
                             # Convert "yes" and "no" values to boolean values
-                            ext_alumni = boolean_map.get(
-                                ext_alumni.lower(), False)
+                            # If the value is not "yes" or "no", set it to None
+                            ext_alumni = boolean_map.get(ext_alumni, None)
+                            # If the value is not "yes" or "no", set it to None
                             ext_release_info = boolean_map.get(
-                                ext_release_info.lower(), False)
+                                ext_release_info, None)
 
                             # Create a new entry in the Master_list table
                             entry = db_model(
-                                # assign the id_number column with the django autoincremented value
+                                # assign the id_number column with the Django auto-incremented value
                                 id_number=None,
                                 company_name=ext_company_name,
                                 first_name=ext_first_name,
@@ -250,11 +252,6 @@ def add_new_data(request, response=None):
                                 email_sent=False,
                             )
                             entry.save()  # Save the entry to the database
-                    else:
-
-                        messages.success(
-                            request, 'all columns imported successfully')
-                        break  # Stop iterating over rows if all required fields are empty
 
                 messages.success(request, 'Data imported successfully.')
                 # Render the database upload page
@@ -324,6 +321,31 @@ def send_qr_email(request):
             records = db_model.objects.filter(email_sent=False)
 
             for record in records:
+                # Queue the email sending task with the record's ID
+                send_qr_code_email.delay(record.id)
+                successful_emails.append(record.email)
+
+            # Display success message with the number of emails queued
+            messages.success(
+                request, f"{len(successful_emails)} emails queued for sending.")
+        except Exception as e:
+            messages.error(
+                request, f"An error occurred while queuing emails: {str(e)}")
+
+    return render(request, 'hello/qr_code/qr_code_email_sent.html')
+
+
+""" def send_qr_email(request):
+    if request.method == "POST":
+        try:
+            # Initialize lists to store successful and failed email addresses
+            successful_emails = []
+            failed_emails = []
+
+            # Retrieve all records where email_sent is False
+            records = db_model.objects.filter(email_sent=False)
+
+            for record in records:
                 with get_connection(
                     host=settings.EMAIL_HOST,
                     port=settings.EMAIL_PORT,
@@ -379,6 +401,7 @@ def send_qr_email(request):
                 request, f"An error occurred while sending emails: {str(e)}")
 
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
+ """
 
 
 def qr_email_page(request):
@@ -644,6 +667,9 @@ def update_entry(request):
 
 @login_required
 def db_display(request, page=1):
+    # Check if filter_blanks parameter is present in the URL
+    filter_blanks = request.GET.get('filter_blanks')
+
     with connections['default'].cursor() as cursor:
         cursor.execute("SELECT * FROM Master_list")
         rows = cursor.fetchall()
@@ -652,17 +678,45 @@ def db_display(request, page=1):
     for row in rows:
         converted_row = list(row)
         # Convert 'alumni' field
-        converted_row[5] = 'yes' if converted_row[5] == 1 else 'no'
+        if converted_row[5] == 1:
+            converted_row[5] = 'yes'
+        elif converted_row[5] == 0:
+            converted_row[5] = 'no'
+        else:
+            converted_row[5] = 'null'  # Handle null value
         # Convert 'release_info' field
-        converted_row[6] = 'yes' if converted_row[6] == 1 else 'no'
+        if converted_row[6] == 1:
+            converted_row[6] = 'yes'
+        elif converted_row[6] == 0:
+            converted_row[6] = 'no'
+        else:
+            converted_row[6] = 'null'  # Handle null value
         # Convert 'checked_in' field
-        converted_row[7] = 'yes' if converted_row[7] == 1 else 'no'
+        if converted_row[7] == 1:
+            converted_row[7] = 'yes'
+        elif converted_row[7] == 0:
+            converted_row[7] = 'no'
+        else:
+            converted_row[7] = 'null'  # Handle null value
         # Convert 'email_sent' field
-        converted_row[10] = 'yes' if converted_row[10] == 1 else 'no'
+        if converted_row[10] == 1:
+            converted_row[10] = 'yes'
+        elif converted_row[10] == 0:
+            converted_row[10] = 'no'
+        else:
+            converted_row[10] = 'null'
         converted_rows.append(converted_row)
 
-    # the number sets number of records per page
-    paginator = Paginator(converted_rows, 25)
+    # Filter rows with empty entries if 'filter_blanks' is in the request
+    if filter_blanks == 'true':
+        # Filter rows with blanks
+        filtered_rows = [row for row in converted_rows if 'null' in row]
+    else:
+        # Show all entries
+        filtered_rows = converted_rows
+
+    # the number sets the number of records per page
+    paginator = Paginator(filtered_rows, 25)
     page_obj = paginator.get_page(page)
 
     return render(request, "hello/db_display.html", {'page_obj': page_obj})

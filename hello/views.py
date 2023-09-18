@@ -1,3 +1,4 @@
+from mailqueue.models import MailerMessage  # Import the MailerMessage model
 from django.utils.timezone import datetime
 from django.views.generic import ListView
 from django.db import connections
@@ -25,8 +26,13 @@ import traceback
 import sys
 from django.http import HttpResponseServerError
 import openpyxl
-from django.http import HttpResponseBadRequest
-from tasks import send_qr_code_email
+from mailqueue.models import MailerMessage
+from django.conf import settings
+from django.core.mail import get_connection, EmailMessage
+from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from celery import shared_task, app
 
 
 # Define the regular expression patterns
@@ -310,6 +316,7 @@ def send_reset_email(request):
     return render(request, 'password_reset_email.html')
 
 
+""" 
 def send_qr_email(request):
     if request.method == "POST":
         try:
@@ -333,9 +340,10 @@ def send_qr_email(request):
                 request, f"An error occurred while queuing emails: {str(e)}")
 
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
+ """
 
 
-""" def send_qr_email(request):
+def send_qr_email(request):
     if request.method == "POST":
         try:
             # Initialize lists to store successful and failed email addresses
@@ -346,46 +354,37 @@ def send_qr_email(request):
             records = db_model.objects.filter(email_sent=False)
 
             for record in records:
-                with get_connection(
-                    host=settings.EMAIL_HOST,
-                    port=settings.EMAIL_PORT,
-                    username=settings.EMAIL_HOST_USER,
-                    password=settings.EMAIL_HOST_PASSWORD,
-                    use_tls=settings.EMAIL_USE_TLS
-                ) as connection:
-                    subject = "Here is your QR code for check-in"
-                    email_from = settings.DEFAULT_FROM_EMAIL
-                    recipient_list = [record.email]
-                    template = "hello/qr_code/qr_code_email.html"  # Path to the email template
-                    # Specify the path to your .png file
-        #            attachment_path = "hello/static/hello/cat.png"
-                    context = {
-                        'first_name': record.first_name,
-                        'last_name': record.last_name,
-                        'id_number': record.id_number,
-                        'email': record.email,
-                        'table_number': record.table_number,
-                    }  # Add any additional context variables if needed
+                subject = "Here is your QR code for check-in"
+                email_from = settings.DEFAULT_FROM_EMAIL
+                recipient_list = [record.email]
+                template = "hello/qr_code/qr_code_email.html"  # Path to the email template
+                context = {
+                    'first_name': record.first_name,
+                    'last_name': record.last_name,
+                    'id_number': record.id_number,
+                    'email': record.email,
+                    'table_number': record.table_number,
+                }  # Add any additional context variables if needed
 
-                    # Render the email content using the template and context
-                    email_content = render_to_string(template, context)
-                    # Send the email
-                    email = EmailMessage(
-                        subject, email_content, email_from, recipient_list, connection=connection)
+                # Render the email content using the template and context
+                email_content = render_to_string(template, context)
 
-                    # Extract the filename from the attachment_path
-        #            attachment_filename = os.path.basename(attachment_path)
-        #            with open(attachment_path, 'rb') as attachment_file:
-        #                email.attach(attachment_filename, attachment_file.read(), 'image/png')
+                # Create a MailerMessage object and save it to the mail queue
+                msg = MailerMessage()
+                msg.subject = subject
+                msg.to_address = record.email
+                msg.from_address = f'{settings.DEFAULT_FROM_EMAIL} <{settings.EMAIL_HOST_USER}>'
+                msg.html_content = email_content
 
-                    try:
-                        email.send()
-                        # Change email_sent to True for the current record
-                        record.email_sent = True
-                        record.save()
-                        successful_emails.append(record.email)
-                    except Exception as e:
-                        failed_emails.append(record.email)
+                try:
+                    # Save the email to the mail queue
+                    msg.save()
+                    # Change email_sent to True for the current record
+                    record.email_sent = True
+                    record.save()
+                    successful_emails.append(record.email)
+                except Exception as e:
+                    failed_emails.append(record.email)
 
             # Display success message with the number of emails sent
             messages.success(
@@ -401,7 +400,6 @@ def send_qr_email(request):
                 request, f"An error occurred while sending emails: {str(e)}")
 
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
- """
 
 
 def qr_email_page(request):

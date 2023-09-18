@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+from celery import Celery
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hello',
+    'mailqueue',
 ]
 
 INTERNAL_IPS = [
@@ -175,13 +177,39 @@ STATICFILES_DIRS = (
 )
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'mailer.backend.DbBackend'
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
-# 'guardia2@mocha3039.mochahost.com'  # Replace with your email address
 EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
 EMAIL_HOST_PASSWORD = 'Hireatiger2018'  # Replace with your email password
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
+
+
+# Celery settings
+
+# Define the Celery app
+app = Celery('hello')
+
+# Load task modules from all registered Django app configs.
+app.config_from_object('django.conf:settings', namespace='CELERY')
+
+# Use the Django database as the message broker for Celery
+app.conf.broker
+
+# If you're using Celery, set this to True
+MAILQUEUE_CELERY = True
+
+# Enable the mail queue. If this is set to False, the mail queue will be disabled and emails will be
+# sent immediately instead.
+MAILQUEUE_QUEUE_UP = True
+
+# Maximum amount of emails to send during each queue run
+MAILQUEUE_LIMIT = 50
+
+# If MAILQUEUE_STORAGE is set to True, will ignore your default storage settings
+# and use Django's filesystem storage instead (stores them in MAILQUEUE_ATTACHMENT_DIR)
+MAILQUEUE_STORAGE = False
+MAILQUEUE_ATTACHMENT_DIR = 'mailqueue-attachments'

@@ -12,8 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-
-
+from celery import Celery
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,8 +36,7 @@ CSRF_COOKIE_SECURE = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
-# When deploying to Azure App Service, add you <name>.azurewebsites.net 
+# When deploying to Azure App Service, add you <name>.azurewebsites.net
 # domain to ALLOWED_HOSTS; you get an error message if you forget. When you add
 # a specific host, you must also add 'localhost' and/or '127.0.0.1' for local
 # debugging (which are enabled by default when ALLOWED_HOSTS is empty.)
@@ -62,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hello',
+    'mailqueue',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +78,7 @@ ROOT_URLCONF = 'hello.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join( BASE_DIR, 'hello/templates' )],
+        'DIRS': [os.path.join(BASE_DIR, 'hello/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,18 +99,18 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 
 DATABASES = {
     'default': {
-'ENGINE': 'django.db.backends.mysql',
-'NAME': 'guardia2_destiny',
-'USER': 'guardia2_ben',
-'PASSWORD': 'S)[],mtE0!8V',
-'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
-'PORT': '3306',
-'OPTIONS': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'guardia2_destiny',
+        'USER': 'guardia2_ben',
+        'PASSWORD': 'S)[],mtE0!8V',
+        # use localhost for on server testing and 198.38.88.120 for computer testing
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
             'init_command': "SET time_zone='-04:00';",
         },
+    }
 }
-}
-
 
 
 # Password validation
@@ -140,8 +139,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'America/New_York'
 
-USE_TZ = True # use this to make the time zone work
-
+USE_TZ = True  # use this to make the time zone work
 
 
 # Static files (CSS, JavaScript, Images)
@@ -154,31 +152,56 @@ STATIC_URL = '/static/'
 # from this location, rather than relying on the app server to serve those files
 # from various locations in the app. Doing so results in better overall performance.
 
- # Static asset configuration
+# Static asset configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = '/home/guardia2/public_html/static_collected'
 STATICFILES_DIRS = (
-os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'mailer.backend.DbBackend'
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
-EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'#'guardia2@mocha3039.mochahost.com'  # Replace with your email address
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')  # Replace with your email password
+# 'guardia2@mocha3039.mochahost.com'  # Replace with your email address
+EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
+# Replace with your email password
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
 
 
+# Celery settings
 
+# Define the Celery app
+app = Celery('hello')
 
+# Load task modules from all registered Django app configs.
+app.config_from_object('django.conf:settings', namespace='CELERY')
 
-#WALLETPASS = {
+# Use the Django database as the message broker for Celery
+app.conf.broker
+
+# If you're using Celery, set this to True
+MAILQUEUE_CELERY = True
+
+# Enable the mail queue. If this is set to False, the mail queue will be disabled and emails will be
+# sent immediately instead.
+MAILQUEUE_QUEUE_UP = True
+
+# Maximum amount of emails to send during each queue run
+MAILQUEUE_LIMIT = 50
+
+# If MAILQUEUE_STORAGE is set to True, will ignore your default storage settings
+# and use Django's filesystem storage instead (stores them in MAILQUEUE_ATTACHMENT_DIR)
+MAILQUEUE_STORAGE = False
+MAILQUEUE_ATTACHMENT_DIR = 'mailqueue-attachments'
+
+# WALLETPASS = {
 #    'CERT_PATH': '',
 #    'KEY_PATH': '',
-    # (None if isn't protected)
-    # MUST be in bytes-like
-#}
+# (None if isn't protected)
+# MUST be in bytes-like
+# }

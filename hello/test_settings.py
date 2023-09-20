@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-from celery import Celery
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -188,19 +187,8 @@ DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
 
 
-# Celery settings
-
-# Define the Celery app
-app = Celery('hello')
-
-# Load task modules from all registered Django app configs.
-app.config_from_object('django.conf:settings', namespace='CELERY')
-
-# Use the Django database as the message broker for Celery
-app.conf.broker
-
 # If you're using Celery, set this to True
-MAILQUEUE_CELERY = True
+MAILQUEUE_CELERY = False
 
 # Enable the mail queue. If this is set to False, the mail queue will be disabled and emails will be
 # sent immediately instead.

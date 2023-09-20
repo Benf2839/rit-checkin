@@ -32,7 +32,6 @@ from django.core.mail import get_connection, EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from celery import shared_task, app
 
 
 # Define the regular expression patterns

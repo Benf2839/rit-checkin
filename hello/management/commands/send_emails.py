@@ -1,11 +1,11 @@
 # yourapp/management/commands/send_emails.py
 from django.core.management.base import BaseCommand
 from hello.models import EmailConfiguration
+from hello.models import db_model
 import time
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
-
 
 
 class Command(BaseCommand):
@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         config = EmailConfiguration.objects.first()
         if config.auto_email_sending_active:
-#Email sending code starts here
+            # Email sending code starts here
             try:
                 # Initialize lists to store successful and failed email addresses
                 successful_emails = []
@@ -31,7 +31,8 @@ class Command(BaseCommand):
 
                 for batch_number in range(num_batches):
                     start_index = batch_number * batch_size
-                    end_index = min((batch_number + 1) * batch_size, total_records)
+                    end_index = min((batch_number + 1) *
+                                    batch_size, total_records)
                     batch_records = records[start_index:end_index]
 
                     for record in batch_records:
@@ -66,7 +67,8 @@ class Command(BaseCommand):
 
             except Exception as e:
                 return [], [str(e)]
-#Email sending code ends here
+# Email sending code ends here
             self.stdout.write(self.style.SUCCESS('Emails sent successfully.'))
         else:
-            self.stdout.write(self.style.SUCCESS('Auto email sending is deactivated.'))
+            self.stdout.write(self.style.SUCCESS(
+                'Auto email sending is deactivated.'))

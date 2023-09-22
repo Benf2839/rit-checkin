@@ -1,4 +1,3 @@
-from mailqueue.models import MailerMessage  # Import the MailerMessage model
 from django.utils.timezone import datetime
 from django.views.generic import ListView
 from django.db import connections
@@ -26,12 +25,16 @@ import traceback
 import sys
 from django.http import HttpResponseServerError
 import openpyxl
-from mailqueue.models import MailerMessage
+#from email_sender import send_qr_emails
 from django.conf import settings
 from django.core.mail import get_connection, EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+import time
+from django.conf import settings
+
+
 
 
 # Define the regular expression patterns
@@ -315,7 +318,80 @@ def send_reset_email(request):
     return render(request, 'password_reset_email.html')
 
 
-""" 
+
+
+
+def send_qr_emails(request):
+    if request.method == "POST":
+        try:
+            # Initialize lists to store successful and failed email addresses
+            successful_emails = []
+            failed_emails = []
+
+            # Retrieve all records where email_sent is False
+            records = db_model.objects.filter(email_sent=False)
+
+            batch_size = getattr(settings, 'BATCH_SIZE', 50)  # Get BATCH_SIZE from settings, default to 50 if not set
+            batch_delay = getattr(settings, 'BATCH_DELAY', 60)  # Get BATCH_DELAY from settings, default to 60 seconds if not set
+
+            total_records = len(records)
+            num_batches = (total_records + batch_size - 1) // batch_size
+
+            for batch_number in range(num_batches):
+                start_index = batch_number * batch_size
+                end_index = min((batch_number + 1) * batch_size, total_records)
+                batch_records = records[start_index:end_index]
+
+                for record in batch_records:
+                    subject = "Here is your QR code for check-in"
+                    recipient_list = [record.email]
+                    template = "hello/qr_code/qr_code_email.html"  # Path to the email template
+                    context = {
+                        'first_name': record.first_name,
+                        'last_name': record.last_name,
+                        'id_number': record.id_number,
+                        'email': record.email,
+                        'table_number': record.table_number,
+                    }  # Add any additional context variables if needed
+
+                    # Render the email content using the template and context
+                    email_content = render_to_string(template, context)
+
+                    # Create an EmailMessage object and send it
+                    email = EmailMessage(
+                        subject, email_content, settings.DEFAULT_FROM_EMAIL, recipient_list)
+
+                    try:
+                        email.send()
+                        # Change email_sent to True for the current record
+                        record.email_sent = True
+                        record.save()
+                        successful_emails.append(record.email)
+                    except Exception as e:
+                        failed_emails.append(record.email)
+
+                # Add a cooldown period between batches
+                if batch_number < num_batches - 1:
+                    time.sleep(batch_delay)
+
+            # Display success message with the number of emails queued
+            messages.success(
+                request, f"{len(successful_emails)} emails queued successfully.")
+
+            # Display error message with the list of failed email addresses
+            if failed_emails:
+                messages.error(
+                    request, f"Failed to queue emails for the following addresses: {', '.join(failed_emails)}")
+
+        except Exception as e:
+            messages.error(
+                request, f"An error occurred while queuing emails: {str(e)}")
+
+    return render(request, 'hello/qr_code/qr_code_email_sent.html')
+
+
+
+"""
 def send_qr_email(request):
     if request.method == "POST":
         try:
@@ -339,51 +415,13 @@ def send_qr_email(request):
                 request, f"An error occurred while queuing emails: {str(e)}")
 
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
- """
+ 
 
 
 def send_qr_email(request):
     if request.method == "POST":
         try:
-            # Initialize lists to store successful and failed email addresses
-            successful_emails = []
-            failed_emails = []
-
-            # Retrieve all records where email_sent is False
-            records = db_model.objects.filter(email_sent=False)
-
-            for record in records:
-                subject = "Here is your QR code for check-in"
-                email_from = settings.DEFAULT_FROM_EMAIL
-                recipient_list = [record.email]
-                template = "hello/qr_code/qr_code_email.html"  # Path to the email template
-                context = {
-                    'first_name': record.first_name,
-                    'last_name': record.last_name,
-                    'id_number': record.id_number,
-                    'email': record.email,
-                    'table_number': record.table_number,
-                }  # Add any additional context variables if needed
-
-                # Render the email content using the template and context
-                email_content = render_to_string(template, context)
-
-                # Create a MailerMessage object and save it to the mail queue
-                msg = MailerMessage()
-                msg.subject = subject
-                msg.to_address = record.email
-                msg.from_address = f'{settings.DEFAULT_FROM_EMAIL} <{settings.EMAIL_HOST_USER}>'
-                msg.html_content = email_content
-
-                try:
-                    # Save the email to the mail queue
-                    msg.save()
-                    # Change email_sent to True for the current record
-                    record.email_sent = True
-                    record.save()
-                    successful_emails.append(record.email)
-                except Exception as e:
-                    failed_emails.append(record.email)
+            send_qr_emails();  # Send the emails
 
             # Display success message with the number of emails sent
             messages.success(
@@ -399,7 +437,7 @@ def send_qr_email(request):
                 request, f"An error occurred while sending emails: {str(e)}")
 
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
-
+"""
 
 def qr_email_page(request):
     return render(request, 'hello/qr_code/send_qr_code.html')

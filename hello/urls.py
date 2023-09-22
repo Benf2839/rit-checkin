@@ -23,7 +23,7 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(
         template_name='hello/registration/login.html'), name='login'),
     path('qr_email_page/', views.qr_email_page, name='qr_email_page'),
-    path('qr_email_page/send_qr_code/', views.send_qr_email, name='send_qr_code'),
+    path('qr_email_page/send_qr_code/', views.send_qr_emails, name='send_qr_code'),
     path('qr_email_success/', views.qr_email_success, name='qr_email_success'),
     path('add_new_data/', views.add_new_data, name='add_new_data'),
     path('export/', views.export_data, name='export_data'),

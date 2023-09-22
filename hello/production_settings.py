@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hello',
-    'mailqueue',
+    'mailer',
 ]
 
 MIDDLEWARE = [
@@ -163,29 +163,16 @@ EMAIL_BACKEND = 'mailer.backend.DbBackend'
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
 # 'guardia2@mocha3039.mochahost.com'  # Replace with your email address
-EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
+EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com' 
 # Replace with your email password
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = 'email_tracker.backends.EmailTrackerBackend'
 
 
-# If you're using Celery, set this to True
-MAILQUEUE_CELERY = False
-
-# Enable the mail queue. If this is set to False, the mail queue will be disabled and emails will be
-# sent immediately instead.
-MAILQUEUE_QUEUE_UP = True
-
-# Maximum amount of emails to send during each queue run
-MAILQUEUE_LIMIT = 50
-
-# If MAILQUEUE_STORAGE is set to True, will ignore your default storage settings
-# and use Django's filesystem storage instead (stores them in MAILQUEUE_ATTACHMENT_DIR)
-MAILQUEUE_STORAGE = False
-MAILQUEUE_ATTACHMENT_DIR = 'mailqueue-attachments'
 
 # WALLETPASS = {
 #    'CERT_PATH': '',

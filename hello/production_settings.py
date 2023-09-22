@@ -159,11 +159,11 @@ STATICFILES_DIRS = (
 )
 
 
-EMAIL_BACKEND = 'mailer.backend.DbBackend'
+# Email settings
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
 # 'guardia2@mocha3039.mochahost.com'  # Replace with your email address
-EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com' 
+EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
 # Replace with your email password
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True
@@ -171,7 +171,6 @@ EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_BACKEND = 'email_tracker.backends.EmailTrackerBackend'
-
 
 
 # WALLETPASS = {

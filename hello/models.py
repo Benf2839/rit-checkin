@@ -51,6 +51,9 @@ class db_model(models.Model): #creates a model for the checkin database
         return f"{self.company_name} - {self.first_name} - {self.last_name} - {self.email} - {self.alumni} - {self.release_info} - {self.id_number} - {self.checked_in} - {self.checked_in_time} - {self.table_number} - {self.email_sent}"
 
 
+class EmailConfiguration(models.Model):
+    auto_email_sending_active = models.BooleanField(default=False)
+
 class Pass(models.Model):
     serial_number = models.CharField(max_length=100)
     pass_instance = models.ForeignKey(db_model, on_delete=models.CASCADE) #creates a foreign key to the db_model

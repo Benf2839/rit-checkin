@@ -177,14 +177,14 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-#EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-#EMAIL_HOST_USER = 'd9976a400653fb'
-#EMAIL_HOST_PASSWORD = '7aa3899677cc7e'
-#EMAIL_PORT = '2525'
-EMAIL_HOST = 'mail.eventcheck-in.com'
-EMAIL_PORT = 2525
-EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
-EMAIL_HOST_PASSWORD = 'Hireatiger2018'  # Replace with your email password
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = 'd9976a400653fb'
+EMAIL_HOST_PASSWORD = '7aa3899677cc7e'
+EMAIL_PORT = '2525'
+#EMAIL_HOST = 'mail.eventcheck-in.com'
+#EMAIL_PORT = 2525
+#EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
+#EMAIL_HOST_PASSWORD = 'Hireatiger2018'  # Replace with your email password
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
@@ -195,5 +195,5 @@ EMAIL_LOG_ATTACHMENTS_PATH = "/home/guardia2/Web_app/attachments"
 
 
 FAIL_SILENTLY = True
-EMAIL_BATCH_SIZE = 50  # batch size for email sending
+EMAIL_BATCH_SIZE = 20  # batch size for email sending
 EMAIL_BATCH_DELAY = 300  # delay in seconds between batches

@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from django.db import connections
 from django.core.paginator import Paginator
 from django.urls import reverse
-from hello.models import db_model
+from hello.models import db_model, EmailConfiguration
 from django.utils import timezone
 from django.contrib import messages
 from django.db import transaction
@@ -33,7 +33,10 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 import time
 from django.conf import settings
-
+#from hello.send_emails import send_qr_code_emails
+from .forms import EmailConfigurationForm  # Import your EmailConfigurationForm
+from django.core.management import call_command
+from django.http import JsonResponse
 
 
 
@@ -321,6 +324,40 @@ def send_reset_email(request):
 
 
 
+def update_email_sending_status(request):
+    # Check if the request is a POST request
+    if request.method == 'POST':
+        # Get the current EmailConfiguration instance (assuming it has an ID of 1)
+        try:
+            config = EmailConfiguration.objects.get(pk=1)
+        except EmailConfiguration.DoesNotExist:
+            # Handle the case where the EmailConfiguration with ID 1 does not exist
+            messages.error(request, 'EmailConfiguration instance with ID 1 does not exist.')
+            return redirect('email_configuration_page')  # Redirect back to the configuration page
+
+        # Get the value of the checkbox from the request
+        auto_email_sending_active = request.POST.get('auto_email_sending_active', False)
+
+        # Update the EmailConfiguration instance with the new value
+        config.auto_email_sending_active = auto_email_sending_active
+        config.save()
+
+        messages.success(request, 'Email sending status updated successfully.')
+
+    # Redirect back to the configuration page (GET request or after POST)
+    return redirect('email_configuration_page')
+
+def email_configuration_page(request):
+    # Retrieve the EmailConfiguration instance (assuming it has an ID of 1)
+    try:
+        config = EmailConfiguration.objects.get(pk=1)
+    except EmailConfiguration.DoesNotExist:
+        # Handle the case where the EmailConfiguration with ID 1 does not exist
+        config = None
+
+    return render(request, 'hello/qr_code/send_qr_code.html', {'config': config})
+
+"""
 def send_qr_emails(request):
     if request.method == "POST":
         try:
@@ -331,8 +368,8 @@ def send_qr_emails(request):
             # Retrieve all records where email_sent is False
             records = db_model.objects.filter(email_sent=False)
 
-            batch_size = getattr(settings, 'BATCH_SIZE', 50)  # Get BATCH_SIZE from settings, default to 50 if not set
-            batch_delay = getattr(settings, 'BATCH_DELAY', 60)  # Get BATCH_DELAY from settings, default to 60 seconds if not set
+            batch_size = getattr(settings, 'BATCH_SIZE', 20)  # Get BATCH_SIZE from settings, default to 50 if not set
+            batch_delay = getattr(settings, 'BATCH_DELAY', 300)  # Get BATCH_DELAY from settings, default to 300 seconds if not set
 
             total_records = len(records)
             num_batches = (total_records + batch_size - 1) // batch_size
@@ -388,56 +425,8 @@ def send_qr_emails(request):
                 request, f"An error occurred while queuing emails: {str(e)}")
 
     return render(request, 'hello/qr_code/qr_code_email_sent.html')
-
-
-
 """
-def send_qr_email(request):
-    if request.method == "POST":
-        try:
-            # Initialize lists to store successful and failed email addresses
-            successful_emails = []
-            failed_emails = []
 
-            # Retrieve all records where email_sent is False
-            records = db_model.objects.filter(email_sent=False)
-
-            for record in records:
-                # Queue the email sending task with the record's ID
-                send_qr_code_email.delay(record.id)
-                successful_emails.append(record.email)
-
-            # Display success message with the number of emails queued
-            messages.success(
-                request, f"{len(successful_emails)} emails queued for sending.")
-        except Exception as e:
-            messages.error(
-                request, f"An error occurred while queuing emails: {str(e)}")
-
-    return render(request, 'hello/qr_code/qr_code_email_sent.html')
- 
-
-
-def send_qr_email(request):
-    if request.method == "POST":
-        try:
-            send_qr_emails();  # Send the emails
-
-            # Display success message with the number of emails sent
-            messages.success(
-                request, f"{len(successful_emails)} emails sent successfully.")
-
-            # Display error message with the list of failed email addresses
-            if failed_emails:
-                messages.error(
-                    request, f"Failed to send emails to the following addresses: {', '.join(failed_emails)}")
-
-        except Exception as e:
-            messages.error(
-                request, f"An error occurred while sending emails: {str(e)}")
-
-    return render(request, 'hello/qr_code/qr_code_email_sent.html')
-"""
 
 def qr_email_page(request):
     return render(request, 'hello/qr_code/send_qr_code.html')

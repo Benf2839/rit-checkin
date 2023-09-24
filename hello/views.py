@@ -520,6 +520,9 @@ def add_entry(request):
         if errors > 0:
             return render(request, 'hello/add_entry.html')
 
+        current_time = datetime.now()
+
+
         # Create an instance of db_model model and set the field values
         checkin_entry = db_model(
             company_name=company_name,
@@ -530,7 +533,7 @@ def add_entry(request):
             release_info=release_info,
             # id_number=int(id_number),
             checked_in=True,
-            checked_in_time=datetime.now(),  # Autopopulate with current time and date,
+            checked_in_time=current_time,  # Autopopulate with current time and date,
             # table_number=table_number,
             email_sent=False,
         )

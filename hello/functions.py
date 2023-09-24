@@ -13,7 +13,8 @@ def send_emails_in_batches(batch_size):
         # Check if auto email sending is active
         config = EmailConfiguration.objects.filter(id=1).first()
         if not config or not config.auto_email_sending_active:
-            return status.append("Auto email sending is disabled, no emails were sent.")
+            status.append("Auto email sending is disabled, no emails were sent.")
+            return status, successful_emails, failed_emails
 
         status.append("Auto email sending is active.")
         # Retrieve all records where email_sent is False and limit to batch_size

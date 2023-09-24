@@ -1,7 +1,7 @@
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
-from hello.models import db_model  # Replace with your actual model
+from hello.models import db_model  
 
 def send_emails_in_batches(batch_size):
     try:
@@ -35,9 +35,10 @@ def send_emails_in_batches(batch_size):
                 record.save()
                 successful_emails.append(record.email)
             except Exception as e:
-                failed_emails.append(record.email)
+                # Append the failed email and exception details to the failed_emails list
+                failed_emails.append({'email': record.email, 'error': str(e)})
 
         return successful_emails, failed_emails
 
     except Exception as e:
-        return [], [str(e)]
+        return [], [{'error': str(e)}]

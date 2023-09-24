@@ -10,4 +10,8 @@ class Command(BaseCommand):
 
         # Log or print the results if needed
         self.stdout.write(self.style.SUCCESS(f'Successful emails: {successful_emails}'))
-        self.stdout.write(self.style.ERROR(f'Failed emails: {failed_emails}'))
+
+        # Print detailed error data for failed emails
+        for failed_email in failed_emails:
+            self.stdout.write(self.style.ERROR(f'Failed email: {failed_email["email"]}'))
+            self.stdout.write(self.style.ERROR(f'Error details: {failed_email["error"]}'))

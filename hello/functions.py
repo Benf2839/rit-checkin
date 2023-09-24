@@ -1,10 +1,15 @@
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
-from hello.models import db_model  
+from hello.models import db_model, EmailConfiguration  # Import your models
 
 def send_emails_in_batches(batch_size):
     try:
+        # Check if auto email sending is enabled
+        email_config = EmailConfiguration.objects.filter(pk=1).first()
+        if email_config and email_config.auto_email_sending_active == 0:
+            return [], ["Auto email sending is disabled, so no emails were sent."]
+
         # Initialize lists to store successful and failed email addresses
         successful_emails = []
         failed_emails = []

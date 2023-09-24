@@ -48,4 +48,4 @@ def send_emails_in_batches(batch_size):
         return status, successful_emails, failed_emails
 
     except Exception as e:
-        return [], [str(e)]
+        return [], [str(e)], status, succssful_emails, failed_emails

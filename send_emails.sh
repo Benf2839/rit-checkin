@@ -7,4 +7,4 @@ cd /home/guardia2/Web_apps
 source /home/guardia2/virtualenv/Web_apps/3.10/bin/activate && cd /home/guardia2/Web_apps
 
 # Run the send_emails management command
-python manage.py send_emails
+python manage.py qr_batch

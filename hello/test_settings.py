@@ -192,5 +192,5 @@ EMAIL_LOG_ATTACHMENTS_PATH = "/home/guardia2/Web_app/attachments"
 
 
 FAIL_SILENTLY = True
-EMAIL_BATCH_SIZE = 20  # batch size for email sending
-EMAIL_BATCH_DELAY = 300  # delay in seconds between batches
+#EMAIL_BATCH_SIZE = 20  # batch size for email sending
+#EMAIL_BATCH_DELAY = 300  # delay in seconds between batches

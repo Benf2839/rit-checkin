@@ -24,7 +24,9 @@ class Command(BaseCommand):
                 records = db_model.objects.filter(email_sent=False)
 
                 batch_size = 20  # Number of emails to send at a time
-                batch_delay = 300  # Delay in seconds between batches
+                
+                #removing batch delay because cron job does same thing
+                #batch_delay = 300  # Delay in seconds between batches
 
                 total_records = len(records)
                 num_batches = (total_records + batch_size - 1) // batch_size

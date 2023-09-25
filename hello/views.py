@@ -25,7 +25,7 @@ import traceback
 import sys
 from django.http import HttpResponseServerError
 import openpyxl
-#from email_sender import send_qr_emails
+# from email_sender import send_qr_emails
 from django.conf import settings
 from django.core.mail import get_connection, EmailMessage
 from django.template.loader import render_to_string
@@ -33,11 +33,11 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 import time
 from django.conf import settings
-#from hello.send_emails import send_qr_code_emails
+# from hello.send_emails import send_qr_code_emails
 from .forms import EmailConfigurationForm  # Import your EmailConfigurationForm
 from django.core.management import call_command
 from django.http import JsonResponse
-
+from datetime import timedelta, datetime
 
 
 # Define the regular expression patterns
@@ -321,9 +321,6 @@ def send_reset_email(request):
     return render(request, 'password_reset_email.html')
 
 
-
-
-
 def update_email_sending_status(request):
     # Check if the request is a POST request
     if request.method == 'POST':
@@ -332,11 +329,14 @@ def update_email_sending_status(request):
             config = EmailConfiguration.objects.get(pk=1)
         except EmailConfiguration.DoesNotExist:
             # Handle the case where the EmailConfiguration with ID 1 does not exist
-            messages.error(request, 'EmailConfiguration instance with ID 1 does not exist.')
-            return redirect('email_configuration_page')  # Redirect back to the configuration page
+            messages.error(
+                request, 'EmailConfiguration instance with ID 1 does not exist.')
+            # Redirect back to the configuration page
+            return redirect('email_configuration_page')
 
         # Get the value of the checkbox from the request
-        auto_email_sending_active = request.POST.get('auto_email_sending_active', False)
+        auto_email_sending_active = request.POST.get(
+            'auto_email_sending_active', False)
 
         # Update the EmailConfiguration instance with the new value
         config.auto_email_sending_active = auto_email_sending_active
@@ -347,6 +347,7 @@ def update_email_sending_status(request):
     # Redirect back to the configuration page (GET request or after POST)
     return redirect('email_configuration_page')
 
+
 def email_configuration_page(request):
     # Retrieve the EmailConfiguration instance (assuming it has an ID of 1)
     try:
@@ -356,6 +357,7 @@ def email_configuration_page(request):
         config = None
 
     return render(request, 'hello/qr_code/send_qr_code.html', {'config': config})
+
 
 """
 def send_qr_emails(request):
@@ -522,7 +524,7 @@ def add_entry(request):
 
         current_time = datetime.now()
         time_to_subtract = timedelta(hours=4)
-        shifted_datetime = current_datetime - time_to_subtract
+        shifted_datetime = current_time - time_to_subtract
 
         # Create an instance of db_model model and set the field values
         checkin_entry = db_model(

@@ -521,7 +521,8 @@ def add_entry(request):
             return render(request, 'hello/add_entry.html')
 
         current_time = datetime.now()
-
+        time_to_subtract = timedelta(hours=4)
+        shifted_datetime = current_datetime - time_to_subtract
 
         # Create an instance of db_model model and set the field values
         checkin_entry = db_model(
@@ -533,7 +534,7 @@ def add_entry(request):
             release_info=release_info,
             # id_number=int(id_number),
             checked_in=True,
-            checked_in_time=current_time,  # Autopopulate with current time and date,
+            checked_in_time=shifted_datetime,  # Autopopulate with current time and date,
             # table_number=table_number,
             email_sent=False,
         )

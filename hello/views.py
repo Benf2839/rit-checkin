@@ -25,7 +25,6 @@ import traceback
 import sys
 from django.http import HttpResponseServerError
 import openpyxl
-# from email_sender import send_qr_emails
 from django.conf import settings
 from django.core.mail import get_connection, EmailMessage
 from django.template.loader import render_to_string
@@ -33,11 +32,12 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 import time
 from django.conf import settings
-# from hello.send_emails import send_qr_code_emails
-from .forms import EmailConfigurationForm  # Import your EmailConfigurationForm
 from django.core.management import call_command
 from django.http import JsonResponse
 from datetime import timedelta, datetime
+from django.views.decorators.cache import never_cache
+import logging
+
 
 
 # Define the regular expression patterns
@@ -321,31 +321,20 @@ def send_reset_email(request):
     return render(request, 'password_reset_email.html')
 
 
-def update_email_sending_status(request):
-    # Check if the request is a POST request
-    if request.method == 'POST':
-        # Get the current EmailConfiguration instance (assuming it has an ID of 1)
-        try:
-            config = EmailConfiguration.objects.get(pk=1)
-        except EmailConfiguration.DoesNotExist:
-            # Handle the case where the EmailConfiguration with ID 1 does not exist
-            messages.error(
-                request, 'EmailConfiguration instance with ID 1 does not exist.')
-            # Redirect back to the configuration page
-            return redirect('email_configuration_page')
 
-        # Get the value of the checkbox from the request
-        auto_email_sending_active = request.POST.get(
-            'auto_email_sending_active', False)
+@never_cache
+def email_sending_status(request):
+    try:
+        # Retrieve the EmailConfiguration instance (assuming it has an ID of 1)
+        config = EmailConfiguration.objects.get(id=1)
 
-        # Update the EmailConfiguration instance with the new value
-        config.auto_email_sending_active = auto_email_sending_active
-        config.save()
+        # Get the value of the auto_email_sending_active column (already boolean)
+        currentStatus = config.auto_email_sending_active
 
-        messages.success(request, 'Email sending status updated successfully.')
-
-    # Redirect back to the configuration page (GET request or after POST)
-    return redirect('email_configuration_page')
+        return render(request, 'hello/qr_code/send_qr_code.html', {'currentStatus': currentStatus})
+    except EmailConfiguration.DoesNotExist:
+        # Handle the case where no EmailConfiguration instance with ID 1 is found
+        return render(request, 'hello/qr_code/send_qr_code.html', {'currentStatus': False})
 
 
 def email_configuration_page(request):

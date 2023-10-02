@@ -52,7 +52,7 @@ class db_model(models.Model): #creates a model for the checkin database
 
 
 class EmailConfiguration(models.Model):
-    auto_email_sending_active = models.BooleanField(default=False)
+    auto_email_sending_active = models.BooleanField()
 
 class Pass(models.Model):
     serial_number = models.CharField(max_length=100)

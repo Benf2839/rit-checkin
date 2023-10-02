@@ -1,29 +1,15 @@
-{% extends "hello/layout.html" %}
-{% block content %}
-
-{% load static %}
+{% extends "hello/layout.html" %} {% block content %} {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
 <h2>Email Configuration</h2>
-<p>Toggle the checkbox to enable or disable auto email sending.</p>
+<p>Current status of email sending is: {{ currentStatus }}</p>
 
-<form method="post">
-  {% csrf_token %}
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="autoEmailSendingCheckbox" name="auto_email_sending_active" {% if config.auto_email_sending_active %}checked{% endif %}>
-    <label class="form-check-label" for="autoEmailSendingCheckbox">Auto Email Sending</label>
-  </div>
-  <button type="submit" class="btn btn-primary">Save Config</button>
-</form>
-
-{% if config.auto_email_sending_active %}
-<div class="alert alert-success">
-  Auto email sending is enabled.
-</div>
+{% if currentStatus %}
+<p>Email Sending is currently active.</p>
 {% else %}
-<div class="alert alert-warning">
-  Auto email sending is disabled.
-</div>
+<p>Email Sending is currently inactive.</p>
 {% endif %}
+
+<form method="post">{% csrf_token %}</form>
 
 {% endblock %}

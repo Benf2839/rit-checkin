@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'hello',
     'mailer',
+    'email_log',
 ]
 
 MIDDLEWARE = [
@@ -170,8 +171,8 @@ EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
+EMAIL_BACKEND = 'email_log.backends.EmailBackend'
+EMAIL_LOG_LEVEL = 'DEBUG'
 # WALLETPASS = {
 #    'CERT_PATH': '',
 #    'KEY_PATH': '',

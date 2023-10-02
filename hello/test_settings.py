@@ -189,8 +189,7 @@ SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_BACKEND = 'email_log.backends.EmailBackend'
 EMAIL_LOG_SAVE_ATTACHMENTS = True
 EMAIL_LOG_ATTACHMENTS_PATH = "/home/guardia2/Web_app/attachments"
-
-
+EMAIL_LOG_LEVEL = 'DEBUG'
 FAIL_SILENTLY = True
-#EMAIL_BATCH_SIZE = 20  # batch size for email sending
-#EMAIL_BATCH_DELAY = 300  # delay in seconds between batches
+# EMAIL_BATCH_SIZE = 20  # batch size for email sending
+# EMAIL_BATCH_DELAY = 300  # delay in seconds between batches

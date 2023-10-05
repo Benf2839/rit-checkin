@@ -538,7 +538,7 @@ def add_entry(request):
     return render(request, 'hello/add_entry.html')
 
 
-@transaction.atomic
+
 def self_registration(request):
     if request.method == 'POST':
         try:

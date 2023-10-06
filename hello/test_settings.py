@@ -172,9 +172,9 @@ STATIC_URL = '/static/'
 
 # Static asset configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = '/home/guardia2/Web_app/static_collected'
+STATIC_ROOT = '/Users/bendr/Website Development Projects/Destiny_website/destiny-project/hello/static/hello'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),  
 )
 
 

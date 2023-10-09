@@ -23,7 +23,6 @@ def send_emails_in_batches(batch_size):
         status.append("Auto email sending is active.")
         # Retrieve all records where email_sent is False and limit to batch_size
         records = db_model.objects.filter(email_sent=False)[:batch_size]
-        print(records)
 
         for record in records:
             subject = "Here is your QR code for check-in"
@@ -48,12 +47,17 @@ def send_emails_in_batches(batch_size):
                 record.save()
                 successful_emails.append(record.email)
             except Exception as e:
-                failed_emails.append(f"Email: {record.email}, Error: {str(e)}")
-                continue
+                failed_emails.append({
+                    "email": record.email,
+                    "error": str(e)
+                })
 
     except Exception as e: 
-        failed_emails.append(f"Error: {str(e)}")
-    
+        failed_emails.append({
+            "email": "N/A",
+            "error": str(e)
+        })
+
     return status, successful_emails, failed_emails
 
 

@@ -7,22 +7,23 @@ from hello.production_settings import DEFAULT_FROM_EMAIL
 
 
 def send_emails_in_batches(batch_size):
+    status = []
+    successful_emails = []
+    failed_emails = []
+
     try:
         # Initialize lists to store successful and failed email addresses
-        status = []
-        successful_emails = []
-        failed_emails = []
 
         # Check if auto email sending is active
         config = EmailConfiguration.objects.filter(id=1).first()
         if not config or not config.auto_email_sending_active:
-            status.append(
-                "Auto email sending is disabled, no emails were sent.")
+            status.append("Auto email sending is disabled, no emails were sent.")
             return status, successful_emails, failed_emails
 
         status.append("Auto email sending is active.")
         # Retrieve all records where email_sent is False and limit to batch_size
         records = db_model.objects.filter(email_sent=False)[:batch_size]
+        print(records)
 
         for record in records:
             subject = "Here is your QR code for check-in"
@@ -48,12 +49,12 @@ def send_emails_in_batches(batch_size):
                 successful_emails.append(record.email)
             except Exception as e:
                 failed_emails.append(f"Email: {record.email}, Error: {str(e)}")
-
-        return status, successful_emails, failed_emails
+                continue
 
     except Exception as e: 
-        failed_emails.append(f"Email: {record.email}, Error: {str(e)}")
-        return status, successful_emails, failed_emails
+        failed_emails.append(f"Error: {str(e)}")
+    
+    return status, successful_emails, failed_emails
 
 
 

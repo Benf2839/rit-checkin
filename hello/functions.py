@@ -4,6 +4,7 @@ from django.conf import settings
 from hello.models import db_model, EmailConfiguration
 import os
 from hello.production_settings import DEFAULT_FROM_EMAIL
+import traceback
 
 
 def send_emails_in_batches(batch_size):
@@ -53,9 +54,12 @@ def send_emails_in_batches(batch_size):
                 })
 
     except Exception as e: 
+        # Log the full traceback information
+        error_traceback = traceback.format_exc()
         failed_emails.append({
             "email": "N/A",
-            "error": str(e)
+            "error": str(e),
+            "traceback": error_traceback
         })
 
     return status, successful_emails, failed_emails

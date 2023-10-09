@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from hello.models import db_model, EmailConfiguration
 import os
+from hello.production_settings import DEFAULT_FROM_EMAIL
 
 
 def send_emails_in_batches(batch_size):
@@ -51,7 +52,8 @@ def send_emails_in_batches(batch_size):
         return status, successful_emails, failed_emails
 
     except Exception as e: 
-        return [], [str(e)], status, successful_emails, failed_emails
+        failed_emails.append(f"Email: {record.email}, Error: {str(e)}")
+        return status, successful_emails, failed_emails
 
 
 

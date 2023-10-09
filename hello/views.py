@@ -581,7 +581,7 @@ def self_registration(request):
             alumni=alumni,
             release_info=release_info,
             checked_in=False,
-            checked_in_time=timezone.now(),  # Autopopulate with current time and date,
+            #checked_in_time=timezone.now(),  # model already sets time every time a change is made
             email_sent=True,
         )
 

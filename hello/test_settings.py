@@ -54,7 +54,6 @@ LOGGING = {
 
 INSTALLED_APPS = [
     'rest_framework',
-    'silk',
     'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -63,8 +62,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hello',
-    'email_log',
-    'mailer',
 ]
 
 INTERNAL_IPS = [
@@ -75,7 +72,6 @@ INTERNAL_IPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'silk.middleware.SilkyMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -108,7 +104,7 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -122,9 +118,9 @@ DATABASES = {
             'init_command': "SET time_zone='-04:00';",
         },
     }
-}"""
+}
 
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -132,6 +128,7 @@ DATABASES = {
     }
 }
 
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

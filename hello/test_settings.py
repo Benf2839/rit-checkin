@@ -25,7 +25,7 @@ SECRET_KEY = 'PLACEHOLDER'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# When deploying to Azure App Service, add you <name>.azurewebsites.net 
+# When deploying to Azure App Service, add you <name>.azurewebsites.net
 # domain to ALLOWED_HOSTS; you get an error message if you forget. When you add
 # a specific host, you must also add 'localhost' and/or '127.0.0.1' for local
 # debugging (which are enabled by default when ALLOWED_HOSTS is empty.)
@@ -54,6 +54,7 @@ LOGGING = {
 
 INSTALLED_APPS = [
     'rest_framework',
+    'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -63,8 +64,15 @@ INSTALLED_APPS = [
     'hello',
 ]
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+    '129.21.79.127',
+]
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,7 +86,7 @@ ROOT_URLCONF = 'hello.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join( BASE_DIR, 'hello/templates' )],
+        'DIRS': [os.path.join(BASE_DIR, 'hello/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -99,26 +107,28 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 
 DATABASES = {
     'default': {
-'ENGINE': 'django.db.backends.mysql',
-'NAME': 'guardia2_destiny',
-'USER': 'guardia2_ben',
-'PASSWORD': 'S)[],mtE0!8V',
-'HOST': '198.38.88.120', # use localhost for on server testing and 198.38.88.120 for computer testing
-'PORT': '3306',
-'OPTIONS': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'guardia2_destiny',
+        'USER': 'guardia2_ben',
+        'PASSWORD': 'S)[],mtE0!8V',
+        # use localhost for on server testing and 198.38.88.120 for computer testing
+        'HOST': '198.38.88.120',
+        'PORT': '3306',
+        'OPTIONS': {
             'init_command': "SET time_zone='-04:00';",
         },
+    }
 }
+
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
-#
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
 
-
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -147,9 +157,6 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/New_York'
 
 
-
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -160,21 +167,26 @@ STATIC_URL = '/static/'
 # from this location, rather than relying on the app server to serve those files
 # from various locations in the app. Doing so results in better overall performance.
 
- # Static asset configuration
+# Static asset configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = '/home/guardia2/Web_app/static_collected'
+STATIC_ROOT = '/Users/bendr/Website Development Projects/Destiny_website/destiny-project/hello/static/hello'
 STATICFILES_DIRS = (
-os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),  
 )
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
-EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'#'guardia2@mocha3039.mochahost.com'  # Replace with your email address
+EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
 EMAIL_HOST_PASSWORD = 'Hireatiger2018'  # Replace with your email password
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_LOG_SAVE_ATTACHMENTS = True
+EMAIL_LOG_ATTACHMENTS_PATH = "/home/guardia2/Web_app/attachments"
+EMAIL_LOG_LEVEL = 'DEBUG'
+FAIL_SILENTLY = True
+# EMAIL_BATCH_SIZE = 20  # batch size for email sending
+# EMAIL_BATCH_DELAY = 300  # delay in seconds between batches

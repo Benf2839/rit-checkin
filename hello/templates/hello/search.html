@@ -13,7 +13,7 @@
       <button class="btn" type="submit">Search</button>
     </form>
     <div>
-      {% if not entry %}
+      {% if not entry and not error2 %}
       <div class="alert alert-danger" style="color: red">
         There is no corresponding entry for the id number {{id_number}}.
       </div>
@@ -78,6 +78,11 @@
             {% if entry %}<input type="text" name="id_number" value="{{ entry.id_number }}" />{% endif %}
           </td>
         </tr>
+        <tr>
+          <th>Table Number:</th>
+          <td>
+            {% if entry %}<input type="text" name="table_number" value="{{ entry.table_number }}" />{% endif %}
+          </td>
 
         <tr>
           <td colspan="2">

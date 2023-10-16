@@ -1,21 +1,15 @@
-{% extends "hello/layout.html" %}
-{% block content %}
-
-{% load static %}
+{% extends "hello/layout.html" %} {% block content %} {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
-<h2>Send QR Code Emails</h2>
-<p>Click the button below to send QR code emails to all eligible recipients.</p>
+<h2>Email Configuration</h2>
+<p>Current status of email sending is: {{ currentStatus }}</p>
 
-<form id="qrCodeForm" action="{% url 'send_qr_code' %}" method="post">
-  {% csrf_token %}
-  <input type="submit" class="btn btn-default" value="Send QR Code Emails" />
-</form>
-
-{% if message %}
-<div class="alert alert-success">
-  {{ message }}
-</div>
+{% if currentStatus %}
+<p>Email Sending is currently active.</p>
+{% else %}
+<p>Email Sending is currently inactive.</p>
 {% endif %}
+
+<form method="post">{% csrf_token %}</form>
 
 {% endblock %}

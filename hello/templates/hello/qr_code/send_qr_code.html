@@ -1,15 +1,23 @@
-{% extends "hello/layout.html" %} {% block content %} {% load static %}
+{% extends "hello/layout.html" %}
+
+{% block content %}
+{% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
 <h2>Email Configuration</h2>
 <p>Current status of email sending is: {{ currentStatus }}</p>
+
+<form method="post" action="">
+  {% csrf_token %}
+  <label for="email_sending_status">Email Sending:</label>
+  <input type="checkbox" id="email_sending_status" name="email_sending_status" {% if currentStatus %}checked{% endif %}>
+  <input type="submit" value="Update">
+</form>
 
 {% if currentStatus %}
 <p>Email Sending is currently active.</p>
 {% else %}
 <p>Email Sending is currently inactive.</p>
 {% endif %}
-
-<form method="post">{% csrf_token %}</form>
 
 {% endblock %}

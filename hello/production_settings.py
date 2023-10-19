@@ -105,7 +105,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
-            'init_command': "SET time_zone='-04:00';",
+            'init_command': "SET time_zone='-08:00';",
         },
     }
 }

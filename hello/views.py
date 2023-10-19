@@ -326,15 +326,28 @@ def send_reset_email(request):
 def email_sending_status(request):
     try:
         # Retrieve the EmailConfiguration instance (assuming it has an ID of 1)
-        config = EmailConfiguration.objects.get(id=1)
+        config, created = EmailConfiguration.objects.get_or_create(id=1, defaults={'auto_email_sending_active': False})
+
+        if request.method == 'POST':
+            # Check if the user submitted the form to change the email sending status
+            new_status = request.POST.get('email_sending_status')
+            if new_status in ['on', 'off']:
+                config.auto_email_sending_active = new_status == 'on'
+                config.save()
+                messages.success(request, 'Email sending status updated successfully.')
 
         # Get the value of the auto_email_sending_active column (already boolean)
         currentStatus = config.auto_email_sending_active
 
-        return render(request, 'hello/qr_code/send_qr_code.html', {'currentStatus': currentStatus})
+        return render(request, 'hello/qr_code/send_qr_code.html', {'currentStatus': currentStatus, 'config': config})
+    
     except EmailConfiguration.DoesNotExist:
         # Handle the case where no EmailConfiguration instance with ID 1 is found
-        return render(request, 'hello/qr_code/send_qr_code.html', {'currentStatus': False})
+        # Create a new EmailConfiguration instance with auto_email_sending_active set to False
+        config = EmailConfiguration(id=1, auto_email_sending_active=False)
+        config.save()
+        return redirect('email_sending_status')  # Redirect to the same view to display the form
+
 
 
 def email_configuration_page(request):

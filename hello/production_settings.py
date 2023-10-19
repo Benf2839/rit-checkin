@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,8 +35,7 @@ CSRF_COOKIE_SECURE = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
-# When deploying to Azure App Service, add you <name>.azurewebsites.net 
+# When deploying to Azure App Service, add you <name>.azurewebsites.net
 # domain to ALLOWED_HOSTS; you get an error message if you forget. When you add
 # a specific host, you must also add 'localhost' and/or '127.0.0.1' for local
 # debugging (which are enabled by default when ALLOWED_HOSTS is empty.)
@@ -79,7 +76,7 @@ ROOT_URLCONF = 'hello.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join( BASE_DIR, 'hello/templates' )],
+        'DIRS': [os.path.join(BASE_DIR, 'hello/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,11 +104,10 @@ DATABASES = {
 'HOST': 'localhost', # use localhost for on server testing and 198.38.88.120 for computer testing
 'PORT': '3306',
 'OPTIONS': {
-            'init_command': "SET time_zone='-08:00';",
+            'init_command': "SET time_zone='-04:00';",
         },
+    }
 }
-}
-
 
 
 # Password validation
@@ -140,8 +136,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'America/New_York'
 
-USE_TZ = True # use this to make the time zone work
-
+USE_TZ = True  # use this to make the time zone work
 
 
 # Static files (CSS, JavaScript, Images)
@@ -154,31 +149,30 @@ STATIC_URL = '/static/'
 # from this location, rather than relying on the app server to serve those files
 # from various locations in the app. Doing so results in better overall performance.
 
- # Static asset configuration
+# Static asset configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = '/home/guardia2/public_html/static_collected'
 STATICFILES_DIRS = (
-os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Email settings
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
-EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'#'guardia2@mocha3039.mochahost.com'  # Replace with your email address
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')  # Replace with your email password
+# 'guardia2@mocha3039.mochahost.com'  # Replace with your email address
+EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
+# Replace with your email password
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
 SERVER_EMAIL = EMAIL_HOST_USER
-
-
-
-
-
-#WALLETPASS = {
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_LOG_LEVEL = 'DEBUG'
+# WALLETPASS = {
 #    'CERT_PATH': '',
 #    'KEY_PATH': '',
-    # (None if isn't protected)
-    # MUST be in bytes-like
-#}
+# (None if isn't protected)
+# MUST be in bytes-like
+# }

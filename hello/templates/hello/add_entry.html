@@ -6,7 +6,7 @@
 
 <div class="container" style="display: flex;">
     <div class="left-column" style="flex: 1;">
-        <h2>Add entry</h2>
+        <h2>Self Registration</h2>
 
         <!-- Error messages -->
         {% if errors.first_name %}
@@ -45,7 +45,7 @@
             <label for="alumni">Alumni:</label>
             <input type="checkbox" id="alumni" name="alumni" /><br />
 
-            <label for="release_info">Can We Release Your Info:</label>
+            <label for="release_info">Can we release your info to students?:</label>
             <input type="checkbox" id="release_info" name="release_info" /><br />
 
             <button type="submit" class="btn">Register</button>
@@ -54,7 +54,7 @@
     <div class="right-column" style="flex: 1;">
         <!-- Text to be displayed on the right side -->
         <h3>What Happens Next?</h3>
-        <p>Once you submit your information, ask one of our staff for the table number of your company. Please ensure the accuracy of your information before submitting.</p>
+        <p>Once you submit your information, you are free to head to your table. Please ensure the accuracy of your information before submitting.</p>
     </div>
 </div>
 {% endblock %}

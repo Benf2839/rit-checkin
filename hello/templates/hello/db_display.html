@@ -25,6 +25,16 @@
   {% endif %}
 </div>
 
+<form method="get" action="">
+  {% if request.GET.filter_blanks %}
+  <input type="hidden" name="filter_blanks" value="false" />
+  <button type="submit">Show All Entries</button>
+  {% else %}
+  <input type="hidden" name="filter_blanks" value="true" />
+  <button type="submit">View Rows with Blanks</button>
+  {% endif %}
+</form>
+
 <table class="table">
   <thead>
     <tr>

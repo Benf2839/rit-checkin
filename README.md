@@ -1,25 +1,16 @@
-This sample contains the completed program from the tutorial, [Using Django in Visual Studio Code](https://code.visualstudio.com/docs/python/tutorial-django). Intermediate steps are not included.
+Welcome to the repo for the RIT Career Services & Co-Op check-in system website
 
-The sample also includes a Dockerfile to build a production-ready container image that uses uwsgi and nginx; the uwsgi.ini file provides uwsgi configuration.
+To run the website locally, follow these steps:
 
-To run the sample:
+1. Create a virtual environment within your IDE.
+2. Activate the virtual environment by running `source env/bin/activate` (Linux/MacOS) or `env\scripts\activate` (Windows).
+3. There is a requirements.txt file that should have all of the necessary packages. You can use `pip install -r requirements.txt`.
+4. To run in development mode, make sure that the manage.py file specifies 'hello.test_settings' as I created two settings files for testing.
 
-1. Create a virtual environment as described in the tutorial.
-1. Install packages with `pip install -r requirements.txt`.
-1. Activate the virtual environment by running `source env/bin/activate` (Linux/MacOS) or `env\scripts\activate` (Windows).
-1. Create and initialize the database by running `python manage.py migrate`.
-1. Create a superuser as described at the end of the tutorial.
+- Within the test settings file, there are two database configurations. The first is for the SQLite database, and the second is for the PostgreSQL database. The SQLite database is used for testing locally, and the PostgreSQL database is for testing with data directly from the server. To get access to the postgres database, I will need to add your IP address to the whitelist and create an account for you.
 
-Contributions to the sample are welcome. When submitting changes, also consider submitting matching changes to the tutorial, the source file for which is [tutorial-django.md](https://github.com/Microsoft/vscode-docs/blob/master/docs/python/tutorial-django.md).
+5. Once that has been done, you can run the server by running `python manage.py runserver`.
 
-# Known issues
-
-- CSS is lost if you set `DEBUG=False` in settings.py; the workaround is to include an added script at the end of dockerfile.txt to serve static file differently. See [Issue 13](https://github.com/Microsoft/python-sample-vscode-django-tutorial/issues/13) for details.
-
-# Contributing
-
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+- The login credentials for the admin page are:
+  - Username: oce
+  - Password: test

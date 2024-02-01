@@ -3,32 +3,55 @@
     color: blue;
 }
 
+/* NAVBAR -------------------------- */
+
 .navbar {
-    background-color: lightslategray;
+    /* TODO: maybe use a less aggresive orange (even tho this is the RIT orange) */
+    background-color: #f76902;
+    /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+    color: white;
+}
+
+.navbar-left {
+    /* will have 40px left margin in total w/ nav link left margin */
+    margin-left: 10px;
+}
+
+.navbar-right {
+    margin-right: 40px;
+}
+
+.bi-house-fill{
+    color:white !important;
+}
+
+.bi-box-arrow-right{
+    color:white!important;
+}
+
+.nav-link {
+    /* font-variant: small-caps; */
+    color: white !important;
+    margin-left: 30px;
+}
+
+.navbar-text {
+    color: white!important;
+}
+
+/* FOOTER -------------------------- */
+
+footer {
+    background-color: #f76902;
     font-size: 1em;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
     color: white;
     padding: 8px 5px 8px 5px;
 }
 
-.navbar a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.navbar-brand {
-    font-size: 1.2em;
-    font-weight: 600;
-}
-
-.navbar-item {
-    font-variant: small-caps;
-    margin-left: 30px;
-}
-
 .body-content {
     padding: 5px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
 }
 
 input[name=message] {

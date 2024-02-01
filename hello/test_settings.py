@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from passwords import *
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,6 +25,17 @@ SECRET_KEY = 'PLACEHOLDER'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+
+
+# Load environment variables from secrets.txt
+with open(os.path.join(BASE_DIR, 'passwords.py')) as f:
+    lines = f.read().splitlines()
+    for line in lines:
+        key, value = line.split('=')
+        os.environ[key] = value
+
+
 
 # When deploying to Azure App Service, add you <name>.azurewebsites.net
 # domain to ALLOWED_HOSTS; you get an error message if you forget. When you add
@@ -104,13 +116,14 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+# Below is the database configuration for the db on the server. MODIFYING THIS DB WILL EFFECT THE LIVE SITE
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'guardia2_destiny',
-        'USER': 'guardia2_ben',
-        'PASSWORD': 'S)[],mtE0!8V',
+        'USER': DB_USERNAME,
+        'PASSWORD': DB_PASSWORD,
         # use localhost for on server testing and 198.38.88.120 for computer testing
         'HOST': '198.38.88.120',
         'PORT': '3306',
@@ -120,6 +133,8 @@ DATABASES = {
     }
 }
 
+
+#Below is the default database configuration for sqlite3. Use this for local testing on a local db
 """
 DATABASES = {
     'default': {
@@ -177,8 +192,8 @@ STATICFILES_DIRS = (
 
 EMAIL_HOST = 'mail.eventcheck-in.com'
 EMAIL_PORT = 2525
-EMAIL_HOST_USER = 'ritcareerfair@eventcheck-in.com'
-EMAIL_HOST_PASSWORD = 'Hireatiger2018'  # Replace with your email password
+EMAIL_HOST_USER = EMAIL_USER
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD  
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'

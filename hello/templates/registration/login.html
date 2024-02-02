@@ -1,32 +1,43 @@
-{% extends "hello/layout.html" %} {% block content %} {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %} {% if next %} {% if user.is_authenticated %}
-<p>
-  Your account doesn't have access to this page. To proceed, please login with
-  an account that has access.
-</p>
-{% else %}
-<p>Please login to see this page.</p>
-{% endif %} {% endif %}
+{% extends "hello/layout.html" %} {% block content %} 
 
-<form method="post" action="{% url 'login' %}">
-  {% csrf_token %}
-  <table>
-    <tr>
-      <td>{{ form.username.label_tag }}</td>
-      <td>{{ form.username }}</td>
-    </tr>
-    <tr>
-      <td>{{ form.password.label_tag }}</td>
-      <td>{{ form.password }}</td>
-    </tr>
-  </table>
+<!-- from jumbotron ex: https://getbootstrap.com/docs/5.3/examples/jumbotron/ -->
+<div class="mb-4 bg-body-tertiary rounded-3">
+  <div class="container-fluid py-5">
+    {% if form.errors %}
+    <p class="fs-4">Your username and password didn't match. Please try again.</p>
+    {% endif %} {% if next %} {% if user.is_authenticated %}
+    <p class="fs-4">
+      Your account doesn't have access to this page. To proceed, please login with
+      an account that has access.
+    </p>
+    {% else %}
+    <p class="fs-4">Please login to see this page.</p>
+    {% endif %} {% endif %}
 
-  <input type="submit" value="login" />
-  <input type="hidden" name="next" value="{{ next }}" />
-</form>
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <table>
+        <tr>
+          <td>{{ form.username.label_tag }}</td>
+          <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.password.label_tag }}</td>
+          <td>{{ form.password }}</td>
+        </tr>
+      </table>
 
-{# Assumes you set up the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+      <br>
+
+      <input type="submit" class="btn btn-secondary" value="Login" />
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+
+    <br>
+
+    {# Assumes you set up the password_reset view in your URLconf #}
+    <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+  </div>
+</div>
 
 {% endblock %}

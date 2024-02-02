@@ -50,7 +50,12 @@ footer {
 }
 
 .body-content {
-    padding: 5px;
+    /* padding: 5px; */
+    margin-left: 80px;
+    margin-right: 80px;
+    margin-top: 10px;
+    border: 0;
+    padding: 0;
     /* font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
 }
 
@@ -68,16 +73,16 @@ input[name=message] {
     padding-right: 15px;
 }
 
-.box {
+/* .box {
     border: 1px solid black;
     padding: 5px;
-  }
+  } */
 
 .red-text {
     color: red;
  }
   
-table {
+/* table {
     border-collapse: collapse;
   }
   
@@ -85,18 +90,18 @@ table {
  td {
    border: 1px solid black;
    padding: 8px;
- }
+ } */
   
 .populated-cell {
     background-color: #f5f5f5;
   }
 
-.box {
+/* .box {
     border: 1px solid black;
     padding: 5px;
-  }
+  } */
 
-  .btn {
+  /* .btn {
     background-color: lightslategray;
     border: 1px solid #000000;
     color: white;
@@ -107,12 +112,12 @@ table {
     font-size: 12px;
     margin: 2px 2px;
     cursor: pointer;
-  }
+  } */
 
   /* Define styles for the container */
-.container {
+/* .container {
     display: flex;
-}
+} */
 
 /* Style the left column */
 .left-column {
@@ -131,6 +136,12 @@ table {
     margin-left: 20px;
     font-size: 17px;
   }
+
+.pagination > .active > a {
+    color: black;
+    background-color: #ffc107!important;  /* color of bootstrap button btn-warning */
+    border: solid 1px #ffc107!important;
+}
 
 
 /* .btn {

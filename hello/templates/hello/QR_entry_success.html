@@ -3,31 +3,23 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
+<div class="row g-5">
+  <div class="col py-3 bg-body-tertiary rounded-3" style="text-align:center">
+    <h3 style="color: #228C22">Success!</h3>
 
-<div class="container" style="display: flex; text-align:center">
-  <div class="left-column" style="flex: 1;">
-    <div>
-      <h3>
-        Success!
-      </h3>
+    <div class="py-3">
+      <h5>{{ company_name }}</h5>
+      <h5>Table: {% if table_number != None %}{{ table_number }}{% endif %}</h5>
     </div>
-    <div>
-      <p>
-      Their table number is: {{ table_number }}
-      </p>
-    </div>
-    <div>
-      <p>
-      Their company name is: {{ company_name }}
-      </p>
-    </div>  
+
   </div>
 
-  <div class="right-column" style="flex: 1;">
-    <div style="margin-bottom: 20px">
-      <p>click the button below to scan a new QR code</p>
+  <div class="col py-3" style="text-align:center">
+    <!-- Text to be displayed on the right side -->
+    <h3>QR Code Check-In</h3>
+    <div class="py-2">
+      <a href="{% url 'search_by_id' %}" class="btn btn-secondary" role="button">Check in another QR code</a>
     </div>
-    <a href="{% url 'search_by_id' %}" class="btn">ID Search</a>
   </div>
 </div>
     

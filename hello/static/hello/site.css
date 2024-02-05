@@ -143,6 +143,9 @@ input[name=message] {
     border: solid 1px #ffc107!important;
 }
 
+.pagination > li > a {
+    color: #666666;
+}
 
 /* .btn {
     background-color: #F76902;

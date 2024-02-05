@@ -63,17 +63,17 @@
   <tbody>
     {% for row in page_obj %}
     <tr>
-      <td class="box">{{ row.0 }}</td> <!-- company name -->
-      <td class="box">{{ row.1 }}</td> <!-- first name -->
-      <td class="box">{{ row.2 }}</td> <!-- last name -->
-      <td class="box">{{ row.3 }}</td> <!-- email -->
-      <td class="box">{{ row.4 }}</td> <!-- alumni -->
-      <td class="box">{{ row.5 }}</td> <!-- can we release your info -->
+      <td class="box">{{ row.0 }}</td> <!-- ID Number -->
+      <td class="box">{{ row.1 }}</td> <!-- Company Name -->
+      <td class="box">{{ row.2 }}</td> <!-- First Name -->
+      <td class="box">{{ row.3 }}</td> <!-- Last Name -->
+      <td class="box">{{ row.4 }}</td> <!-- Email -->
+      <td class="box">{% if row.5 != 'null' %}{{ row.5 }}{% endif %}</td> <!-- alumni -->
       <td class="box">{{ row.7 }}</td> <!-- checked in -->
-      <td class="box">{{ row.8 }}</td> <!-- checked in time-->
-      <td class="box">{{ row.9 }}</td> <!-- table number -->
+      <td class="box">{{ row.8 }}</td> <!-- checked in time -->
+      <td class="box">{% if row.9 != None %}{{ row.9 }}{% endif %}</td> <!-- table number -->
       <td class="box">{{ row.10 }}</td> <!-- email sent -->
-      <td class="box">{{ row.6 }}</td> <!-- id number -->
+      <td class="box">{% if row.6 != 'null' %}{{ row.6 }}{% endif %}</td> <!-- Can We Release Your Info -->
     </tr>
     {% endfor %}
   </tbody>

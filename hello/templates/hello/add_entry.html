@@ -4,8 +4,9 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
-<div class="container" style="display: flex;">
-    <div class="left-column" style="flex: 1;">
+
+<div class="row g-5">
+    <div class="col py-3 bg-body-tertiary rounded-3" >
         <h2>Self Registration</h2>
 
         <!-- Error messages -->
@@ -26,32 +27,33 @@
         <form method="POST" action="{% url 'add_entry' %}" class="entry-form">
             {% csrf_token %}
             <!-- Form fields with error messages -->
-            <label for="company_name">Company Name:</label>
-            <input type="text" id="company_name" name="company_name" required />
-            <br />
 
-            <label for="first_name">First Name:</label>
-            <input type="text" id="first_name" name="first_name" required />
-            <br />
+            <label for="company_name" class="form-label pt-3">Company Name</label>
+            <input type="text" id="company_name" name="company_name" class="form-control" required />
 
-            <label for="last_name">Last Name:</label>
-            <input type="text" id="last_name" name="last_name" required />
-            <br />
+            <label for="first_name"  class="form-label pt-3">First Name</label>
+            <input type="text" id="first_name" name="first_name" class="form-control" required />
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required />
-            <br />
+            <label for="last_name"  class="form-label pt-3">Last Name</label>
+            <input type="text" id="last_name" name="last_name" class="form-control" required />
 
-            <label for="alumni">Alumni:</label>
-            <input type="checkbox" id="alumni" name="alumni" /><br />
+            <label for="email"  class="form-label pt-3">Email</label>
+            <input type="email" id="email" name="email" class="form-control" required />
 
-            <label for="release_info">Can we release your info to students?:</label>
-            <input type="checkbox" id="release_info" name="release_info" /><br />
+            <div class="form-check pt-3">
+                <label for="alumni" class="form-check-label">RIT Alumni</label>
+                <input type="checkbox" id="alumni" name="alumni" class="form-check-input"/>
+            </div>
 
-            <button type="submit" class="btn">Register</button>
+            <div class="form-check py-3">
+                <label for="release_info" class="form-check-label">Permission to release your contact information to students</label>
+                <input type="checkbox" id="release_info" name="release_info" class="form-check-input"/>
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Register</button>
         </form>
     </div>
-    <div class="right-column" style="flex: 1;">
+    <div class="col py-3">
         <!-- Text to be displayed on the right side -->
         <h3>What Happens Next?</h3>
         <p>Once you submit your information, you are free to head to your table. Please ensure the accuracy of your information before submitting.</p>

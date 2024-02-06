@@ -3,32 +3,60 @@
     color: blue;
 }
 
+/* NAVBAR -------------------------- */
+
 .navbar {
-    background-color: lightslategray;
+    /* TODO: maybe use a less aggresive orange (even tho this is the RIT orange) */
+    background-color: #f76902;
+    /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+    color: white;
+}
+
+.navbar-left {
+    /* will have 40px left margin in total w/ nav link left margin */
+    margin-left: 10px;
+}
+
+.navbar-right {
+    margin-right: 40px;
+}
+
+.bi-house-fill{
+    color:white !important;
+}
+
+.bi-box-arrow-right{
+    color:white!important;
+}
+
+.nav-link {
+    /* font-variant: small-caps; */
+    color: white !important;
+    margin-left: 30px;
+}
+
+.navbar-text {
+    color: white!important;
+}
+
+/* FOOTER -------------------------- */
+
+footer {
+    background-color: #f76902;
     font-size: 1em;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
     color: white;
     padding: 8px 5px 8px 5px;
 }
 
-.navbar a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.navbar-brand {
-    font-size: 1.2em;
-    font-weight: 600;
-}
-
-.navbar-item {
-    font-variant: small-caps;
-    margin-left: 30px;
-}
-
 .body-content {
-    padding: 5px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* padding: 5px; */
+    margin-left: 80px;
+    margin-right: 80px;
+    margin-top: 10px;
+    border: 0;
+    padding: 0;
+    /* font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
 }
 
 input[name=message] {
@@ -45,16 +73,16 @@ input[name=message] {
     padding-right: 15px;
 }
 
-.box {
+/* .box {
     border: 1px solid black;
     padding: 5px;
-  }
+  } */
 
 .red-text {
     color: red;
  }
   
-table {
+/* table {
     border-collapse: collapse;
   }
   
@@ -62,18 +90,18 @@ table {
  td {
    border: 1px solid black;
    padding: 8px;
- }
+ } */
   
 .populated-cell {
     background-color: #f5f5f5;
   }
 
-.box {
+/* .box {
     border: 1px solid black;
     padding: 5px;
-  }
+  } */
 
-  .btn {
+  /* .btn {
     background-color: lightslategray;
     border: 1px solid #000000;
     color: white;
@@ -84,12 +112,12 @@ table {
     font-size: 12px;
     margin: 2px 2px;
     cursor: pointer;
-  }
+  } */
 
   /* Define styles for the container */
-.container {
+/* .container {
     display: flex;
-}
+} */
 
 /* Style the left column */
 .left-column {
@@ -109,6 +137,15 @@ table {
     font-size: 17px;
   }
 
+.pagination > .active > a {
+    color: black;
+    background-color: #ffc107!important;  /* color of bootstrap button btn-warning */
+    border: solid 1px #ffc107!important;
+}
+
+.pagination > li > a {
+    color: #666666;
+}
 
 /* .btn {
     background-color: #F76902;

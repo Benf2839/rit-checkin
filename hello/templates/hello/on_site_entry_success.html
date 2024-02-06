@@ -3,19 +3,10 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}" />
 
-
-<div class="container" style="display: flex; text-align:center">
-  <div class="left-column" style="flex: 1;">
-    <h3>
-      Thanks for checking into the Career Fair!
-    </h3>
-  </div>
-
-  <div class="right-column" style="flex: 1;">
-    <div style="margin-bottom: 20px">
-      <p>click the button below to Check in</p>
-    </div>
-    <a href="{% url 'add_entry' %}" class="btn" style="margin-right: 10px">Check in</a>
+<div class="mb-4 bg-body-tertiary rounded-3">
+  <div class="container-fluid py-5 text-center" >
+    <h3>Thanks for checking into the Career Fair!</h3>
+    <a href="{% url 'add_entry' %}" class="btn btn-secondary mt-3" style="margin-right: 10px">Check in</a>      
   </div>
 </div>
     

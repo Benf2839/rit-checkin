@@ -21,20 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'PLACEHOLDER'
+SECRET_KEY = "PLACEHOLDER"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 
-
 # Load environment variables from secrets.txt
-with open(os.path.join(BASE_DIR, 'passwords.py')) as f:
+with open(os.path.join(BASE_DIR, "passwords.py")) as f:
     lines = f.read().splitlines()
     for line in lines:
-        key, value = line.split('=')
+        key, value = line.split("=")
         os.environ[key] = value
-
 
 
 # When deploying to Azure App Service, add you <name>.azurewebsites.net
@@ -42,76 +40,76 @@ with open(os.path.join(BASE_DIR, 'passwords.py')) as f:
 # a specific host, you must also add 'localhost' and/or '127.0.0.1' for local
 # debugging (which are enabled by default when ALLOWED_HOSTS is empty.)
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    'eventcheck-in.com',
+    "127.0.0.1",
+    "localhost",
+    "eventcheck-in.com",
 ]
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
     },
 }
 
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework',
-    'debug_toolbar',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'hello',
+    "rest_framework",
+    "debug_toolbar",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "hello",
 ]
 
 INTERNAL_IPS = [
-    '127.0.0.1',
-    '129.21.79.127',
+    "127.0.0.1",
+    "129.21.79.127",
 ]
 
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'hello.urls'
+ROOT_URLCONF = "hello.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'hello/templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "hello/templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'hello.wsgi.application'
+WSGI_APPLICATION = "hello.wsgi.application"
 
 
 # Database
@@ -119,22 +117,22 @@ WSGI_APPLICATION = 'hello.wsgi.application'
 # Below is the database configuration for the db on the server. MODIFYING THIS DB WILL EFFECT THE LIVE SITE
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'guardia2_destiny',
-        'USER': DB_USERNAME,
-        'PASSWORD': DB_PASSWORD,
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "guardia2_destiny",
+        "USER": DB_USERNAME,
+        "PASSWORD": DB_PASSWORD,
         # use localhost for on server testing and 198.38.88.120 for computer testing
-        'HOST': '198.38.88.120',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET time_zone='-08:00';",
+        "HOST": "192.250.227.60",
+        "PORT": "3306",
+        "OPTIONS": {
+            "init_command": "SET time_zone='-08:00';",
         },
     }
 }
 
 
-#Below is the default database configuration for sqlite3. Use this for local testing on a local db
+# Below is the default database configuration for sqlite3. Use this for local testing on a local db
 """
 DATABASES = {
     'default': {
@@ -150,16 +148,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -167,15 +165,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = "America/New_York"
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # The location where the collectstatic command collects static files from apps.
 # A dedicated static file server is typically used in production to serve files
@@ -184,24 +182,22 @@ STATIC_URL = '/static/'
 
 # Static asset configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = '/Users/bendr/Website Development Projects/Destiny_website/destiny-project/hello/static/hello'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),  
-)
+STATIC_ROOT = "/Users/bendr/Website Development Projects/Destiny_website/destiny-project/hello/static/hello"
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 
-EMAIL_HOST = 'mail.eventcheck-in.com'
+EMAIL_HOST = "mail.eventcheck-in.com"
 EMAIL_PORT = 2525
 EMAIL_HOST_USER = EMAIL_USER
-EMAIL_HOST_PASSWORD = EMAIL_PASSWORD  
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
-DEFAULT_FROM_EMAIL = 'ritcareerfair@eventcheck-in.com'
+DEFAULT_FROM_EMAIL = "ritcareerfair@eventcheck-in.com"
 SERVER_EMAIL = EMAIL_HOST_USER
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_LOG_SAVE_ATTACHMENTS = True
 EMAIL_LOG_ATTACHMENTS_PATH = "/home/guardia2/Web_app/attachments"
-EMAIL_LOG_LEVEL = 'DEBUG'
+EMAIL_LOG_LEVEL = "DEBUG"
 FAIL_SILENTLY = True
 # EMAIL_BATCH_SIZE = 20  # batch size for email sending
 # EMAIL_BATCH_DELAY = 300  # delay in seconds between batches

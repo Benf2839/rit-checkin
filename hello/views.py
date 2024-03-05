@@ -39,66 +39,91 @@ from django.views.decorators.cache import never_cache
 import logging
 
 
-
 # Define the regular expression patterns
 # Only alphabetic characters, spaces, and dashes
-name_pattern = r'^[A-Za-z -]+$'
+name_pattern = r"^[A-Za-z -]+$"
 # Valid email pattern
-email_pattern = r'^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+email_pattern = r"^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
 
 
 def handle_errors_and_redirect(request, errors, redirect_page):
     if errors:
-        error_message = ', '.join(errors)
+        error_message = ", ".join(errors)
         traceback_str = traceback.format_exc()  # Get the traceback as a string
         # Get the line number of the error
         line_number = traceback.extract_tb(sys.exc_info()[2])[-1][1]
         error_info = f"Error occurred at line {line_number}"
         error_info += f"\nTraceback:\n{traceback_str}"
         messages.error(request, f"{error_message}\n\n{error_info}")
-        return render(request, redirect_page, {'errors': errors})
+        return render(request, redirect_page, {"errors": errors})
 
 
 def load_add_new_data_page(request):
-    return render(request, 'hello/database_upload_page.html')
+    return render(request, "hello/database_upload_page.html")
 
 
 def redirect_w_backup(request):
-    backup_file_path = '/home/guardia2/Web_app/Exports/db_backup.csv'
+    backup_file_path = "/home/guardia2/Web_app/Exports/db_backup.csv"
     if os.path.exists(backup_file_path):
         try:
-            return FileResponse(open(backup_file_path, 'rb'), as_attachment=True, filename='server_backup.csv')
+            return FileResponse(
+                open(backup_file_path, "rb"),
+                as_attachment=True,
+                filename="server_backup.csv",
+            )
         except Exception as e:
-            error_message = f'Error occurred while processing the backup: {str(e)}'
+            error_message = f"Error occurred while processing the backup: {str(e)}"
             return HttpResponseServerError(error_message)
     else:
-        messages.error(request, 'No Backup found.')  # Display an error message
+        messages.error(request, "No Backup found.")  # Display an error message
         # Display an error message
-        return HttpResponse(status=200, content='No Backup found.')
+        return HttpResponse(status=200, content="No Backup found.")
 
 
 def export_master_list(request):
     master_list = db_model.objects.all()
     # Prepare CSV data
     csv_data = []
-    csv_data.append(['Company_name', 'First_name', 'Last_name', 'Email', 'Alumni',
-                    'Release_info', 'Checked_in', 'Checked_in_time', 'Table_number', 'id_number'])
+    csv_data.append(
+        [
+            "Company_name",
+            "First_name",
+            "Last_name",
+            "Email",
+            "Alumni",
+            "Release_info",
+            "Checked_in",
+            "Checked_in_time",
+            "Table_number",
+            "id_number",
+        ]
+    )
 
     for entry in master_list:
-        csv_data.append([
-            entry.company_name, entry.first_name, entry.last_name, entry.email, entry.alumni, entry.release_info, entry.checked_in,
-            entry.checked_in_time, entry.table_number, entry.id_number
-        ])
+        csv_data.append(
+            [
+                entry.company_name,
+                entry.first_name,
+                entry.last_name,
+                entry.email,
+                entry.alumni,
+                entry.release_info,
+                entry.checked_in,
+                entry.checked_in_time,
+                entry.table_number,
+                entry.id_number,
+            ]
+        )
 
     # Create a temporary file to store the CSV data
-    temp_csv_file = 'Exports/temp.csv'
+    temp_csv_file = "Exports/temp.csv"
 
-    with open(temp_csv_file, 'w', newline='') as file:
+    with open(temp_csv_file, "w", newline="") as file:
         writer = csv.writer(file)
         writer.writerows(csv_data)
 
     # Define the server backup file name
-    server_backup_file = 'Exports/server_backup.csv'
+    server_backup_file = "Exports/server_backup.csv"
 
     # Check if the server backup file already exists
     if os.path.exists(server_backup_file):
@@ -110,115 +135,187 @@ def export_master_list(request):
     shutil.move(temp_csv_file, server_backup_file)
 
     # Create a FileResponse to return the file to the browser
-    response = FileResponse(
-        open(server_backup_file, 'rb'), content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="server_backup.csv"'
+    response = FileResponse(open(server_backup_file, "rb"), content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="server_backup.csv"'
 
     # Set the appropriate headers to prompt the file download
-    response['Content-Length'] = os.path.getsize(server_backup_file)
-    response['Content-Encoding'] = 'utf-8'
+    response["Content-Length"] = os.path.getsize(server_backup_file)
+    response["Content-Encoding"] = "utf-8"
 
     # Wipe the Master_list table
     db_model.objects.all().delete()
-    messages.success(request, 'Master_list table wiped successfully.')
+    messages.success(request, "Master_list table wiped successfully.")
 
     # Return the CSV file to the browser as download
     response = FileResponse(
-        server_backup_file, as_attachment=True, filename='db_backup.csv')
-    return (response)
+        server_backup_file, as_attachment=True, filename="db_backup.csv"
+    )
+    return response
 
 
 @login_required
 @transaction.atomic
 def add_new_data(request, response=None):
     print(request.POST)
-    if request.method == 'POST':
+    if request.method == "POST":
         print(request.POST)
-        if 'export' in request.POST:  # Export the current entries in the Master_list table
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="master_list.csv"'
+        if (
+            "export" in request.POST
+        ):  # Export the current entries in the Master_list table
+            response = HttpResponse(content_type="text/csv")
+            response["Content-Disposition"] = 'attachment; filename="master_list.csv"'
             writer = csv.writer(response)
             # Retrieve data from the database (assuming you're using Django ORM)
             master_list = db_model.objects.all()
             # Write the header row
-            writer.writerow(['Company_name', 'First_name', 'Last_name', 'Email', 'Alumni',
-                            'Release_info', 'Checked_in', 'Checked_in_time', 'Table_number', 'id_number'])
+            writer.writerow(
+                [
+                    "Company_name",
+                    "First_name",
+                    "Last_name",
+                    "Email",
+                    "Alumni",
+                    "Release_info",
+                    "Checked_in",
+                    "Checked_in_time",
+                    "Table_number",
+                    "id_number",
+                ]
+            )
             # Write data rows
             for entry in master_list:
-                writer.writerow([entry.company_name, entry.first_name, entry.last_name, entry.email, entry.alumni, entry.release_info,
-                                entry.checked_in, entry.checked_in_time, entry.table_number, entry.id_number])  # Replace with actual column values
+                writer.writerow(
+                    [
+                        entry.company_name,
+                        entry.first_name,
+                        entry.last_name,
+                        entry.email,
+                        entry.alumni,
+                        entry.release_info,
+                        entry.checked_in,
+                        entry.checked_in_time,
+                        entry.table_number,
+                        entry.id_number,
+                    ]
+                )  # Replace with actual column values
             # Display a success message
-            messages.success(request, 'Data exported successfully.')
-            return (response)  # Return the CSV file to the browser as download
+            messages.success(request, "Data exported successfully.")
+            return response  # Return the CSV file to the browser as download
 
-        elif 'import' in request.POST:  # Import the user selected CSV file
+        elif "import" in request.POST:  # Import the user selected CSV file
             # Save all current entries in db to the existing_data variable
             existing_data = db_model.objects.all()
             # Get the uploaded file
             try:
-                import_from_file = request.FILES['file']
-                messages.success(request, 'file is valid')
+                import_from_file = request.FILES["file"]
+                messages.success(request, "file is valid")
             except:
-                messages.error(request, 'Please select a  file for upload.')
+                messages.error(request, "Please select a  file for upload.")
 
             # Process the uploaded file
             try:
                 textbox_values = [
-                    request.POST.get('Company_Name_box'),
-                    request.POST.get('First_Name_box'),
-                    request.POST.get('Last_Name_box'),
-                    request.POST.get('Email_box'),
-                    request.POST.get('Alumni_box'),
-                    request.POST.get('Info_Release_box'),
-                    request.POST.get('Table_Number_box'),
+                    request.POST.get("Company_Name_box"),
+                    request.POST.get("First_Name_box"),
+                    request.POST.get("Last_Name_box"),
+                    request.POST.get("Email_box"),
+                    request.POST.get("Alumni_box"),
+                    request.POST.get("Info_Release_box"),
+                    request.POST.get("Table_Number_box"),
                 ]
-                messages.success(request, 'Variables are: ' +
-                                 str(textbox_values))
+                messages.success(request, "Variables are: " + str(textbox_values))
                 # Convert box numbers from letters to numbers
-                box_mapping = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7,
-                               'i': 8, 'j': 9, 'k': 10, 'l': 11, 'm': 12, 'n': 13, 'o': 14, 'p': 15}
+                box_mapping = {
+                    "a": 0,
+                    "b": 1,
+                    "c": 2,
+                    "d": 3,
+                    "e": 4,
+                    "f": 5,
+                    "g": 6,
+                    "h": 7,
+                    "i": 8,
+                    "j": 9,
+                    "k": 10,
+                    "l": 11,
+                    "m": 12,
+                    "n": 13,
+                    "o": 14,
+                    "p": 15,
+                }
 
                 # Map textbox values to column indices
                 column_indices = [
-                    box_mapping[value.lower()] if value else None for value in textbox_values]
+                    box_mapping[value.lower()] if value else None
+                    for value in textbox_values
+                ]
 
                 # Process the uploaded file
-                uploaded_file = request.FILES.get('file')
-                file_extension = uploaded_file.name.split('.')[-1]
+                uploaded_file = request.FILES.get("file")
+                file_extension = uploaded_file.name.split(".")[-1]
 
-                if file_extension == 'csv':
-                    csv_data = uploaded_file.read().decode('utf-8')  # Read the file as text
+                if file_extension == "csv":
+                    csv_data = uploaded_file.read().decode(
+                        "utf-8"
+                    )  # Read the file as text
                     csv_file = StringIO(csv_data)
                     reader = csv.reader(csv_file)
                     next(reader)  # Skip the header row
-                elif file_extension == 'xlsx':
+                elif file_extension == "xlsx":
                     wb = openpyxl.load_workbook(uploaded_file)
                     ws = wb.active
                     reader = ws.iter_rows(values_only=True)
                     next(reader)  # Skip the header row
                 else:
                     messages.error(request, "Unsupported file format.")
-                    return render(request, 'hello/database_upload_page.html')
+                    return render(request, "hello/database_upload_page.html")
 
                 # Extract the data from each row
                 for row in reader:
                     ext_company_name = row[column_indices[0]]
-                    ext_first_name = row[column_indices[1]]
-                    ext_last_name = row[column_indices[2]]
+                    ext_first_name_last_name = row[column_indices[1]]
+
+                    # Check if column_indices[1] and column_indices[2] have the same value
+                    if column_indices[1] == column_indices[2]:
+                        # If they have the same value, split the value at the first space
+                        space_index = ext_first_name_last_name.find(" ")
+                        if space_index != -1:  # If space exists
+                            ext_first_name = ext_first_name_last_name[:space_index]
+                            ext_last_name = ext_first_name_last_name[
+                                space_index + 1 :
+                            ].strip(", ")
+                        else:
+                            ext_first_name = ext_first_name_last_name
+                            ext_last_name = ""
+                    else:
+                        ext_first_name = ext_first_name_last_name
+                        ext_last_name = row[column_indices[2]]
+
                     ext_email = row[column_indices[3]]
                     ext_alumni = row[column_indices[4]]
                     ext_release_info = row[column_indices[5]]
                     ext_table_number = row[column_indices[6]]
 
+                    # Rest of your code remains unchanged...
+
                     # Check if all required fields are empty
-                    if ext_company_name or ext_first_name or ext_last_name or ext_email or ext_alumni or ext_release_info:
+                    if (
+                        ext_company_name
+                        or ext_first_name
+                        or ext_last_name
+                        or ext_email
+                        or ext_alumni
+                        or ext_release_info
+                    ):
 
                         # Perform validations on the data
                         errors = []
                         # If there are any errors, render the current page with the error messages
                         if errors:
-                            error_message = ', '.join(errors)
-                            traceback_str = traceback.format_exc()  # Get the traceback as a string
+                            error_message = ", ".join(errors)
+                            traceback_str = (
+                                traceback.format_exc()
+                            )  # Get the traceback as a string
                             line_number = None
 
                             tb = traceback.extract_tb(sys.exc_info()[2])
@@ -226,11 +323,18 @@ def add_new_data(request, response=None):
                                 # Get the line number of the error
                                 line_number = tb[-1][1]
 
-                            error_info = f"Error occurred at line {line_number}" if line_number else "Error information not available"
+                            error_info = (
+                                f"Error occurred at line {line_number}"
+                                if line_number
+                                else "Error information not available"
+                            )
                             error_info += f"\nTraceback:\n{traceback_str}"
-                            messages.error(
-                                request, f"{error_message}\n\n{error_info}")
-                            return render(request, 'hello/database_upload_page.html', {'errors': errors})
+                            messages.error(request, f"{error_message}\n\n{error_info}")
+                            return render(
+                                request,
+                                "hello/database_upload_page.html",
+                                {"errors": errors},
+                            )
                         else:
                             # Map "yes" and "no" values to boolean values
                             boolean_map = {
@@ -244,8 +348,7 @@ def add_new_data(request, response=None):
                             # If the value is not "yes" or "no", set it to None
                             ext_alumni = boolean_map.get(ext_alumni, None)
                             # If the value is not "yes" or "no", set it to None
-                            ext_release_info = boolean_map.get(
-                                ext_release_info, None)
+                            ext_release_info = boolean_map.get(ext_release_info, None)
 
                             # Create a new entry in the Master_list table
                             entry = db_model(
@@ -264,42 +367,67 @@ def add_new_data(request, response=None):
                             )
                             entry.save()  # Save the entry to the database
 
-                messages.success(request, 'Data imported successfully.')
+                messages.success(request, "Data imported successfully.")
                 # Render the database upload page
-                return render(request, 'hello/database_upload_page.html')
+                return render(request, "hello/database_upload_page.html")
 
             except Exception as e:  # Handle any other exceptions
-                error_message = f'Error processing the CSV file: {str(e)}'
+                error_message = f"Error processing the CSV file: {str(e)}"
                 traceback_str = traceback.format_exc()  # Get the traceback as a string
                 # Display the exception and traceback as an error message
                 messages.error(
-                    request, f'{error_message}\n\nTraceback:\n{traceback_str}')
+                    request, f"{error_message}\n\nTraceback:\n{traceback_str}"
+                )
                 # Redirect to the database upload page
                 return redirect(add_new_data)
         # else:
-           # return render(request, 'hello/database_upload_page.html') # Render the database upload page
+        # return render(request, 'hello/database_upload_page.html') # Render the database upload page
     else:
         # If the request is not a POST request, render the database upload page
         # Render the database upload page
-        return render(request, 'hello/database_upload_page.html')
+        return render(request, "hello/database_upload_page.html")
 
 
 def export_data(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="master_list.csv"'
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="master_list.csv"'
     writer = csv.writer(response)
     # Retrieve data from the database
     master_list = db_model.objects.all()
     # Write the header row
-    writer.writerow(['Company_name', 'First_name', 'Last_name', 'Email', 'Alumni',
-                    'Release_info', 'Checked_in', 'Checked_in_time', 'Table_number', 'id_number'])
+    writer.writerow(
+        [
+            "Company_name",
+            "First_name",
+            "Last_name",
+            "Email",
+            "Alumni",
+            "Release_info",
+            "Checked_in",
+            "Checked_in_time",
+            "Table_number",
+            "id_number",
+        ]
+    )
     # Write data rows
     for entry in master_list:
-        writer.writerow([entry.company_name, entry.first_name, entry.last_name, entry.email, entry.alumni, entry.release_info,
-                        entry.checked_in, entry.checked_in_time, entry.table_number, entry.id_number])  # Replace with actual column values
+        writer.writerow(
+            [
+                entry.company_name,
+                entry.first_name,
+                entry.last_name,
+                entry.email,
+                entry.alumni,
+                entry.release_info,
+                entry.checked_in,
+                entry.checked_in_time,
+                entry.table_number,
+                entry.id_number,
+            ]
+        )  # Replace with actual column values
     # Display a success message
-    messages.success(request, 'Data exported successfully.')
-    return (response)  # Return the CSV file to the browser as download
+    messages.success(request, "Data exported successfully.")
+    return response  # Return the CSV file to the browser as download
 
 
 def send_reset_email(request):
@@ -309,45 +437,54 @@ def send_reset_email(request):
             port=settings.EMAIL_PORT,
             username=settings.EMAIL_HOST_USER,
             password=settings.EMAIL_HOST_PASSWORD,
-            use_tls=settings.EMAIL_USE_TLS
+            use_tls=settings.EMAIL_USE_TLS,
         ) as connection:
             subject = request.POST.get("Password Reset")
             email_from = settings.EMAIL_HOST_USER
-            recipient_list = [request.POST.get("email"), ]
+            recipient_list = [
+                request.POST.get("email"),
+            ]
             message = request.POST.get("message")
-            EmailMessage(subject, message, email_from,
-                         recipient_list, connection=connection).send()
+            EmailMessage(
+                subject, message, email_from, recipient_list, connection=connection
+            ).send()
 
-    return render(request, 'password_reset_email.html')
-
+    return render(request, "password_reset_email.html")
 
 
 @never_cache
 def email_sending_status(request):
     try:
         # Retrieve the EmailConfiguration instance (assuming it has an ID of 1)
-        config, created = EmailConfiguration.objects.get_or_create(id=1, defaults={'auto_email_sending_active': False})
+        config, created = EmailConfiguration.objects.get_or_create(
+            id=1, defaults={"auto_email_sending_active": False}
+        )
 
-        if request.method == 'POST':
+        if request.method == "POST":
             # Check if the user submitted the form to change the email sending status
-            new_status = request.POST.get('email_sending_status')
-            if new_status in ['on', 'off']:
-                config.auto_email_sending_active = new_status == 'on'
+            new_status = request.POST.get("email_sending_status")
+            if new_status in ["on", "off"]:
+                config.auto_email_sending_active = new_status == "on"
                 config.save()
-                messages.success(request, 'Email sending status updated successfully.')
+                messages.success(request, "Email sending status updated successfully.")
 
         # Get the value of the auto_email_sending_active column (already boolean)
         currentStatus = config.auto_email_sending_active
 
-        return render(request, 'hello/qr_code/send_qr_code.html', {'currentStatus': currentStatus, 'config': config})
-    
+        return render(
+            request,
+            "hello/qr_code/send_qr_code.html",
+            {"currentStatus": currentStatus, "config": config},
+        )
+
     except EmailConfiguration.DoesNotExist:
         # Handle the case where no EmailConfiguration instance with ID 1 is found
         # Create a new EmailConfiguration instance with auto_email_sending_active set to False
         config = EmailConfiguration(id=1, auto_email_sending_active=False)
         config.save()
-        return redirect('email_sending_status')  # Redirect to the same view to display the form
-
+        return redirect(
+            "email_sending_status"
+        )  # Redirect to the same view to display the form
 
 
 def email_configuration_page(request):
@@ -358,7 +495,7 @@ def email_configuration_page(request):
         # Handle the case where the EmailConfiguration with ID 1 does not exist
         config = None
 
-    return render(request, 'hello/qr_code/send_qr_code.html', {'config': config})
+    return render(request, "hello/qr_code/send_qr_code.html", {"config": config})
 
 
 """
@@ -433,15 +570,16 @@ def send_qr_emails(request):
 
 
 def qr_email_page(request):
-    return render(request, 'hello/qr_code/send_qr_code.html')
+    return render(request, "hello/qr_code/send_qr_code.html")
 
 
 def qr_email_success(request):
-    return render(request, 'hello/qr_code/qr_code_email_sent.html')
+    return render(request, "hello/qr_code/qr_code_email_sent.html")
 
 
 class HomeListView(ListView):
     """Renders the home page, with a list of all logs."""
+
     model = db_model
 
     def get_context_data(self, **kwargs):
@@ -460,9 +598,9 @@ def contact(request):
 
 
 def on_site_entry_success(request):
-    table_number = request.GET.get('table_number')
-    context = {'table_number': table_number}
-    return render(request, 'hello/on_site_entry_success.html', context)
+    table_number = request.GET.get("table_number")
+    context = {"table_number": table_number}
+    return render(request, "hello/on_site_entry_success.html", context)
 
 
 @login_required
@@ -470,34 +608,36 @@ def on_site_entry_success(request):
 def search_by_id(request):  # searches the database for a specific id number
     try:
         # gets the id number from the search bar
-        id_number = request.GET.get('Id_number')
+        id_number = request.GET.get("Id_number")
         if id_number:  # if the id number exists
             # first() returns the first object matched by the queryset
             checkin = db_model.objects.filter(id_number=id_number).first()
         else:  # if the id number does not exist
             checkin = False  # set checkin to false
         # context is a dictionary that maps variable names to objects
-        context = {'Checkin': checkin}
+        context = {"Checkin": checkin}
         # renders the id search results page
-        return render(request, 'hello/id_search_results.html', context)
+        return render(request, "hello/id_search_results.html", context)
     except Exception as e:  # if an error occurs
         # display an error message
         messages.error(
-            request, f'The following error occurred while searching for the ID number: {str(e)}')
-        return render(request, 'hello/search.html')  # renders the search page
+            request,
+            f"The following error occurred while searching for the ID number: {str(e)}",
+        )
+        return render(request, "hello/search.html")  # renders the search page
 
 
 # @login_required
 @transaction.atomic
 def add_entry(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         # Retrieve form data
-        company_name = request.POST.get('company_name')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        alumni = bool(request.POST.get('alumni'))
-        release_info = bool(request.POST.get('release_info'))
+        company_name = request.POST.get("company_name")
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        email = request.POST.get("email")
+        alumni = bool(request.POST.get("alumni"))
+        release_info = bool(request.POST.get("release_info"))
         # id_number = request.POST.get('id_number')
         # table_number = request.POST.get('table_number')
 
@@ -509,20 +649,20 @@ def add_entry(request):
         #    errors = 1
 
         if not first_name.isalpha():
-            messages.error(request, f'Please enter a valid first name')
+            messages.error(request, f"Please enter a valid first name")
             errors = 1
 
         if not last_name.isalpha():
-            messages.error(request, f'Please enter a valid last name')
+            messages.error(request, f"Please enter a valid last name")
             errors = 1
 
         if not email:
-            messages.error(request, f'Please enter a valid email address')
+            messages.error(request, f"Please enter a valid email address")
             errors = 1
 
         # If there are errors, render the form with error messages
         if errors > 0:
-            return render(request, 'hello/add_entry.html')
+            return render(request, "hello/add_entry.html")
 
         current_time = datetime.now()
         time_to_subtract = timedelta(hours=4)
@@ -546,22 +686,21 @@ def add_entry(request):
         # Save the instance to the database
         checkin_entry.save()
 
-        return redirect('/on_site_entry_success')  # Redirect to a success page
+        return redirect("/on_site_entry_success")  # Redirect to a success page
 
-    return render(request, 'hello/add_entry.html')
-
+    return render(request, "hello/add_entry.html")
 
 
 def self_registration(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             # Retrieve form data
-            company_name = request.POST.get('company_name')
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            email = request.POST.get('email')
-            alumni = bool(request.POST.get('alumni'))
-            release_info = bool(request.POST.get('release_info'))
+            company_name = request.POST.get("company_name")
+            first_name = request.POST.get("first_name")
+            last_name = request.POST.get("last_name")
+            email = request.POST.get("email")
+            alumni = bool(request.POST.get("alumni"))
+            release_info = bool(request.POST.get("release_info"))
 
             # Perform form validation
             errors = {}
@@ -583,7 +722,8 @@ def self_registration(request):
             #    return render(request, 'hello/self_registration_page.html', {'errors': errors})
         except Exception as e:
             messages.error(
-                request, f"An error occurred while sending the email: {str(e)}")
+                request, f"An error occurred while sending the email: {str(e)}"
+            )
 
         # Create an instance of db_model model and set the field values
         checkin_entry = db_model(
@@ -594,7 +734,7 @@ def self_registration(request):
             alumni=alumni,
             release_info=release_info,
             checked_in=False,
-            #checked_in_time=timezone.now(),  # model already sets time every time a change is made
+            # checked_in_time=timezone.now(),  # model already sets time every time a change is made
             email_sent=True,
         )
 
@@ -605,7 +745,7 @@ def self_registration(request):
         try:
             # Get the email from the POST data
             input_email = request.POST.get("email")
-            messages.success(request, 'email address ' + input_email)
+            messages.success(request, "email address " + input_email)
             # Retrieve the corresponding record from the database based on the ID number
             record = get_object_or_404(db_model, email=input_email)
 
@@ -614,26 +754,33 @@ def self_registration(request):
                 port=settings.EMAIL_PORT,
                 username=settings.EMAIL_HOST_USER,
                 password=settings.EMAIL_HOST_PASSWORD,
-                use_tls=settings.EMAIL_USE_TLS
+                use_tls=settings.EMAIL_USE_TLS,
             ) as connection:
                 subject = "Here is your QR code for check-in"
                 email_from = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [record.email]
-                template = "hello/qr_code/qr_code_email.html"  # Path to the email template
+                template = (
+                    "hello/qr_code/qr_code_email.html"  # Path to the email template
+                )
                 context = {
-                    'first_name': record.first_name,
-                    'last_name': record.last_name,
-                    'email': record.email,
-                    'table_number': record.table_number,
-                    'id_number': record.id_number,
+                    "first_name": record.first_name,
+                    "last_name": record.last_name,
+                    "email": record.email,
+                    "table_number": record.table_number,
+                    "id_number": record.id_number,
                 }  # Add any additional context variables if needed
 
                 # Render the email content using the template and context
                 email_content = render_to_string(template, context)
-                messages.success(request, 'email content has been created')
+                messages.success(request, "email content has been created")
                 # Send the email
-                EmailMessage(subject, email_content, email_from,
-                             recipient_list, connection=connection).send()
+                EmailMessage(
+                    subject,
+                    email_content,
+                    email_from,
+                    recipient_list,
+                    connection=connection,
+                ).send()
                 # Change email_sent to True for matching record
                 record = get_object_or_404(db_model, email=input_email)
                 record.email_sent = True
@@ -641,68 +788,70 @@ def self_registration(request):
 
         except Exception as e:
             messages.error(
-                request, f"An error occurred while sending the email: {str(e)}")
+                request, f"An error occurred while sending the email: {str(e)}"
+            )
 
-        return redirect('/self_reg_success')  # Redirect to a success page
+        return redirect("/self_reg_success")  # Redirect to a success page
 
-    return render(request, 'hello/self_registration_page.html')
+    return render(request, "hello/self_registration_page.html")
 
 
 def self_reg_success(request):
-    return render(request, 'hello/self_reg_success.html')
+    return render(request, "hello/self_reg_success.html")
 
 
 def QR_entry_success(request):
-    return render(request, 'hello/QR_entry_success.html')
+    return render(request, "hello/QR_entry_success.html")
 
 
 @login_required
 @transaction.atomic
 def update_entry(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         # Retrieve form data
-        id_number = request.POST.get('id_number')
+        id_number = request.POST.get("id_number")
 
         # Retrieve the existing entry with the matching ID
         try:
             checkin_entry = db_model.objects.get(id_number=int(id_number))
         except db_model.DoesNotExist:
             # Handle the case when the entry does not exist
-            context = {'error1': True, 'id_number': id_number}
-            return render(request, 'hello/search.html', context)
+            context = {"error1": True, "id_number": id_number}
+            return render(request, "hello/search.html", context)
 
         # Check if the user is already checked in
         if checkin_entry.checked_in:
-            context = {'error2': True, 'id_number': id_number}
-            return render(request, 'hello/search.html', context)
+            context = {"error2": True, "id_number": id_number}
+            return render(request, "hello/search.html", context)
 
         # Update the field values of the existing entry
-        checkin_entry.company_name = request.POST.get('company_name')
-        checkin_entry.first_name = request.POST.get('first_name')
-        checkin_entry.last_name = request.POST.get('last_name')
-        checkin_entry.email = request.POST.get('email')
-        checkin_entry.alumni = bool(request.POST.get('alumni'))
-        checkin_entry.release_info = bool(request.POST.get('release_info'))
+        checkin_entry.company_name = request.POST.get("company_name")
+        checkin_entry.first_name = request.POST.get("first_name")
+        checkin_entry.last_name = request.POST.get("last_name")
+        checkin_entry.email = request.POST.get("email")
+        checkin_entry.alumni = bool(request.POST.get("alumni"))
+        checkin_entry.release_info = bool(request.POST.get("release_info"))
         checkin_entry.checked_in = True
         checkin_entry.checked_in_time = timezone.now().strftime(
-            '%Y-%m-%d %H:%M:%S')  # Autopopulate with current time and date
+            "%Y-%m-%d %H:%M:%S"
+        )  # Autopopulate with current time and date
 
         # Save the updated entry to the database
         checkin_entry.save()
         context = {
-            'company_name': checkin_entry.company_name,
-            'table_number': checkin_entry.table_number,
+            "company_name": checkin_entry.company_name,
+            "table_number": checkin_entry.table_number,
         }
         # Redirect to the 'QR_entry_success' view with the context data
-        return render(request, 'hello/QR_entry_success.html', context)
+        return render(request, "hello/QR_entry_success.html", context)
 
 
 @login_required
 def db_display(request, page=1):
     # Check if filter_blanks parameter is present in the URL
-    filter_blanks = request.GET.get('filter_blanks')
+    filter_blanks = request.GET.get("filter_blanks")
 
-    with connections['default'].cursor() as cursor:
+    with connections["default"].cursor() as cursor:
         cursor.execute("SELECT * FROM Master_list")
         rows = cursor.fetchall()
 
@@ -711,38 +860,38 @@ def db_display(request, page=1):
         converted_row = list(row)
         # Convert 'alumni' field
         if converted_row[5] == 1:
-            converted_row[5] = 'yes'
+            converted_row[5] = "yes"
         elif converted_row[5] == 0:
-            converted_row[5] = 'no'
+            converted_row[5] = "no"
         else:
-            converted_row[5] = 'null'  # Handle null value
+            converted_row[5] = "null"  # Handle null value
         # Convert 'release_info' field
         if converted_row[6] == 1:
-            converted_row[6] = 'yes'
+            converted_row[6] = "yes"
         elif converted_row[6] == 0:
-            converted_row[6] = 'no'
+            converted_row[6] = "no"
         else:
-            converted_row[6] = 'null'  # Handle null value
+            converted_row[6] = "null"  # Handle null value
         # Convert 'checked_in' field
         if converted_row[7] == 1:
-            converted_row[7] = 'yes'
+            converted_row[7] = "yes"
         elif converted_row[7] == 0:
-            converted_row[7] = 'no'
+            converted_row[7] = "no"
         else:
-            converted_row[7] = 'null'  # Handle null value
+            converted_row[7] = "null"  # Handle null value
         # Convert 'email_sent' field
         if converted_row[10] == 1:
-            converted_row[10] = 'yes'
+            converted_row[10] = "yes"
         elif converted_row[10] == 0:
-            converted_row[10] = 'no'
+            converted_row[10] = "no"
         else:
-            converted_row[10] = 'null'
+            converted_row[10] = "null"
         converted_rows.append(converted_row)
 
     # Filter rows with empty entries if 'filter_blanks' is in the request
-    if filter_blanks == 'true':
+    if filter_blanks == "true":
         # Filter rows with blanks
-        filtered_rows = [row for row in converted_rows if 'null' in row]
+        filtered_rows = [row for row in converted_rows if "null" in row]
     else:
         # Show all entries
         filtered_rows = converted_rows
@@ -751,31 +900,29 @@ def db_display(request, page=1):
     paginator = Paginator(filtered_rows, 25)
     page_obj = paginator.get_page(page)
 
-    return render(request, "hello/db_display.html", {'page_obj': page_obj})
+    return render(request, "hello/db_display.html", {"page_obj": page_obj})
 
 
 @login_required
 @transaction.atomic
 def search_by_id(request):
     context = {}
-    if 'id_number' in request.GET:
-        messages.info(request, 'You searched for: {}'.format(
-            request.GET['id_number']))
-        id_number = request.GET['id_number']
+    if "id_number" in request.GET:
+        messages.info(request, "You searched for: {}".format(request.GET["id_number"]))
+        id_number = request.GET["id_number"]
         try:
             entry = db_model.objects.get(id_number=id_number)
-            context['entry'] = entry
-            messages.success(request, 'Entry found.')
+            context["entry"] = entry
+            messages.success(request, "Entry found.")
         except db_model.DoesNotExist:
-            messages.error(
-                request, 'There is no corresponding entry for that number.')
-            return render(request, 'hello/search.html', context)
+            messages.error(request, "There is no corresponding entry for that number.")
+            return render(request, "hello/search.html", context)
 
-    return render(request, 'hello/search.html', context)
+    return render(request, "hello/search.html", context)
 
 
 def homepage(request):
-    return render(request, 'hello/home.html')
+    return render(request, "hello/home.html")
 
 
 # below is the code for the apple wallet pass

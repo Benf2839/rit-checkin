@@ -6,7 +6,7 @@ class Command(BaseCommand):
     # ... (unchanged code)
 
     def handle(self, *args, **kwargs):
-        batch_size = 20  # Set your desired batch size here
+        batch_size = 200  # Set your desired batch size here
         status, successful_emails, failed_emails = save_emails_as_text(batch_size)
 
         # Print status messages

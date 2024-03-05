@@ -45,20 +45,27 @@ ALLOWED_HOSTS = [
     "eventcheck-in.com",
 ]
 
+# settings.py
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
-        "console": {
+        "file": {
             "level": "DEBUG",
-            "class": "logging.StreamHandler",
+            "class": "logging.FileHandler",
+            "filename": "django.log",
         },
     },
-    "root": {
-        "handlers": ["console"],
-        "level": "DEBUG",
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
     },
 }
+
 
 # Application definition
 

@@ -122,7 +122,7 @@ WSGI_APPLICATION = "hello.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 # Below is the database configuration for the db on the server. MODIFYING THIS DB WILL EFFECT THE LIVE SITE
-
+"""
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -137,18 +137,17 @@ DATABASES = {
         },
     }
 }
-
+"""
 
 # Below is the default database configuration for sqlite3. Use this for local testing on a local db
-"""
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
-"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -193,18 +192,18 @@ STATIC_ROOT = "/Users/bendr/Website Development Projects/Destiny_website/destiny
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 
-EMAIL_HOST = "mail.eventcheck-in.com"
-EMAIL_PORT = 2525
+EMAIL_HOST = "s1246.usc1.mysecurecloudhost.com"
+EMAIL_PORT = 465  # 2525 #995  # 993
 EMAIL_HOST_USER = EMAIL_USER
 EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
-EMAIL_USE_TLS = True
-EMAIL_USE_STARTTLS = True
+EMAIL_USE_TLS = False
+EMAIL_USE_STARTTLS = False
 DEFAULT_FROM_EMAIL = "ritcareerfair@eventcheck-in.com"
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_LOG_SAVE_ATTACHMENTS = True
 EMAIL_LOG_ATTACHMENTS_PATH = "/home/guardia2/Web_app/attachments"
 EMAIL_LOG_LEVEL = "DEBUG"
-FAIL_SILENTLY = True
+FAIL_SILENTLY = False
 # EMAIL_BATCH_SIZE = 20  # batch size for email sending
 # EMAIL_BATCH_DELAY = 300  # delay in seconds between batches

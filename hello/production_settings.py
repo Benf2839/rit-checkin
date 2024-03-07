@@ -156,7 +156,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 
 EMAIL_HOST = "s1246.usc1.mysecurecloudhost.com"
-EMAIL_PORT = 2525  # 995  # 993
+EMAIL_PORT = 465  # 2525 #995  # 993
 # 'guardia2@mocha3039.mochahost.com'  # Replace with your email address
 EMAIL_HOST_USER = "ritcareerfair@eventcheck-in.com"
 # Replace with your email password

@@ -27,7 +27,7 @@ SECRET_KEY = "PLACEHOLDER"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
+"""
 # Load environment variables from secrets.txt
 with open(os.path.join(BASE_DIR, "passwords.py")) as f:
     lines = f.read().splitlines()
@@ -35,6 +35,7 @@ with open(os.path.join(BASE_DIR, "passwords.py")) as f:
         key, value = line.split("=")
         os.environ[key] = value
 
+        """
 
 # When deploying to Azure App Service, add you <name>.azurewebsites.net
 # domain to ALLOWED_HOSTS; you get an error message if you forget. When you add

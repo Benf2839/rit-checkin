@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-from passwords import *
+
+# from passwords import *
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -194,8 +195,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 EMAIL_HOST = "mail.eventcheck-in.com"
 EMAIL_PORT = 25  # USING RECCOMENDED PORT DOES NOT WORK. DO NOT CHANGE THIS
-EMAIL_HOST_USER = EMAIL_USER
-EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
+EMAIL_HOST_USER = "ritcareerfair@eventcheck-in.com"  # EMAIL_USER
+EMAIL_HOST_PASSWORD = "Hireatiger2024"  # EMAIL_PASSWORD
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = "ritcareerfair@eventcheck-in.com"

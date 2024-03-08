@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
@@ -41,6 +41,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # debugging (which are enabled by default when ALLOWED_HOSTS is empty.)
 ALLOWED_HOSTS = [
     "127.0.0.1",
+    "192.250.227.60",
     "localhost",
     "eventcheck-in.com/",
     "eventcheck-in.com",

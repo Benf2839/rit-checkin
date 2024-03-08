@@ -192,12 +192,12 @@ STATIC_ROOT = "/Users/bendr/Website Development Projects/Destiny_website/destiny
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 
-EMAIL_HOST = "s1246.usc1.mysecurecloudhost.com"
-EMAIL_PORT = 465  # 2525 #995  # 993
+EMAIL_HOST = "mail.eventcheck-in.com"
+EMAIL_PORT = 25  # USING RECCOMENDED PORT DOES NOT WORK. DO NOT CHANGE THIS
 EMAIL_HOST_USER = EMAIL_USER
 EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
-EMAIL_USE_TLS = False
-EMAIL_USE_STARTTLS = False
+EMAIL_USE_TLS = True
+EMAIL_USE_STARTTLS = True
 DEFAULT_FROM_EMAIL = "ritcareerfair@eventcheck-in.com"
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

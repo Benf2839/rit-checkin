@@ -42,6 +42,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "192.250.227.60",
     "localhost",
+    "s1246.usc1.mysecurecloudhost.com",
     "eventcheck-in.com/",
     "eventcheck-in.com",
     "www.eventcheck-in.com/",

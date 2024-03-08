@@ -23,8 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+DEBUG = False
 
 SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
 SECURE_SSL_REDIRECT = True
@@ -158,9 +157,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 EMAIL_HOST = "mail.eventcheck-in.com"
 EMAIL_PORT = 25  # USING RECCOMENDED PORT DOES NOT WORK. DO NOT CHANGE THIS
-# 'guardia2@mocha3039.mochahost.com'  # Replace with your email address
+# 'guardia2@mocha3039.mochahost.com'
 EMAIL_HOST_USER = "ritcareerfair@eventcheck-in.com"
-# Replace with your email password
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 EMAIL_USE_TLS = True
 EMAIL_USE_STARTTLS = True
@@ -168,9 +166,3 @@ DEFAULT_FROM_EMAIL = "ritcareerfair@eventcheck-in.com"
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_LOG_LEVEL = "DEBUG"
-# WALLETPASS = {
-#    'CERT_PATH': '',
-#    'KEY_PATH': '',
-# (None if isn't protected)
-# MUST be in bytes-like
-# }
